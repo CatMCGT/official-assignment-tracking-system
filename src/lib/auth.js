@@ -21,11 +21,14 @@ export async function signIn(prevState, formData) {
   // bcrypt -> hasing (process password using sophisticated mathematical function, and is one-way) + salt(a random number unique to each password and is attached to it before hashing) more: https://www.freecodecamp.org/news/how-to-hash-passwords-with-bcrypt-in-nodejs/
 
   const isMatch = bcrypt.compareSync(password, hashedStoredPassword);
+  const role = response[0].role;
 
   if (isMatch) {
     return {
       success: true,
-      message: `Signing into ${username} ${response[0].role} account...`,
+      message: `Signing into ${username} ${role} account...`,
+      username: username,
+      role: role
     };
   } else {
     return {
