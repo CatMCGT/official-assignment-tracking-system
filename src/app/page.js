@@ -54,7 +54,7 @@ export default function Page() {
             <div className="flex flex-col gap-1">
               <label className="text-sm w-full">Account name</label>
               <input
-                className="p-3 bg-gray-100 rounded-xs text-sm w-full placeholder:text-gray-300 text-gray-600"
+                className="p-3 bg-gray-100 rounded-xs text-sm w-full placeholder:text-gray-400 text-gray-600"
                 placeholder="Account name (e.g. s201401111)"
                 name="username"
                 required
@@ -69,7 +69,7 @@ export default function Page() {
               <input
                 type="password"
                 name="password"
-                className="p-3 bg-gray-100 rounded-xs text-sm w-full placeholder:text-gray-300 text-gray-600"
+                className="p-3 bg-gray-100 rounded-xs text-sm w-full placeholder:text-gray-400 text-gray-600"
                 placeholder="Password"
                 required
                 disabled={currentUserState !== undefined}
