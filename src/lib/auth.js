@@ -12,10 +12,9 @@ export async function signIn(prevState, formData) {
   console.log(username, password);
 
   // parametised query -> don't need real_escape_string
-  const response = await sql.query(
-    "SELECT * FROM users WHERE name = ($1)",
-    [username]
-  );
+  const response = await sql.query("SELECT * FROM users WHERE name = ($1)", [
+    username,
+  ]);
 
   const storedPassword = response[0].password;
   const isMatch = bcrypt.compareSync(password, storedPassword);
@@ -27,8 +26,7 @@ export async function signIn(prevState, formData) {
     return {
       success: true,
       message: `Signing into ${username} ${role} account...`,
-      username: username,
-      role: role
+      userData: { ...response[0], role: role },
     };
   } else {
     return {

@@ -1,27 +1,25 @@
-'use server'
+"use server";
 
 import { cookies } from "next/headers";
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();
 
-  if (cookieStore.has("username") && cookieStore.has("role")) {
-    const username = cookieStore.get("username");
-    const role = cookieStore.get("role");
+  if (cookieStore.has("userData")) {
+    const userDataString = cookieStore.get("userData").value;
+    const userData = JSON.parse(userDataString);
 
-    return {
-      username: username,
-      role: role,
-    };
+    return userData;
   }
 }
 
-export async function setCurrentUser(username, role) {
+export async function setCurrentUser(userData) {
+  const userDataString = JSON.stringify(userData);
+
   try {
     const cookieStore = await cookies();
 
-    cookieStore.set("username", username, { secure: true });
-    cookieStore.set("role", role, { secure: true });
+    cookieStore.set("userData", userDataString, { secure: true });
 
     return true;
   } catch (err) {
@@ -32,6 +30,5 @@ export async function setCurrentUser(username, role) {
 
 export async function deleteCurrentUser() {
   const cookieStore = await cookies();
-  cookieStore.delete("username");
-  cookieStore.delete("role");
+  cookieStore.delete("userData");
 }

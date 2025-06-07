@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import { redirect } from "next/navigation";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { ArrowRightIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 import { useActionState, useEffect, useState } from "react";
 
 import { signIn } from "@/lib/auth";
@@ -29,7 +29,7 @@ export default function Page() {
 
   useEffect(() => {
     if (signInState?.success) {
-      const response = setCurrentUser(signInState.username, signInState.role);
+      const response = setCurrentUser(signInState.userData);
       if (response) {
         redirect("/home");
       }
@@ -37,14 +37,14 @@ export default function Page() {
   }, [signInState]);
 
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="h-full w-full flex flex-col justify-center items-center">
       <Form
         action={signInFunction}
-        className="flex flex-col items-end gap-4 px-5 py-6 relative rounded-md border border-solid border-gray-200"
+        className="flex flex-col items-end gap-4 px-5 py-6 relative rounded-md border border-solid border-stroke-weak"
       >
         <div className="flex flex-col gap-3 relative">
           <div>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-text-weak">
               Welcome to Assignment Tracking System...
             </p>
             <p className="font-bold text-lg">Sign In With Your Account</p>
@@ -54,7 +54,7 @@ export default function Page() {
             <div className="flex flex-col gap-1">
               <label className="text-sm w-full">Account name</label>
               <input
-                className="p-3 bg-gray-100 rounded-xs text-sm w-full placeholder:text-gray-400 text-gray-600"
+                className="p-3 bg-fill-weak rounded-xs w-full placeholder:text-text-weaker text-text-weak focus:outline-2 focus:outline-gray-300"
                 placeholder="Account name (e.g. s201401111)"
                 name="username"
                 required
@@ -69,7 +69,7 @@ export default function Page() {
               <input
                 type="password"
                 name="password"
-                className="p-3 bg-gray-100 rounded-xs text-sm w-full placeholder:text-gray-400 text-gray-600"
+                className="p-3 bg-fill-weak rounded-xs w-full placeholder:text-text-weaker text-text-weak focus:outline-2 focus:outline-gray-300"
                 placeholder="Password"
                 required
                 disabled={currentUserState !== undefined}
@@ -77,7 +77,7 @@ export default function Page() {
             </div>
           </div>
 
-          <p className="text-sm text-gray-500">Forgot password?</p>
+          <p className="text-sm text-text-weaker hover:text-text-weak hover:underline cursor-pointer">Forgot password?</p>
 
           {signInState?.success && (
             <p className="text-green-400 font-bold text-sm mt-0">
@@ -91,7 +91,7 @@ export default function Page() {
             </p>
           )}
 
-          {currentUserState !== undefined && (
+          {currentUserState !== undefined || signInPending && (
             <p className="text-gray-400 font-bold text-sm mt-0">
               Signing in...
             </p>
@@ -99,9 +99,18 @@ export default function Page() {
         </div>
 
         <button type="submit" disabled={currentUserState !== undefined}>
-          <ArrowRightIcon className="size-6" />
+          {
+            !signInPending ? (
+              <ArrowRightIcon className="size-6" />
+            ) : (
+              <ArrowPathIcon className="size-6 fill-text-weaker"/>
+            )
+          }
+          
         </button>
       </Form>
+
+      <p className="absolute bottom-30 text-text-weakest">Made with ♥︎ by CatMCGT</p>
     </div>
   );
 }

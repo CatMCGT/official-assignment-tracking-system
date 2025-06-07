@@ -10,6 +10,17 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-text-strong: #413730;
+  --color-text-weak: #5B564E;
+  --color-text-weaker: #88847C;
+  --color-text-weakest: #B0AEA8;
+  --color-icon-neutral: #87837C;
+  --color-icon-inverse: #413730;
+  --color-stroke-weak: #E8E8E8;
+  --color-stroke-weaker: #EFEFEF;
+  --color-background-weak: #FCFCFC;
+  --color-fill-weak: #F5F5F5
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -23,5 +34,5 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  color: #413730;
+  color: --text-strong;
 }
