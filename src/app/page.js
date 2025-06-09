@@ -55,7 +55,7 @@ export default function Page() {
               <label className="text-sm w-full">Account name</label>
               <input
                 className="p-3 bg-fill-weak rounded-xs w-full placeholder:text-text-weaker text-text-weak focus:outline-2 focus:outline-gray-300"
-                placeholder="Account name (e.g. s201401111)"
+                placeholder="Account name"
                 name="username"
                 required
                 disabled={currentUserState !== undefined}
