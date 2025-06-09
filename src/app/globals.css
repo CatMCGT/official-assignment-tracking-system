@@ -20,7 +20,42 @@
   --color-stroke-weak: #E8E8E8;
   --color-stroke-weaker: #EFEFEF;
   --color-background-weak: #FCFCFC;
-  --color-fill-weak: #F5F5F5
+  --color-fill-weak: #F5F5F5;
+}
+
+@layer components {
+  .item-hover:hover {
+    background-color: #F5F5F5;
+    margin: -4px -8px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all ease 0.2s;
+  }
+
+  .nav-tab {
+    display: flex;
+    flex-direction: row;
+    user-select: none;
+    transition: all ease 0.2s;
+
+    &:hover {
+      background-color: #F5F5F5;
+      margin: -4px -8px;
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    &.active {
+      background-color: #f0f0f0;
+      margin: -4px -8px;
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+    }
+  }
 }
 
 /* @media (prefers-color-scheme: dark) {
