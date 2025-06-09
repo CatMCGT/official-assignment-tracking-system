@@ -8,7 +8,7 @@ import FormInput from "./formInput";
 import { createUser } from "@/lib/adminPortal";
 
 export default function AddUserForm() {
-  const [useDefaultPW, setUseDefaultPW] = useState(false);
+  const [defaultPW, setDefaultPW] = useState(false);
 
   const [addUserState, addUserFunction, addUserPending] = useActionState(
     createUser,
@@ -41,8 +41,8 @@ export default function AddUserForm() {
             <input
               type="checkbox"
               className="cursor-pointer"
-              onChange={(e) => setUseDefaultPW(e.target.checked)}
-              checked={useDefaultPW}
+              onChange={(e) => setDefaultPW(e.target.checked)}
+              checked={defaultPW}
             ></input>
           </div>
           <FormInput
@@ -51,7 +51,7 @@ export default function AddUserForm() {
             placeholder="Password"
             name="password"
             required={false}
-            disabled={useDefaultPW}
+            disabled={defaultPW}
           />
         </div>
 
@@ -79,7 +79,7 @@ export default function AddUserForm() {
       <button
         type="submit"
         className="flex items-center justify-between border-2 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
-        onClick={() => useDefaultPW(false)}
+        onClick={() => setDefaultPW(false)}
       >
         <PlusIcon className="size-5" />
       </button>
