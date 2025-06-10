@@ -3,6 +3,15 @@
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcrypt";
 
+import checkRole from "./checkRole";
+
+function formatDate(date) {
+  const dateString = new Date(date).toLocaleString("en", {
+    timeZone: "Asia/Hong_Kong",
+  });
+  return dateString;
+}
+
 export async function createUser(prevState, formData) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
@@ -16,7 +25,12 @@ export async function createUser(prevState, formData) {
       };
     }
 
-    const id = formData.get("id");
+    let id = formData.get("id");
+
+    if (!["s", "a", "t"].includes(id[0])) {
+      id = role[0] + id;
+    }
+
     const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password") || "1234";
@@ -25,7 +39,7 @@ export async function createUser(prevState, formData) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     await sql`
-      INSERT INTO ${sql.unsafe(table)} (id, name, password, email)
+      INSERT INTO ${sql.unsafe(table)} (id, name, password, email, reg_date)
       VALUES (${id}, ${name}, ${hashedPassword}, ${email})
     `;
 
@@ -46,9 +60,16 @@ export async function createUser(prevState, formData) {
 export async function getAllUsers() {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-     
-    const result = await sql`SELECT id, name, email, reg_date FROM users;`
-    const resultString = JSON.stringify(result);
+
+    const result = await sql`SELECT id, name, email, reg_date FROM users;`;
+    const updatedResults = result.map((row) => {
+      return {
+        ...row,
+        role: checkRole(row.id),
+        reg_date: formatDate(row.reg_date),
+      };
+    });
+    const resultString = JSON.stringify(updatedResults);
 
     return {
       success: true,

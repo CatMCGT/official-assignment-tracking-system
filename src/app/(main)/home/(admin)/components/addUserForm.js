@@ -18,7 +18,7 @@ export default function AddUserForm() {
   return (
     <Form
       action={addUserFunction}
-      className="border-2 border-stroke-weak px-6 py-5 flex flex-col items-end gap-4 w-fit"
+      className="border-1 border-stroke-weak px-6 py-5 flex flex-col items-end gap-4 w-fit"
     >
       <h2 className="font-bold w-full text-lg">Add User</h2>
       <div className="flex flex-col gap-3 w-70">
@@ -31,9 +31,9 @@ export default function AddUserForm() {
           <option value="admin">Admin</option>
         </select>
 
-        <FormInput type="text" title="ID*" placeholder="ID" name="id" />
+        <FormInput title="ID*" placeholder="ID" name="id" />
 
-        <FormInput type="text" title="Name*" placeholder="Name" name="name" />
+        <FormInput title="Name*" placeholder="Name" name="name" />
 
         <div className="relative mt-1">
           <div className="flex flex-row gap-2 absolute right-0 top-0">
@@ -46,7 +46,6 @@ export default function AddUserForm() {
             ></input>
           </div>
           <FormInput
-            type="password"
             title="Password"
             placeholder="Password"
             name="password"
@@ -78,7 +77,7 @@ export default function AddUserForm() {
 
       <button
         type="submit"
-        className="flex items-center justify-between border-2 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
+        className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
         onClick={() => setDefaultPW(false)}
       >
         <PlusIcon className="size-5" />
