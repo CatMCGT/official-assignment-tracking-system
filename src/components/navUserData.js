@@ -17,7 +17,7 @@ export default function NavUserData({ currentUser }) {
   return (
     <div>
       <div
-        className="flex flex-row select-none item-hover"
+        className="flex flex-row select-none nav-item-hover"
         onClick={() => {
           setOpenMenu((prev) => {
             return !prev;
@@ -47,7 +47,7 @@ export default function NavUserData({ currentUser }) {
 
           <div>
             <p
-              className="text-ms text-text-weaker hover:text-text-weak item-hover"
+              className="text-ms text-text-weaker hover:text-text-weak nav-item-hover"
               onClick={signOut}
             >
               Log out

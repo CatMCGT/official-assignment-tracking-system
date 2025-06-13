@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import checkRole from "./checkRole";
 
 function formatDate(date) {
-  const dateString = new Date(date).toLocaleString("en", {
+  const dateString = new Date(date).toLocaleDateString("en", {
     timeZone: "Asia/Hong_Kong",
   });
   return dateString;
@@ -75,6 +75,27 @@ export async function getAllUsers() {
       success: true,
       data: resultString,
     };
+  } catch (err) {
+    console.error("Error getting all users:", err);
+
+    return {
+      success: false,
+      message: "Something went wrong.",
+    };
+  }
+}
+
+export async function deleteUsers(users) {
+  try {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+
+    users.forEach(userId => {
+      const deleteUser = async (userId) => {
+        const response = await sql`DELETE FROM users WHERE id = ${userId};`;
+      }
+
+      deleteUser(userId);
+    })
   } catch (err) {
     console.error("Error getting all users:", err);
 

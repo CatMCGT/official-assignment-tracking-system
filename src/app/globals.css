@@ -24,7 +24,7 @@
 }
 
 @layer components {
-  .item-hover:hover {
+  .nav-item-hover:hover {
     background-color: #F5F5F5;
     margin: -4px -8px;
     padding: 4px 8px;
@@ -54,6 +54,19 @@
       padding: 4px 8px;
       border: none;
       border-radius: 4px;
+    }
+  }
+}
+
+@theme {
+  --animate-rotating: rotating 1s ease;
+
+  @keyframes rotating {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }
