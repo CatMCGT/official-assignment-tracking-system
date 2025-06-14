@@ -18,8 +18,10 @@ export async function setCurrentUser(userData) {
 
   try {
     const cookieStore = await cookies();
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 7);
 
-    cookieStore.set("userData", userDataString, { secure: true });
+    cookieStore.set("userData", userDataString, { secure: true, expires: expirationDate });
 
     return true;
   } catch (err) {

@@ -5,20 +5,23 @@ import bcrypt from "bcrypt";
 
 import checkRole from "./checkRole";
 
-function formatDate(date) {
-  const dateString = new Date(date).toLocaleDateString("en", {
-    timeZone: "Asia/Hong_Kong",
-  });
-  return dateString;
-}
+const formatDate = (date) =>
+  new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
+
+// Verifying table name as table names cannot be prepared parameters
+const getTableName = (role) => {
+  const roleLowerCase = role?.toLowerCase();
+  const table = roleLowerCase ? `${roleLowerCase}s` : null;
+  return ["students", "teachers", "admins"].includes(table) ? table : null;
+};
 
 export async function createUser(prevState, formData) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const role = formData.get("role")?.toLowerCase();
-    const table = role ? `${role}s` : null;
+    const role = formData.get("role");
+    const table = getTableName(role);
 
-    if (!table || !["students", "teachers", "admins"].includes(table)) {
+    if (!table) {
       return {
         success: false,
         message: "Invalid role.",
@@ -26,9 +29,8 @@ export async function createUser(prevState, formData) {
     }
 
     let id = formData.get("id");
-
     if (!["s", "a", "t"].includes(id[0])) {
-      id = role[0] + id;
+      id = role[0].toLowerCase() + id;
     }
 
     const name = formData.get("name");
@@ -52,7 +54,7 @@ export async function createUser(prevState, formData) {
 
     return {
       success: false,
-      message: "Something went wrong.",
+      message: "Failed to add user.",
     };
   }
 }
@@ -60,60 +62,55 @@ export async function createUser(prevState, formData) {
 export async function getAllUsers() {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
+    const users = await sql`SELECT id, name, email, reg_date FROM users;`;
 
-    const result = await sql`SELECT id, name, email, reg_date FROM users;`;
-    const updatedResults = result.map((row) => {
+    const formattedUsers = users.map((user) => {
       return {
-        ...row,
-        role: checkRole(row.id),
-        reg_date: formatDate(row.reg_date),
+        ...user,
+        role: checkRole(user.id),
+        reg_date: formatDate(user.reg_date),
       };
     });
-    const resultString = JSON.stringify(updatedResults);
 
     return {
       success: true,
-      data: resultString,
+      data: JSON.stringify(formattedUsers),
     };
   } catch (err) {
     console.error("Error getting all users:", err);
 
     return {
       success: false,
-      message: "Something went wrong.",
+      message: "Failed to fetch all users.",
     };
   }
 }
 
-export async function deleteUsers(users) {
+export async function deleteUsers(userIds) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    users.forEach((userId) => {
+    for (const userId of userIds) {
       const role = checkRole(userId);
-      const table = role ? `${role}s` : null;
+      const table = getTableName(role);
 
-      if (!table || !["students", "teachers", "admins"].includes(table)) {
+      if (!table) {
         return {
           success: false,
           message: "Invalid role.",
         };
       }
 
-      const deleteUser = async (userId) => {
-        const response = await sql`DELETE FROM ${sql.unsafe(
-          table
-        )} WHERE id = ${userId};`;
-      };
+      await sql`DELETE FROM ${sql.unsafe(table)} WHERE id = ${userId};`;
+    }
 
-      deleteUser(userId);
-    });
+    return { success: true, message: "Users deleted successfully."};
   } catch (err) {
     console.error("Error getting all users:", err);
 
     return {
       success: false,
-      message: "Something went wrong.",
+      message: "Failed to delete users.",
     };
   }
 }

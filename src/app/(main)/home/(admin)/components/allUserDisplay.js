@@ -1,35 +1,32 @@
 "use client";
 
-import {
-  ArrowPathIcon,
-  ChevronDownIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import { getAllUsers, deleteUsers } from "@/lib/adminPortal";
 import { useNotification } from "@/components/notification";
 
 function UserDisplay({ userData, userSelect, setUserSelect }) {
-  function removeUserIdFromUserSelect() {
+  function toggleUserSelection() {
     setUserSelect((prev) => {
-      const newArray = [...prev.userIds];
-      newArray.splice(newArray.indexOf(userData.id), 1);
-      return { ...prev, userIds: newArray };
-    });
-  }
-
-  function addUserIdToUserSelect() {
-    setUserSelect((prev) => {
-      const newArray = [...prev.userIds];
-      newArray.push(userData.id);
-      return { ...prev, userIds: newArray };
+      let userIds;
+      if (prev.userIds.include(userData.id)) {
+        userIds = prev.usersIds.filter((id) => id !== userData.id);
+      } else {
+        userIds = [...prev.userIds, userData.id];
+      }
+      return { ...prev, userIds };
     });
   }
 
   useEffect(() => {
     if (userSelect.all && !userSelect.userIds.includes(userData.id)) {
-      addUserIdToUserSelect();
+      setUserSelect((prev) => {
+        return {
+          ...prev,
+          userIds: [...prev.userIds, userData.id],
+        };
+      });
     }
   }, [userSelect.all]);
 
@@ -38,16 +35,8 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
       <input
         type="checkbox"
         className="cursor-pointer mr-4"
-        name="user-select"
-        value={userData.id}
         checked={userSelect.userIds.includes(userData.id)}
-        onChange={() => {
-          if (userSelect.userIds.includes(userData.id)) {
-            removeUserIdFromUserSelect();
-          } else {
-            addUserIdToUserSelect();
-          }
-        }}
+        onChange={toggleUserSelection}
       ></input>
       <div className="flex flex-col gap-1 flex-1/4">
         <p className="font-bold">{userData.name}</p>
@@ -55,7 +44,7 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
       </div>
       <div className="flex flex-col gap-1 flex-1/5">
         <p className="text-text-weaker text-sm">Email:</p>
-        <p className="text-text-weaker text-sm">{userData.email || "null"}</p>
+        <p className="text-text-weaker text-sm">{userData.email || "N/A"}</p>
       </div>
       <div className="flex flex-col gap-1 flex-1/4">
         <p className="text-text-weaker text-sm">{userData.role}</p>
@@ -67,72 +56,53 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
 
 export default function AllUserDisplay({ allUserDataServer }) {
   const [allUserData, setAllUserData] = useState(allUserDataServer);
-  const [refreshLoadingState, setRefreshLoadingState] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [userSelect, setUserSelect] = useState({ userIds: [], all: false });
-  const [filter, setFilter] = useState({ role: "all" });
+  const [filters, setFilters] = useState({ role: "all" });
   const { addNotif, removeNotif, notifs } = useNotification();
 
-  const allUserEle = allUserData
-    ?.filter((userData) => {
-      if (filter.role === "all") {
-        return true;
-      }
-      return userData.role === filter.role;
-    })
-    .map((userData) => (
-      <UserDisplay
-        userData={userData}
-        key={userData.id}
-        userSelect={userSelect}
-        setUserSelect={setUserSelect}
-      />
-    ));
-
   async function refreshData() {
-    setRefreshLoadingState(true);
-    const getAllUsersData = await getAllUsers();
-    const allUserDataString = getAllUsersData?.data;
-    const allUserData = JSON.parse(allUserDataString);
+    setIsRefreshing(true);
 
-    setAllUserData(allUserData);
-    setRefreshLoadingState(false);
+    const { data } = await getAllUsers();
+    setAllUserData(JSON.parse(data));
+
+    setIsRefreshing(false);
   }
 
-  async function onDelete() {
-    if (
-      notifs.filter((notif) => notif.type === "confirm-delete").length === 0
-    ) {
+  async function handleDelete() {
+    if (!notifs.some((notif) => notif.type === "confirm-delete")) {
       addNotif(
         "confirm-delete",
-        "Delete users?",
+        "Delete selected users?",
         JSON.stringify(userSelect.userIds),
         "",
         {
           onConfirm: async () => {
-            const response = await deleteUsers(userSelect.userIds);
+            await deleteUsers(userSelect.userIds);
             removeNotif("confirm-delete");
-            setUserSelect((prev) => {
-              return { ...prev, userIds: [] };
-            });
+            setUserSelect((prev) => ({ ...prev, userIds: [] }));
             refreshData();
-            return response;
           },
-          confirmIcon: <TrashIcon className={`size-5 text-red-500`} />,
+          confirmIcon: <TrashIcon className="size-5 text-red-500" />,
         }
       );
     }
   }
 
+  const filteredUsers = allUserData?.filter(
+    (user) => filters.role === "all" || user.role === filters.role
+  );
+
   return (
     <div className="w-full">
       <div className="flex flex-row gap-4 items-center">
-        <p className="text-text-weakest">Show me</p>
+        <p className="text-text-weakest">Show:</p>
         <select
           className="flex flex-row gap-1 pl-3 pr-5 py-2 bg-fill-weak rounded cursor-pointer hover:bg-[#f0f0f0] text-text-weak focus:outline-2 focus:outline-stroke-weak w-fit text-center"
-          name="show users"
-          value={filter.role}
+          value={filters.role}
           onChange={(e) =>
-            setFilter((prev) => {
+            setFilters((prev) => {
               return { ...prev, role: e.target.value };
             })
           }
@@ -150,8 +120,6 @@ export default function AllUserDisplay({ allUserDataServer }) {
           <input
             type="checkbox"
             className="cursor-pointer"
-            name="user-select"
-            value="all"
             checked={userSelect.all}
             onChange={() => {
               setUserSelect((prev) => {
@@ -168,28 +136,36 @@ export default function AllUserDisplay({ allUserDataServer }) {
           <button
             className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
             onClick={refreshData}
+            disabled={isRefreshing}
           >
             <ArrowPathIcon
-              className={`size-5 ${refreshLoadingState && "animate-rotating"}`}
+              className={`size-5 ${isRefreshing && "animate-rotating"}`}
             />
           </button>
           {userSelect.userIds.length > 0 && (
             <button
               className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
-              onClick={() => {
-                onDelete();
-              }}
+              onClick={handleDelete}
             >
-              <TrashIcon className={`size-5 text-red-500`} />
+              <TrashIcon className="size-5 text-red-500" />
             </button>
           )}
         </div>
       </div>
 
-      {refreshLoadingState ? (
+      {isRefreshing ? (
         <p className="mt-3 text-text-weak">Loading...</p>
       ) : (
-        <div className="mt-3">{allUserEle}</div>
+        <div className="mt-3">
+          {filteredUsers?.map((user) => (
+            <UserDisplay
+              key={user.id}
+              userData={user}
+              userSelect={userSelect}
+              setUserSelect={setUserSelect}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
