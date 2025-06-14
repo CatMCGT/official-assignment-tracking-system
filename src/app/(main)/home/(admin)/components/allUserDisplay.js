@@ -70,7 +70,7 @@ export default function AllUserDisplay({ allUserDataServer }) {
   const [refreshLoadingState, setRefreshLoadingState] = useState(false);
   const [userSelect, setUserSelect] = useState({ userIds: [], all: false });
   const [filter, setFilter] = useState({ role: "all" });
-  const { addNotif } = useNotification();
+  const { addNotif, removeNotif, notifs } = useNotification();
 
   const allUserEle = allUserData
     ?.filter((userData) => {
@@ -98,9 +98,29 @@ export default function AllUserDisplay({ allUserDataServer }) {
     setRefreshLoadingState(false);
   }
 
-  async function deleteUsers() {
-    addNotif("Confirm delete?", "Click the buttons to confirm.")
-    // const response = await deleteUsers(userSelect.userIds);
+  async function onDelete() {
+    if (
+      notifs.filter((notif) => notif.type === "confirm-delete").length === 0
+    ) {
+      addNotif(
+        "confirm-delete",
+        "Delete users?",
+        JSON.stringify(userSelect.userIds),
+        "",
+        {
+          onConfirm: async () => {
+            const response = await deleteUsers(userSelect.userIds);
+            removeNotif("confirm-delete");
+            setUserSelect((prev) => {
+              return { ...prev, userIds: [] };
+            });
+            refreshData();
+            return response;
+          },
+          confirmIcon: <TrashIcon className={`size-5 text-red-500`} />,
+        }
+      );
+    }
   }
 
   return (
@@ -153,14 +173,16 @@ export default function AllUserDisplay({ allUserDataServer }) {
               className={`size-5 ${refreshLoadingState && "animate-rotating"}`}
             />
           </button>
-          <button
-            className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
-            onClick={() => {
-              deleteUsers();
-            }}
-          >
-            <TrashIcon className={`size-5 text-red-500`} />
-          </button>
+          {userSelect.userIds.length > 0 && (
+            <button
+              className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
+              onClick={() => {
+                onDelete();
+              }}
+            >
+              <TrashIcon className={`size-5 text-red-500`} />
+            </button>
+          )}
         </div>
       </div>
 

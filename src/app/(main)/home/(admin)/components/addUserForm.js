@@ -46,10 +46,10 @@ export default function AddUserForm() {
             ></input>
           </div>
           <FormInput
-            title="Password"
+            title="Password*"
             placeholder="Password"
             name="password"
-            required={false}
+            required={defaultPW}
             disabled={defaultPW}
           />
         </div>

@@ -1,19 +1,21 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import { XMarkIcon } from "@heroicons/react/20/solid";
+
+import { deleteUsers } from "@/lib/adminPortal";
 
 const NotificationContext = createContext();
 
 export default function NotificationProvider({ children }) {
   const [notifs, setNotifs] = useState([]);
 
-  function addNotif(title, message, content) {
-    const id = Date.now();
-    setNotifs((prev) => [...prev, { id, title, message, content }]);
+  function addNotif(type, title, subtitle, message, options) {
+    setNotifs((prev) => [...prev, { type, title, subtitle, message, options }]);
   }
 
-  function removeNotif(id) {
-    setNotifs((prev) => prev.filter((notif) => notif.id !== id));
+  function removeNotif(type) {
+    setNotifs((prev) => prev.filter((notif) => notif.type !== type));
   }
 
   return (
@@ -24,13 +26,13 @@ export default function NotificationProvider({ children }) {
     <NotificationContext value={{ addNotif, removeNotif, notifs }}>
       <div className="w-full relative">
         {children}
-        <div>
+        <div className="flex flex-col gap-4 absolute right-16 bottom-10">
           {notifs.map((notif) => {
             return (
               <Notification
-                key={notif.id}
+                key={notif.type}
                 {...notif}
-                onClose={() => removeNotif(notif.id)}
+                onClose={() => removeNotif(notif.type)}
               />
             );
           })}
@@ -40,19 +42,40 @@ export default function NotificationProvider({ children }) {
   );
 }
 
-export function Notification({ title, message, content, onClose }) {
-  return (
-    <div className="w-fit min-w-40 absolute right-4 bottom-4 border-1 border-stroke-weak bg-white z-10 py-3 px-4 rounded">
-      <div>
+export function Notification({
+  type,
+  title,
+  subtitle,
+  message,
+  options,
+  onClose,
+}) {
+  if (type.includes("confirm")) {
+    return (
+      <div className="w-fit min-w-40 border-1 border-stroke-weak bg-white z-10 py-3 px-4 rounded flex flex-row gap-5 items-center">
         <div>
-          <p className="font-bold text-lg">{title}</p>
-          <p className="text-sm text-text-weak">{message}</p>
+          <p className="font-bold text-lg text-text-strong">{title}</p>
+          <p className="text-sm text-text-weak">{subtitle}</p>
         </div>
-        <button onClick={onClose}>x</button>
+        <div className="flex flex-row gap-3 items-center">
+          <button
+            className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50 h-fit"
+            onClick={options.onConfirm}
+          >
+            {options.confirmIcon}
+          </button>
+          <button
+            className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50 h-fit"
+            onClick={onClose}
+          >
+            {options.cancelIcon || (
+              <XMarkIcon className="size-6 text-text-weak" />
+            )}
+          </button>
+        </div>
       </div>
-      {content}
-    </div>
-  );
+    );
+  }
 }
 
 export function useNotification() {

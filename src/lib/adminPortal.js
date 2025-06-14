@@ -39,7 +39,7 @@ export async function createUser(prevState, formData) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     await sql`
-      INSERT INTO ${sql.unsafe(table)} (id, name, password, email, reg_date)
+      INSERT INTO ${sql.unsafe(table)} (id, name, password, email)
       VALUES (${id}, ${name}, ${hashedPassword}, ${email})
     `;
 
@@ -89,13 +89,25 @@ export async function deleteUsers(users) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    users.forEach(userId => {
-      const deleteUser = async (userId) => {
-        const response = await sql`DELETE FROM users WHERE id = ${userId};`;
+    users.forEach((userId) => {
+      const role = checkRole(userId);
+      const table = role ? `${role}s` : null;
+
+      if (!table || !["students", "teachers", "admins"].includes(table)) {
+        return {
+          success: false,
+          message: "Invalid role.",
+        };
       }
 
+      const deleteUser = async (userId) => {
+        const response = await sql`DELETE FROM ${sql.unsafe(
+          table
+        )} WHERE id = ${userId};`;
+      };
+
       deleteUser(userId);
-    })
+    });
   } catch (err) {
     console.error("Error getting all users:", err);
 
