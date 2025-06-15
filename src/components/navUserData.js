@@ -19,9 +19,7 @@ export default function NavUserData({ currentUser }) {
       <div
         className="flex flex-row select-none nav-item-hover"
         onClick={() => {
-          setOpenMenu((prev) => {
-            return !prev;
-          });
+          setOpenMenu((prev) => !prev);
         }}
       >
         <AcademicCapIcon className="size-6 fill-text-strong" />

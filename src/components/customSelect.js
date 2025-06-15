@@ -7,6 +7,8 @@ export default function CustomSelect({
   options,
   optionsSelect,
   setOptionsSelect,
+  placeholder = "Search...",
+  multiSelect = false,
   createNewText,
   onCreateNew,
 }) {
@@ -29,8 +31,16 @@ export default function CustomSelect({
   const ele = filteredOptions.map((option) => {
     return (
       <button
+        type="button"
         className="p-2 flex flex-row justify-between items-center hover:bg-gray-50 rounded cursor-pointer"
-        onClick={() => toggleOptionsSelect(option.id)}
+        onClick={() => {
+          if (multiSelect) {
+            toggleOptionsSelect(option.id);
+          } else {
+            if (!optionsSelect.includes(option.id))
+              setOptionsSelect([option.id]);
+          }
+        }}
         key={option.id}
       >
         <div className="flex flex-row gap-2 items-center">
@@ -45,17 +55,17 @@ export default function CustomSelect({
   });
 
   return (
-    <div className="border-1 border-stroke-weak px-2 py-4 w-60 flex flex-col gap-2 rounded">
+    <div className="border-1 border-stroke-weak px-2 py-4 w-60 flex flex-col gap-2 rounded bg-white">
       <input
-        className="border-b-1 border-b-stroke-weak focus:outline-0 px-2 placeholder:text-text-weakest"
+        className="border-b-1 border-b-stroke-weak focus:outline-0 px-2 pb-1 placeholder:text-text-weakest"
         type="text"
         name="search"
-        placeholder="Search..."
+        placeholder={placeholder}
         value={searchFilter}
         onChange={(e) => setSearchFilter(e.target.value)}
       ></input>
       <div className="flex flex-col">{ele}</div>
-      {searchFilter && (
+      {createNewText && searchFilter && (
         <p
           className="text-sm text-text-weakest mx-2 hover:underline cursor-pointer"
           onClick={() => onCreateNew(searchFilter)}

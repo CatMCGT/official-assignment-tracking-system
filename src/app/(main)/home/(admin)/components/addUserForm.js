@@ -6,6 +6,9 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 
 import FormInput from "./formInput";
 import { createUser } from "@/lib/adminPortal";
+import CustomSelect from "@/components/customSelect";
+import toTitleCase from "@/lib/toTitleCase";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 export default function AddUserForm() {
   const [useDefaultPW, setUseDefaultPW] = useState(false);
@@ -13,6 +16,8 @@ export default function AddUserForm() {
     createUser,
     null
   );
+  const [userRole, setUserRole] = useState(["student"]);
+  const [openRoleSelect, setOpenRoleSelect] = useState(false);
 
   return (
     <Form
@@ -21,14 +26,44 @@ export default function AddUserForm() {
     >
       <h2 className="font-bold w-full text-lg">Add User</h2>
       <div className="flex flex-col gap-3 w-70">
-        <select
+        <div className="relative">
+          <div
+            className="flex flex-row gap-2 px-4 py-1.5 items-center justify-center bg-fill-weak rounded cursor-pointer hover:bg-[#f0f0f0] text-text-weak focus:outline-2 focus:outline-stroke-weak w-fit"
+            onClick={() => setOpenRoleSelect((prev) => !prev)}
+          >
+            <p>{toTitleCase(userRole[0])}</p>
+            <ChevronDownIcon className={`size-4 ${openRoleSelect && "rotate-180"}`} />
+          </div>
+
+          {openRoleSelect && (
+            <div className="absolute top-12 left-0">
+              <CustomSelect
+                options={[
+                  { id: "student", title: "Student", subtitle: "" },
+                  { id: "teacher", title: "Teacher", subtitle: "" },
+                  { id: "admin", title: "Admin", subtitle: "" },
+                ]}
+                optionsSelect={userRole}
+                setOptionsSelect={setUserRole}
+                placeholder="Search role..."
+                multiSelect={false}
+              />
+            </div>
+          )}
+        </div>
+        <input
+          className="hidden"
+          name="role"
+          defaultValue={userRole[0]}
+        ></input>
+        {/* <select
           className="flex flex-row gap-1 pl-3 pr-5 py-1.5 bg-fill-weak rounded cursor-pointer hover:bg-[#f0f0f0] text-text-weak focus:outline-2 focus:outline-stroke-weak w-fit"
           name="role"
         >
           <option value="student">Student</option>
           <option value="teacher">Teacher</option>
           <option value="admin">Admin</option>
-        </select>
+        </select> */}
 
         <FormInput title="ID*" placeholder="ID" name="id" />
 
