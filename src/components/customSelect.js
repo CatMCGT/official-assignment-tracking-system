@@ -45,7 +45,7 @@ export default function CustomSelect({
       >
         <div className="flex flex-row gap-2 items-center">
           <p className="">{option.title}</p>
-          <p className="text-sm text-text-weaker">{option.subtitle}</p>
+          <p className="text-sm text-text-weaker uppercase">{option.subtitle}</p>
         </div>
         {optionsSelect.includes(option.id) && (
           <CheckIcon className="size-4 text-text-weak" />

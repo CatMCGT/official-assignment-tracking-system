@@ -6,7 +6,7 @@ import { ArrowRightIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 import Form from "next/form";
 
 import { signIn } from "@/lib/auth";
-import { getCurrentUser, setCurrentUser } from "@/lib/userManagement";
+import { getCurrentUser, setCurrentUser } from "@/lib/userSession";
 
 export default function Page() {
   const [signInState, signInAction, isPending] = useActionState(signIn, null);

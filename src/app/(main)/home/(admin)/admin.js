@@ -1,5 +1,5 @@
 import AddUserForm from "./components/addUserForm";
-import { getAllUsers } from "@/lib/adminPortal";
+import { getAllUsers } from "@/lib/userManagement";
 import AllUserDisplay from "./components/allUserDisplay";
 
 export default async function AdminPage() {

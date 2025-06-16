@@ -5,10 +5,11 @@ import Form from "next/form";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 import FormInput from "./formInput";
-import { createUser } from "@/lib/adminPortal";
+import { createUser } from "@/lib/userManagement";
 import CustomSelect from "@/components/customSelect";
 import toTitleCase from "@/lib/toTitleCase";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import TeacherSubjectsSelect from "./teacherSubjectsSelect";
 
 export default function AddUserForm() {
   const [useDefaultPW, setUseDefaultPW] = useState(false);
@@ -16,8 +17,9 @@ export default function AddUserForm() {
     createUser,
     null
   );
-  const [userRole, setUserRole] = useState(["student"]);
+  const [userRole, setUserRole] = useState(["teacher"]);
   const [openRoleSelect, setOpenRoleSelect] = useState(false);
+  const [teacherSubjects, setTeacherSubjects] = useState([]);
 
   return (
     <Form
@@ -32,11 +34,13 @@ export default function AddUserForm() {
             onClick={() => setOpenRoleSelect((prev) => !prev)}
           >
             <p>{toTitleCase(userRole[0])}</p>
-            <ChevronDownIcon className={`size-4 ${openRoleSelect && "rotate-180"}`} />
+            <ChevronDownIcon
+              className={`size-4 ${openRoleSelect && "rotate-180"}`}
+            />
           </div>
 
           {openRoleSelect && (
-            <div className="absolute top-12 left-0">
+            <div className="absolute top-11 left-0 z-10">
               <CustomSelect
                 options={[
                   { id: "student", title: "Student", subtitle: "" },
@@ -50,20 +54,13 @@ export default function AddUserForm() {
               />
             </div>
           )}
+
+          <input
+            className="hidden"
+            name="role"
+            defaultValue={userRole[0]}
+          ></input>
         </div>
-        <input
-          className="hidden"
-          name="role"
-          defaultValue={userRole[0]}
-        ></input>
-        {/* <select
-          className="flex flex-row gap-1 pl-3 pr-5 py-1.5 bg-fill-weak rounded cursor-pointer hover:bg-[#f0f0f0] text-text-weak focus:outline-2 focus:outline-stroke-weak w-fit"
-          name="role"
-        >
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-          <option value="admin">Admin</option>
-        </select> */}
 
         <FormInput title="ID*" placeholder="ID" name="id" />
 
@@ -83,7 +80,7 @@ export default function AddUserForm() {
             title="Password*"
             placeholder="Password"
             name="password"
-            required={!useDefaultPW}
+            required={useDefaultPW}
             disabled={useDefaultPW}
           />
         </div>
@@ -95,6 +92,19 @@ export default function AddUserForm() {
           name="email"
           required={false}
         />
+
+        {userRole[0] === "teacher" && (
+          <TeacherSubjectsSelect
+            teacherSubjects={teacherSubjects}
+            setTeacherSubjects={setTeacherSubjects}
+          />
+        )}
+
+        <input
+          className="hidden"
+          name="subjects"
+          defaultValue={teacherSubjects.length > 0 ? teacherSubjects : null}
+        ></input>
       </div>
 
       {addUserState?.message && (

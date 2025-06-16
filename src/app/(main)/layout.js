@@ -1,7 +1,7 @@
 import NavTabs from "@/components/navTabs";
 import NavUserData from "@/components/navUserData";
 
-import { getCurrentUser } from "@/lib/userManagement";
+import { getCurrentUser } from "@/lib/userSession";
 
 import NotificationProvider from "@/components/notification";
 

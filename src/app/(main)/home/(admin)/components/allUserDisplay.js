@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { getAllUsers, deleteUsers } from "@/lib/adminPortal";
+import { getAllUsers, deleteUsers } from "@/lib/userManagement";
 import { useNotification } from "@/components/notification";
 
 function UserDisplay({ userData, userSelect, setUserSelect }) {
