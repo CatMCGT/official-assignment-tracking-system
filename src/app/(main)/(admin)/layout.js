@@ -8,6 +8,5 @@ export default async function Layout({ children }) {
     redirect("/home");
   }
 
-  return <div>{children}
-  </div>;
+  return <div>{children}</div>;
 }

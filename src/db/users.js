@@ -4,6 +4,7 @@ import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcrypt";
 
 import { checkRole } from "@/libs/utils";
+import { changeSubjectTeacher } from "./subjects";
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
@@ -41,9 +42,19 @@ export async function createUser(prevState, formData) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     await sql`
-      INSERT INTO ${sql.unsafe(table)} (id, name, password, email)
-      VALUES (${id}, ${name}, ${hashedPassword}, ${email})
+    INSERT INTO ${sql.unsafe(table)} (id, name, password, email)
+    VALUES (${id}, ${name}, ${hashedPassword}, ${email})
     `;
+
+    if (role === "teacher") {
+      const subjects = formData.get("subjects")
+        ? JSON.parse(formData.get("subjects"))
+        : [];
+
+      for (const subjectId of subjects) {
+        await changeSubjectTeacher(subjectId, id);
+      }
+    }
 
     return {
       success: true,
@@ -104,7 +115,7 @@ export async function deleteUsers(userIds) {
       await sql`DELETE FROM ${sql.unsafe(table)} WHERE id = ${userId};`;
     }
 
-    return { success: true, message: "Users deleted successfully."};
+    return { success: true, message: "Users deleted successfully." };
   } catch (err) {
     console.error("Error getting all users:", err);
 

@@ -21,6 +21,8 @@ export default function AddUserFormSection() {
   const [openRoleSelect, setOpenRoleSelect] = useState(false);
   const [teacherSubjects, setTeacherSubjects] = useState([]);
 
+  console.log(teacherSubjects, userRole)
+
   return (
     <Form
       action={addUserAction}
@@ -58,7 +60,8 @@ export default function AddUserFormSection() {
           <input
             className="hidden"
             name="role"
-            defaultValue={userRole[0]}
+            value={userRole[0]}
+            readOnly
           ></input>
         </div>
 
@@ -76,13 +79,18 @@ export default function AddUserFormSection() {
               checked={useDefaultPW}
             ></input>
           </div>
-          <CustomFormInput
-            title="Password*"
-            placeholder="Password"
-            name="password"
-            required={useDefaultPW}
-            disabled={useDefaultPW}
-          />
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm w-full">Password*</label>
+            <input
+              className="p-3 bg-fill-weak rounded-xs w-full placeholder:text-text-weaker text-text-weak focus:outline-2 focus:outline-gray-300 disabled:placeholder:text-gray-300 disabled:text-gray-300"
+              type="password"
+              name="password"
+              placeholder={useDefaultPW ? "Disabled" : "Password"}
+              required={!useDefaultPW}
+              disabled={useDefaultPW}
+            ></input>
+          </div>
         </div>
 
         <CustomFormInput
@@ -103,7 +111,8 @@ export default function AddUserFormSection() {
         <input
           className="hidden"
           name="subjects"
-          defaultValue={teacherSubjects.length > 0 ? teacherSubjects : null}
+          value={JSON.stringify(teacherSubjects)}
+          readOnly
         ></input>
       </div>
 
@@ -121,7 +130,7 @@ export default function AddUserFormSection() {
         type="submit"
         className="flex items-center justify-between border-1 border-stroke-weak rounded p-2 cursor-pointer hover:bg-gray-50"
         disabled={isPending}
-        onClick={() => setUseDefaultPW(false)}
+        onSubmit={() => setUseDefaultPW(false)}
       >
         <PlusIcon className="size-5" />
         {isPending && "Adding..."}

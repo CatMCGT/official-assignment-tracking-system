@@ -9,13 +9,13 @@ import { useNotification } from "@/components/notification";
 function UserDisplay({ userData, userSelect, setUserSelect }) {
   function toggleUserSelection() {
     setUserSelect((prev) => {
-      let userIds;
-      if (prev.userIds.include(userData.id)) {
-        userIds = prev.usersIds.filter((id) => id !== userData.id);
+      let userIdsVar;
+      if (prev.userIds.includes(userData.id)) {
+        userIdsVar = prev.userIds.filter((id) => id !== userData.id);
       } else {
-        userIds = [...prev.userIds, userData.id];
+        userIdsVar = [...prev.userIds, userData.id];
       }
-      return { ...prev, userIds };
+      return { ...prev, userIds: userIdsVar };
     });
   }
 
@@ -42,10 +42,13 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
         <p className="font-bold">{userData.name}</p>
         <p className="text-text-weaker text-sm">#{userData.id}</p>
       </div>
-      <div className="flex flex-col gap-1 flex-1/5">
-        <p className="text-text-weaker text-sm">Email:</p>
-        <p className="text-text-weaker text-sm">{userData.email || "N/A"}</p>
-      </div>
+
+      {userData.role === "teacher" && (
+        <div className="flex flex-col gap-1 flex-1/5">
+          <p className="text-text-weaker text-sm">Subjects:</p>
+        </div>
+      )}
+
       <div className="flex flex-col gap-1 flex-1/4">
         <p className="text-text-weaker text-sm">{userData.role}</p>
         <p className="text-text-weaker text-sm">Created {userData.reg_date}</p>

@@ -14,13 +14,13 @@ export default async function Page() {
       <div className="p-2 rounded bg-fill-weak w-fit">
         <UserIcon className="size-9 text-text-strong" />
       </div>
-      <h1 className="font-semibold text-2xl mt-4 mb-3">User management</h1>
+      <h1 className="font-semibold text-2xl mt-4 mb-3">User Management</h1>
 
       <div className="flex flex-row gap-10 items-start">
-      <AddUserFormSection />
+        <AddUserFormSection />
 
-      <UserDisplaySection allUserDataServer={allUserData} />
-    </div>
+        <UserDisplaySection allUserDataServer={allUserData} />
+      </div>
     </div>
   );
 }
