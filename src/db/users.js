@@ -3,7 +3,7 @@
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcrypt";
 
-import checkRole from "./checkRole";
+import { checkRole } from "@/libs/utils";
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
@@ -62,7 +62,7 @@ export async function createUser(prevState, formData) {
 export async function getAllUsers() {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const users = await sql`SELECT id, name, email, reg_date FROM users;`;
+    const users = await sql`SELECT * FROM users;`;
 
     const formattedUsers = users.map((user) => {
       return {

@@ -1,3 +1,20 @@
+export function checkRole(id) {
+    const letter = id[0];
+    if (letter == "a") return "admin";
+    if (letter == "s") return "student";
+    if (letter == "t") return "teacher";
+}
+
+export function toTitleCase(str) {
+  if (str === null || str === "") return false;
+  else str = str.toString();
+
+  // Regex expression. \w matches any "word" character. \S* matches zero or more non-whitespace characters. g is the "global" flag => extracts "words" from a strinig, where each word starts with a word character.
+  return str.replace(/\w\S*/g, (text) => {
+    return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+  });
+}
+
 const subjectNameShorthands = {
   chi: "Chinese",
   eng: "English",
@@ -21,7 +38,7 @@ const subjectNameShorthands = {
   lit: "English literature",
 };
 
-export default function getSubjectInfoFromId(subjectId) {
+export function getSubjectInfoFromId(subjectId) {
   // Subject ids should be formatted like "g11-bio-1", or "11b-chi", or "g7-chi-t"
 
   const subjectIdArray = subjectId.split("-");

@@ -1,7 +1,7 @@
 "use server";
 
 import { neon } from "@neondatabase/serverless";
-import getSubjectInfoFromId from "./getSubjectInfoFromId";
+import { getSubjectInfoFromId } from "@/libs/utils";
 
 export async function getAllSubjects() {
   try {

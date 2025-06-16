@@ -4,14 +4,14 @@ import { useActionState, useState } from "react";
 import Form from "next/form";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
-import FormInput from "./formInput";
-import { createUser } from "@/lib/userManagement";
+import CustomFormInput from "@/components/customFormInput";
+import { createUser } from "@/db/users";
 import CustomSelect from "@/components/customSelect";
-import toTitleCase from "@/lib/toTitleCase";
+import { toTitleCase } from "@/libs/utils";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import TeacherSubjectsSelect from "./teacherSubjectsSelect";
+import AddTeacherSubjectSection from "./addTeacherSubject";
 
-export default function AddUserForm() {
+export default function AddUserFormSection() {
   const [useDefaultPW, setUseDefaultPW] = useState(false);
   const [addUserState, addUserAction, isPending] = useActionState(
     createUser,
@@ -62,9 +62,9 @@ export default function AddUserForm() {
           ></input>
         </div>
 
-        <FormInput title="ID*" placeholder="ID" name="id" />
+        <CustomFormInput title="ID*" placeholder="ID" name="id" />
 
-        <FormInput title="Name*" placeholder="Name" name="name" />
+        <CustomFormInput title="Name*" placeholder="Name" name="name" />
 
         <div className="relative mt-1">
           <div className="flex flex-row gap-2 absolute right-0 top-0">
@@ -76,7 +76,7 @@ export default function AddUserForm() {
               checked={useDefaultPW}
             ></input>
           </div>
-          <FormInput
+          <CustomFormInput
             title="Password*"
             placeholder="Password"
             name="password"
@@ -85,7 +85,7 @@ export default function AddUserForm() {
           />
         </div>
 
-        <FormInput
+        <CustomFormInput
           type="email"
           title="Email"
           placeholder="Email"
@@ -94,7 +94,7 @@ export default function AddUserForm() {
         />
 
         {userRole[0] === "teacher" && (
-          <TeacherSubjectsSelect
+          <AddTeacherSubjectSection
             teacherSubjects={teacherSubjects}
             setTeacherSubjects={setTeacherSubjects}
           />

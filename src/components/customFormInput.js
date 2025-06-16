@@ -1,4 +1,4 @@
-export default function FormInput({
+export default function CustomFormInput({
   type = "text",
   title,
   placeholder = "",

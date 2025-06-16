@@ -3,8 +3,6 @@
 import { createContext, useContext, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-import { deleteUsers } from "@/lib/userManagement";
-
 const NotificationContext = createContext();
 
 export default function NotificationProvider({ children }) {

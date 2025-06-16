@@ -1,9 +1,10 @@
-import NavTabs from "@/components/navTabs";
-import NavUserData from "@/components/navUserData";
+import MainLinksSection from "@/containers/nav-bar/mainLinks";
+import UserDataSection from "@/containers/nav-bar/userData";
 
-import { getCurrentUser } from "@/lib/userSession";
+import { getCurrentUser } from "@/actions/userSession";
 
 import NotificationProvider from "@/components/notification";
+import WorkspaceLinks from "@/containers/nav-bar/workspaceLinks";
 
 export default async function NavBarLayout({ children }) {
   const currentUser = await getCurrentUser();
@@ -12,14 +13,16 @@ export default async function NavBarLayout({ children }) {
     <div className="h-full flex flex-row">
       <div className="h-full">
         <nav className="bg-background-weak flex flex-col gap-7 px-5 py-4 w-64 h-full border-r-2 border-r-stroke-weaker">
-          <NavUserData currentUser={currentUser} />
+          <UserDataSection currentUser={currentUser} />
 
-          <NavTabs />
+          <MainLinksSection />
 
-          <div>
+          <div className="flex flex-col gap-3">
             <p className="text-sm text-text-weakest font-semibold">
               Workspaces
             </p>
+
+            <WorkspaceLinks currentUser={currentUser}/>
           </div>
         </nav>
       </div>

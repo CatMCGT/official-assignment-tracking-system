@@ -4,9 +4,9 @@ import { useState } from "react";
 import { redirect } from "next/navigation";
 import { AcademicCapIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 
-import { deleteCurrentUser } from "@/lib/userSession";
+import { deleteCurrentUser } from "@/actions/userSession";
 
-export default function NavUserData({ currentUser }) {
+export default function UserDataSection({ currentUser }) {
   const [openMenu, setOpenMenu] = useState(false);
 
   function signOut() {

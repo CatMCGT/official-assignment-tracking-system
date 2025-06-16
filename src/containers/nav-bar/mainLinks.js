@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { HomeIcon, InboxIcon } from "@heroicons/react/24/outline";
 
-export default function NavTabs() {
+export default function MainLinksSection() {
   const pathname = usePathname();
 
   return (

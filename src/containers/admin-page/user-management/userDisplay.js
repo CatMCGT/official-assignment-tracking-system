@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { getAllUsers, deleteUsers } from "@/lib/userManagement";
+import { getAllUsers, deleteUsers } from "@/db/users";
 import { useNotification } from "@/components/notification";
 
 function UserDisplay({ userData, userSelect, setUserSelect }) {
@@ -54,7 +54,7 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
   );
 }
 
-export default function AllUserDisplay({ allUserDataServer }) {
+export default function UserDisplaySection({ allUserDataServer }) {
   const [allUserData, setAllUserData] = useState(allUserDataServer);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [userSelect, setUserSelect] = useState({ userIds: [], all: false });

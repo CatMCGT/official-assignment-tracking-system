@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import { ArrowRightIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 import Form from "next/form";
 
-import { signIn } from "@/lib/auth";
-import { getCurrentUser, setCurrentUser } from "@/lib/userSession";
+import { signIn } from "@/actions/auth";
+import { getCurrentUser, setCurrentUser } from "@/actions/userSession";
 
 export default function Page() {
   const [signInState, signInAction, isPending] = useActionState(signIn, null);

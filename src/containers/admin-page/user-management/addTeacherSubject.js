@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 import CustomSelect from "@/components/customSelect";
-import toTitleCase from "@/lib/toTitleCase";
-import { getAllSubjects, getSubjectInfoFromId } from "@/lib/subjectManagement";
+import { getAllSubjects } from "@/db/subjects";
 
-export default function TeacherSubjectsSelect({
+export default function AddTeacherSubjectSection({
   teacherSubjects,
   setTeacherSubjects,
 }) {
