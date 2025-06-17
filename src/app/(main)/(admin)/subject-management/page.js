@@ -1,12 +1,6 @@
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
-import { getAllUsers } from "@/db/users";
-
 export default async function Page() {
-  const getAllUsersData = await getAllUsers();
-  const allUserDataString = getAllUsersData?.data;
-  const allUserData = JSON.parse(allUserDataString);
-
   return (
     <div className="h-full w-full">
       <div className="p-2 rounded bg-fill-weak w-fit">

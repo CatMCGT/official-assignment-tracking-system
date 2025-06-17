@@ -16,6 +16,33 @@ const getTableName = (role) => {
   return ["students", "teachers", "admins"].includes(table) ? table : null;
 };
 
+export async function getAllUsers() {
+  try {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    const users = await sql`SELECT * FROM users;`;
+
+    const formattedUsers = users.map((user) => {
+      return {
+        ...user,
+        role: checkRole(user.id),
+        reg_date: formatDate(user.reg_date),
+      };
+    });
+
+    return {
+      success: true,
+      data: JSON.stringify(formattedUsers),
+    };
+  } catch (err) {
+    console.error("Error getting all users:", err);
+
+    return {
+      success: false,
+      message: "Failed to fetch all users.",
+    };
+  }
+}
+
 export async function createUser(prevState, formData) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
@@ -66,33 +93,6 @@ export async function createUser(prevState, formData) {
     return {
       success: false,
       message: "Failed to add user.",
-    };
-  }
-}
-
-export async function getAllUsers() {
-  try {
-    const sql = neon(`${process.env.DATABASE_URL}`);
-    const users = await sql`SELECT * FROM users;`;
-
-    const formattedUsers = users.map((user) => {
-      return {
-        ...user,
-        role: checkRole(user.id),
-        reg_date: formatDate(user.reg_date),
-      };
-    });
-
-    return {
-      success: true,
-      data: JSON.stringify(formattedUsers),
-    };
-  } catch (err) {
-    console.error("Error getting all users:", err);
-
-    return {
-      success: false,
-      message: "Failed to fetch all users.",
     };
   }
 }
