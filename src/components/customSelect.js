@@ -45,7 +45,9 @@ export default function CustomSelect({
       >
         <div className="flex flex-row gap-2 items-center">
           <p className="">{option.title}</p>
-          <p className="text-sm text-text-weaker uppercase">{option.subtitle}</p>
+          <p className="text-sm text-text-weaker uppercase">
+            {option.subtitle}
+          </p>
         </div>
         {optionsSelect.includes(option.id) && (
           <CheckIcon className="size-4 text-text-weak" />
@@ -64,7 +66,7 @@ export default function CustomSelect({
         value={searchFilter}
         onChange={(e) => setSearchFilter(e.target.value)}
       ></input>
-      <div className="flex flex-col">{ele}</div>
+      <div className="flex flex-col max-h-52 overflow-y-auto">{ele}</div>
       {createNewText && searchFilter && (
         <p
           className="text-sm text-text-weakest mx-2 hover:underline cursor-pointer"
