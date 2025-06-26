@@ -5,9 +5,7 @@ import bcrypt from "bcrypt";
 
 import { checkRole } from "@/libs/utils";
 import { changeSubjectTeacher } from "./subjects";
-
-const formatDate = (date) =>
-  new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
+import { formatDate } from "@/libs/utils";
 
 // Verifying table name as table names cannot be prepared parameters
 const getTableName = (role) => {

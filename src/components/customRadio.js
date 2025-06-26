@@ -1,9 +1,9 @@
 "use client";
 
 export default function CustomRadio({
-  options,
-  optionSelected,
-  setOptionSelected,
+  options, //[{id: "", name: ""}]
+  optionSelected, // React state
+  setOptionSelected, // React state set function
 }) {
   const optionsEle = options.map((option) => {
     return (
@@ -16,7 +16,7 @@ export default function CustomRadio({
             setOptionSelected(option.id);
           }
         }}
-        className={`px-11 py-[6px] cursor-pointer transition-colors ${
+        className={`px-4 py-[6px] cursor-pointer transition-colors ${
           optionSelected === option.id
             ? "bg-fill-weak text-text-strong"
             : "text-text-weaker"

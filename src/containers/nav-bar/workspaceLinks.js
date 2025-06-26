@@ -2,7 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { UserIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
+import {
+  UserIcon,
+  AcademicCapIcon,
+  BookOpenIcon,
+} from "@heroicons/react/24/outline";
 
 export default function WorkspaceLinks({ currentUser }) {
   const pathname = usePathname();
@@ -31,7 +35,9 @@ export default function WorkspaceLinks({ currentUser }) {
 
           <Link
             href="/subject-management"
-            className={`nav-tab ${pathname === "/subject-management" ? "active" : ""}`}
+            className={`nav-tab ${
+              pathname === "/subject-management" ? "active" : ""
+            }`}
           >
             <AcademicCapIcon className="size-6 text-text-weaker" />
             <p
@@ -44,6 +50,28 @@ export default function WorkspaceLinks({ currentUser }) {
               Subject Management
             </p>
           </Link>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
+      {currentUser?.role === "student" ? (
+        <div className="flex flex-col gap-3">
+          <Link
+            href="/assignments"
+            className={`nav-tab ${pathname === "/assignments" ? "active" : ""}`}
+          >
+            <BookOpenIcon className="size-6 text-text-weaker" />
+            <p
+              className={`font-bold mr-1 ml-3 ${
+                pathname === "/assignments"
+                  ? "text-text-weak"
+                  : "text-text-weaker"
+              }`}
+            >
+              Assignments
+            </p>
+          </Link>{" "}
         </div>
       ) : (
         <div></div>

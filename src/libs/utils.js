@@ -15,6 +15,9 @@ export function toTitleCase(str) {
   });
 }
 
+export const formatDate = (date) =>
+  new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
+
 export const subjectNameShorthands = {
   chi: "Chinese",
   eng: "English",
