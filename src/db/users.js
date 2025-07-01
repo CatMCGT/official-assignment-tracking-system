@@ -5,9 +5,7 @@ import bcrypt from "bcrypt";
 
 import { checkRole } from "@/libs/utils";
 import { changeSubjectTeacher } from "./subjects";
-
-const formatDate = (date) =>
-  new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
+import { formatDate } from "@/libs/utils";
 
 // Verifying table name as table names cannot be prepared parameters
 const getTableName = (role) => {
@@ -15,6 +13,33 @@ const getTableName = (role) => {
   const table = roleLowerCase ? `${roleLowerCase}s` : null;
   return ["students", "teachers", "admins"].includes(table) ? table : null;
 };
+
+export async function getAllUsers() {
+  try {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    const users = await sql`SELECT * FROM users;`;
+
+    const formattedUsers = users.map((user) => {
+      return {
+        ...user,
+        role: checkRole(user.id),
+        reg_date: formatDate(user.reg_date),
+      };
+    });
+
+    return {
+      success: true,
+      data: JSON.stringify(formattedUsers),
+    };
+  } catch (err) {
+    console.error("Error getting all users:", err);
+
+    return {
+      success: false,
+      message: "Failed to fetch all users.",
+    };
+  }
+}
 
 export async function createUser(prevState, formData) {
   try {
@@ -66,33 +91,6 @@ export async function createUser(prevState, formData) {
     return {
       success: false,
       message: "Failed to add user.",
-    };
-  }
-}
-
-export async function getAllUsers() {
-  try {
-    const sql = neon(`${process.env.DATABASE_URL}`);
-    const users = await sql`SELECT * FROM users;`;
-
-    const formattedUsers = users.map((user) => {
-      return {
-        ...user,
-        role: checkRole(user.id),
-        reg_date: formatDate(user.reg_date),
-      };
-    });
-
-    return {
-      success: true,
-      data: JSON.stringify(formattedUsers),
-    };
-  } catch (err) {
-    console.error("Error getting all users:", err);
-
-    return {
-      success: false,
-      message: "Failed to fetch all users.",
     };
   }
 }

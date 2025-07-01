@@ -1,8 +1,8 @@
 export function checkRole(id) {
-    const letter = id[0];
-    if (letter == "a") return "admin";
-    if (letter == "s") return "student";
-    if (letter == "t") return "teacher";
+  const letter = id[0];
+  if (letter == "a") return "admin";
+  if (letter == "s") return "student";
+  if (letter == "t") return "teacher";
 }
 
 export function toTitleCase(str) {
@@ -15,7 +15,10 @@ export function toTitleCase(str) {
   });
 }
 
-const subjectNameShorthands = {
+export const formatDate = (date) =>
+  new Date(date).toLocaleDateString("en", { timeZone: "Asia/Hong_Kong" });
+
+export const subjectNameShorthands = {
   chi: "Chinese",
   eng: "English",
   math: "Math",
@@ -60,5 +63,37 @@ export function getSubjectInfoFromId(subjectId) {
       grade: null,
       block: subjectIdArray[2] || null,
     };
+  }
+}
+
+export function getSubjectIdFromInfo(subjectInfo) {
+  try {
+    let idArray = [];
+
+    if (subjectInfo.grade) {
+      idArray.push(`g${subjectInfo.grade}`);
+    } else {
+      idArray.push(subjectInfo.subjectClass.toLowerCase());
+    }
+
+    for (const [key, value] of Object.entries(subjectNameShorthands)) {
+      if (value.toLowerCase() === subjectInfo.name.toLowerCase()) {
+        idArray.push(key);
+      }
+    }
+
+    if (subjectInfo.block) {
+      if (typeof subjectInfo.block === "string") {
+        idArray.push(subjectInfo.block.toLowerCase());
+      } else {
+        idArray.push(subjectInfo.block);
+      }
+    }
+
+    return idArray.join("-");
+  } catch (err) {
+    console.error("Error getting subjectId from info:", err);
+
+    return false;
   }
 }

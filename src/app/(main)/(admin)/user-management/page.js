@@ -2,13 +2,8 @@ import { UserIcon } from "@heroicons/react/24/outline";
 
 import AddUserFormSection from "@/containers/admin-page/user-management/addUserForm";
 import UserDisplaySection from "@/containers/admin-page/user-management/userDisplay";
-import { getAllUsers } from "@/db/users";
 
 export default async function Page() {
-  const getAllUsersData = await getAllUsers();
-  const allUserDataString = getAllUsersData?.data;
-  const allUserData = JSON.parse(allUserDataString);
-
   return (
     <div className="h-full w-full">
       <div className="p-2 rounded bg-fill-weak w-fit">
@@ -19,7 +14,7 @@ export default async function Page() {
       <div className="flex flex-row gap-10 items-start">
         <AddUserFormSection />
 
-        <UserDisplaySection allUserDataServer={allUserData} />
+        <UserDisplaySection/>
       </div>
     </div>
   );

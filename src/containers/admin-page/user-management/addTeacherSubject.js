@@ -1,26 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 import CustomSelect from "@/components/customSelect";
-import { getAllSubjects } from "@/db/subjects";
+import { useFetchAdminDatabase } from "@/hooks/admin";
 
 export default function AddTeacherSubjectSection({
   teacherSubjects,
   setTeacherSubjects,
 }) {
+  const {allSubjectData} = useFetchAdminDatabase();
   const [openTeacherSubjectsSelect, setOpenTeacherSubjectsSelect] =
     useState(false);
-  const [allSubjects, setAllSubjects] = useState([]);
 
-  useEffect(() => {
-    getAllSubjects().then((response) => {
-      setAllSubjects(JSON.parse(response?.data) || []);
-    });
-  }, []);
-
-  const subjectsArray = allSubjects?.map((subject) => {
+  const subjectsArray = allSubjectData?.map((subject) => {
     return {
       id: subject.id,
       title: subject.subjectName,

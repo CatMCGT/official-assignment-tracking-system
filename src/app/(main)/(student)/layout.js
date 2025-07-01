@@ -5,7 +5,7 @@ import { AdminProvider } from "@/hooks/admin";
 export default async function Layout({ children }) {
   const currentUser = await getCurrentUser();
 
-  if (currentUser?.role !== "admin") {
+  if (currentUser?.role !== "student") {
     redirect("/home");
   }
 

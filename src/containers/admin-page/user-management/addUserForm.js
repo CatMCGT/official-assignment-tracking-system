@@ -20,9 +20,7 @@ export default function AddUserFormSection() {
   const [userRole, setUserRole] = useState(["teacher"]);
   const [openRoleSelect, setOpenRoleSelect] = useState(false);
   const [teacherSubjects, setTeacherSubjects] = useState([]);
-
-  console.log(teacherSubjects, userRole)
-
+  
   return (
     <Form
       action={addUserAction}

@@ -1,7 +1,7 @@
 "use server";
 
 import { neon } from "@neondatabase/serverless";
-import { getSubjectInfoFromId } from "@/libs/utils";
+import { getSubjectIdFromInfo, getSubjectInfoFromId } from "@/libs/utils";
 
 export async function getAllSubjects() {
   try {
@@ -27,6 +27,41 @@ export async function getAllSubjects() {
     return {
       success: false,
       message: "Failed to fetch all subjects.",
+    };
+  }
+}
+
+export async function createSubject(prevState, formData) {
+  try {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    const subjectClass = formData.get("class");
+    const grade = formData.get("grade");
+    const name = formData.get("name");
+    const block = formData.get("block");
+    const teacherId = formData.get("teacherId");
+
+    const id = getSubjectIdFromInfo({ subjectClass, grade, name, block });
+    if (!id)
+      return {
+        success: false,
+        message: "Error getting subjectId from info.",
+      };
+
+    await sql`
+    INSERT INTO subjects (id, teacher_id)
+    VALUES (${id}, ${teacherId})
+    `;
+
+    return {
+      success: true,
+      message: "Successfully created subject into database.",
+    };
+  } catch (err) {
+    console.error("Error creating subject:", err);
+
+    return {
+      success: false,
+      message: "Failed to create subject.",
     };
   }
 }

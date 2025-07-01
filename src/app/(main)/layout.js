@@ -22,7 +22,7 @@ export default async function NavBarLayout({ children }) {
               Workspaces
             </p>
 
-            <WorkspaceLinks currentUser={currentUser}/>
+            <WorkspaceLinks currentUser={currentUser} />
           </div>
         </nav>
       </div>

@@ -5,8 +5,11 @@ import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import { getAllUsers, deleteUsers } from "@/db/users";
 import { useNotification } from "@/components/notification";
+import { useFetchAdminDatabase } from "@/hooks/admin";
 
 function UserDisplay({ userData, userSelect, setUserSelect }) {
+  const { allSubjectData } = useFetchAdminDatabase();
+
   function toggleUserSelection() {
     setUserSelect((prev) => {
       let userIdsVar;
@@ -30,6 +33,10 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
     }
   }, [userSelect.all]);
 
+  function getSubjectByTeacherId(teacherId) {
+    return allSubjectData.filter((data) => data.teacherId === teacherId);
+  }
+
   return (
     <div className="border-1 border-stroke-weak rounded px-6 py-5 w-full flex flex-row items-center mb-4">
       <input
@@ -46,6 +53,18 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
       {userData.role === "teacher" && (
         <div className="flex flex-col gap-1 flex-1/5">
           <p className="text-text-weaker text-sm">Subjects:</p>
+          <p className="text-text-weaker text-sm">
+            {getSubjectByTeacherId(userData.id)
+              .map(
+                (subject) =>
+                  `${"G" + subject.grade || subject.class} ${
+                    subject.subjectName
+                  } ${
+                    subject.block
+                  }`
+              )
+              .join(", ") || "N/A"}
+          </p>
         </div>
       )}
 
@@ -57,12 +76,18 @@ function UserDisplay({ userData, userSelect, setUserSelect }) {
   );
 }
 
-export default function UserDisplaySection({ allUserDataServer }) {
-  const [allUserData, setAllUserData] = useState(allUserDataServer);
+export default function UserDisplaySection() {
+  const { allUserData } = useFetchAdminDatabase();
+  const [allUserDataState, setAllUserData] = useState(allUserData);
+
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [userSelect, setUserSelect] = useState({ userIds: [], all: false });
   const [filters, setFilters] = useState({ role: "all" });
   const { addNotif, removeNotif, notifs } = useNotification();
+
+  useEffect(() => {
+    setAllUserData(allUserData);
+  }, [allUserData]);
 
   async function refreshData() {
     setIsRefreshing(true);
@@ -93,7 +118,7 @@ export default function UserDisplaySection({ allUserDataServer }) {
     }
   }
 
-  const filteredUsers = allUserData?.filter(
+  const filteredUsers = allUserDataState?.filter(
     (user) => filters.role === "all" || user.role === filters.role
   );
 
