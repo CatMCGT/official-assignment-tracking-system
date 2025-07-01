@@ -7,7 +7,7 @@ import { checkRole } from "@/libs/utils";
 import { getAllUsers } from "@/db/users";
 
 export async function signIn(prevState, formData) {
-  const username = formData.get("username");
+  const userId = formData.get("userId");
   const password = formData.get("password");
 
   // parametised query -> don't need real_escape_string
@@ -20,7 +20,7 @@ export async function signIn(prevState, formData) {
     };
   }
   const userDataDB = JSON.parse(response.data).filter(
-    (user) => user.name === username
+    (user) => user.id === userId
   )[0];
   // const response = await sql.query("SELECT * FROM users WHERE name = ($1)", [
   //   username,
@@ -32,11 +32,10 @@ export async function signIn(prevState, formData) {
   // bcrypt -> hasing (process password using sophisticated mathematical function, and is one-way) + salt(a random number unique to each password and is attached to it before hashing) more: https://www.freecodecamp.org/news/how-to-hash-passwords-with-bcrypt-in-nodejs/
 
   if (isMatch) {
-    const role = checkRole(userDataDB.id);
     return {
       success: true,
-      message: `Signing into ${username} ${role} account...`,
-      userData: { ...userDataDB, role: role },
+      message: `Signing into ${userId} ${userDataDB.role} account...`,
+      userData: { ...userDataDB },
     };
   } else {
     return {

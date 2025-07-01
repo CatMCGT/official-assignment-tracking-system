@@ -45,11 +45,11 @@ export default function Page() {
 
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-sm w-full">Account name</label>
+              <label className="text-sm w-full">User ID</label>
               <input
                 className="p-3 bg-fill-weak rounded-xs w-full placeholder:text-text-weaker text-text-weak focus:outline-2 focus:outline-gray-300"
-                placeholder="Account name"
-                name="username"
+                placeholder="User ID"
+                name="userId"
                 required
                 disabled={isLoading}
               ></input>

@@ -4,27 +4,28 @@ import { useEffect, useState } from "react";
 import { ClockIcon } from "@heroicons/react/24/outline";
 
 import CustomRadio from "@/components/customRadio";
-import { getAllAssignments } from "@/db/assignments";
+import { getAssignmentsByStudentId } from "@/db/assignments";
 import { formatDate } from "@/libs/utils";
-
-function Assignment() {
-  return <div></div>;
-}
+import { getCurrentUser } from "@/actions/userSession";
 
 export default function AssignmentDisplaySection() {
   const [view, setView] = useState("all");
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    getAllAssignments()
-      .then((res) => {
-        if (!res.success) throw res.message;
+    getCurrentUser()
+      .then((res) => JSON.parse(res.data))
+      .then((currentUser) => {
+        getAssignmentsByStudentId(currentUser.id)
+          .then((res) => {
+            if (!res.success) throw res.message;
 
-        setAssignments(JSON.parse(res.data));
-      })
-      .catch((err) => {
-        console.error("Failed to fetch assignments:", err);
-        setAssignments([]);
+            setAssignments(JSON.parse(res.data));
+          })
+          .catch((err) => {
+            console.error("Failed to fetch assignments:", err);
+            setAssignments([]);
+          });
       });
   }, []);
 
@@ -66,7 +67,7 @@ export default function AssignmentDisplaySection() {
         />
       </div>
 
-      <div className="flex flex-col gap-9">
+      <div className="flex flex-col gap-9 mt-4">
         <div className="bg-background-weak border-stroke-weak border-1 flex flex-col gap-5 px-6 py-5">
           <div className="flex flex-row gap-[6px] items-center">
             <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">

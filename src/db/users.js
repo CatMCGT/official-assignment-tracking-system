@@ -22,7 +22,6 @@ export async function getAllUsers() {
     const formattedUsers = users.map((user) => {
       return {
         ...user,
-        role: checkRole(user.id),
         reg_date: formatDate(user.reg_date),
       };
     });
@@ -45,20 +44,8 @@ export async function createUser(prevState, formData) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
     const role = formData.get("role");
-    const table = getTableName(role);
-
-    if (!table) {
-      return {
-        success: false,
-        message: "Invalid role.",
-      };
-    }
 
     let id = formData.get("id");
-    if (!["s", "a", "t"].includes(id[0])) {
-      id = role[0].toLowerCase() + id;
-    }
-
     const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password") || "1234";
@@ -67,8 +54,8 @@ export async function createUser(prevState, formData) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     await sql`
-    INSERT INTO ${sql.unsafe(table)} (id, name, password, email)
-    VALUES (${id}, ${name}, ${hashedPassword}, ${email})
+    INSERT INTO users (id, name, password)
+    VALUES (${id}, ${name}, ${hashedPassword})
     `;
 
     if (role === "teacher") {
@@ -100,17 +87,7 @@ export async function deleteUsers(userIds) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     for (const userId of userIds) {
-      const role = checkRole(userId);
-      const table = getTableName(role);
-
-      if (!table) {
-        return {
-          success: false,
-          message: "Invalid role.",
-        };
-      }
-
-      await sql`DELETE FROM ${sql.unsafe(table)} WHERE id = ${userId};`;
+      await sql`DELETE FROM users WHERE id = ${userId};`;
     }
 
     return { success: true, message: "Users deleted successfully." };
