@@ -1,46 +1,33 @@
-"use server";
+'use server'
 
-import { neon } from "@neondatabase/serverless";
-import bcrypt from "bcrypt";
-
-import { checkRole } from "@/libs/utils";
-import { getAllUsers } from "@/db/users";
+import bcrypt from 'bcrypt'
+import { getAllUsers } from '@/db/users/getAllUsers'
 
 export async function signIn(prevState, formData) {
-  const userId = formData.get("userId");
-  const password = formData.get("password");
+  try {
+    const userId = formData.get('userId')
+    const password = formData.get('password')
 
-  // parametised query -> don't need real_escape_string
+    const response = await getAllUsers()
+    const userData = response.filter((user) => user.id === userId)[0]
 
-  const response = await getAllUsers();
-  if (!response.success) {
-    return {
-      success: false,
-      message: `Error fetching all users.`,
-    };
-  }
-  const userDataDB = JSON.parse(response.data).filter(
-    (user) => user.id === userId
-  )[0];
-  // const response = await sql.query("SELECT * FROM users WHERE name = ($1)", [
-  //   username,
-  // ]);
+    const isMatch = await bcrypt.compare(password, userData.password)
 
-  const storedPassword = userDataDB.password;
-  const isMatch = await bcrypt.compare(password, storedPassword);
+    if (!isMatch) {
+      throw new Error('Incorrect credentials.')
+    }
 
-  // bcrypt -> hasing (process password using sophisticated mathematical function, and is one-way) + salt(a random number unique to each password and is attached to it before hashing) more: https://www.freecodecamp.org/news/how-to-hash-passwords-with-bcrypt-in-nodejs/
-
-  if (isMatch) {
     return {
       success: true,
-      message: `Signing into ${userId} ${userDataDB.role} account...`,
-      userData: { ...userDataDB },
-    };
-  } else {
+      message: `Signing into ${userId} ${userData.role} account...`,
+      data: userData,
+    }
+  } catch (err) {
+    console.error('Error signing in:', err)
+
     return {
       success: false,
-      message: `Username or password is incorrect.`,
-    };
+      message: 'Incorrect credentials.',
+    }
   }
 }
