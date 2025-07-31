@@ -3,7 +3,7 @@
 import bcrypt from 'bcrypt'
 import { getAllUsers } from '@/db/users/getAllUsers'
 
-export async function signIn(prevState, formData) {
+export async function logIn(prevState, formData) {
   try {
     const userId = formData.get('userId')
     const password = formData.get('password')
@@ -19,11 +19,11 @@ export async function signIn(prevState, formData) {
 
     return {
       success: true,
-      message: `Signing into ${userId} ${userData.role} account...`,
+      message: `Logging into ${userId} ${userData.role} account...`,
       data: userData,
     }
   } catch (err) {
-    console.error('Error signing in:', err)
+    console.error('Error logging in:', err)
 
     return {
       success: false,

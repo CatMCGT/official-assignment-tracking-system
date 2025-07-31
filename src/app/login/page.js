@@ -1,20 +1,20 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useActionState } from 'react'
 import Form from 'next/form'
 import { redirect } from 'next/navigation'
 import { ArrowPathIcon, ArrowRightIcon } from '@heroicons/react/20/solid'
+import clsx from 'clsx'
 
-import { signIn } from '@/actions/auth'
+import { logIn } from '@/actions/auth'
 import { verifySession, createSession } from '@/actions/userSession'
 
 export default function Page() {
-  const [signInState, signInAction, isPending] = useActionState(signIn, {
+  const [logInState, logInAction, isPending] = useActionState(logIn, {
     success: undefined,
     message: '',
     data: {},
   })
-  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     verifySession().then((res) => {
@@ -25,17 +25,17 @@ export default function Page() {
   }, [])
 
   useEffect(() => {
-    if (signInState?.success) {
-      createSession(signInState.data.id).then(() => {
+    if (logInState?.success) {
+      createSession(logInState.data.id).then(() => {
         redirect('/assignments')
       })
     }
-  }, [signInState])
+  }, [logInState])
 
   return (
-    <div className="h-full w-full flex flex-col justify-center items-center">
+    <div className="h-full flex flex-col justify-center items-center">
       <Form
-        action={signInAction}
+        action={logInAction}
         className="flex flex-col items-end gap-4 px-5 py-6 relative rounded-md border border-solid border-stroke-weak"
       >
         <div className="flex flex-col gap-3 relative">
@@ -58,7 +58,7 @@ export default function Page() {
                 id="userId"
                 name="userId"
                 required
-                disabled={isLoading}
+                disabled={isPending}
               />
             </div>
           </div>
@@ -75,23 +75,24 @@ export default function Page() {
                 id="password"
                 name="password"
                 required
-                disabled={isLoading}
+                disabled={isPending}
               />
             </div>
           </div>
 
-          {signInState?.message && (
+          {logInState?.message && (
             <p
-              className={`font-bold text-sm mt-0 ${
-                signInState?.success ? 'text-green-400' : 'text-red-400'
-              }`}
+              className={clsx(
+                'font-bold text-sm mt-0' && true,
+                logInState?.success ? 'text-green-400' : 'text-red-400'
+              )}
             >
-              {signInState.message}
+              {logInState.message}
             </p>
           )}
         </div>
 
-        <button type="submit" disabled={isLoading} className="cursor-pointer">
+        <button type="submit" disabled={isPending} className="cursor-pointer">
           {isPending ? (
             <ArrowPathIcon className="size-6 fill-text-weaker" />
           ) : (

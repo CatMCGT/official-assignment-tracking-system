@@ -7,7 +7,7 @@ export async function verifySession() {
   const sessionUserId = (await cookies()).get('session')?.value
 
   if (!sessionUserId) {
-    redirect('/signin')
+    redirect('/login')
   }
 
   return { isAuth: true, userId: sessionUserId }

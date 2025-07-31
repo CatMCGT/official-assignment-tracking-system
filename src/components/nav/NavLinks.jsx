@@ -1,0 +1,33 @@
+'use client'
+
+import { BookOpenIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import clsx from 'clsx'
+
+export default function NavLinks({ user }) {
+  const pathname = usePathname()
+
+  return (
+    <div>
+      {user?.role === 'student' && (
+        <>
+          <Link href="/assignments" className={clsx(
+                'nav-tab',
+                pathname === '/assignments' ? 'active' : ''
+              )}>
+            <BookOpenIcon className="size-6 text-text-weaker" />
+            <p
+              className={clsx(
+                'font-bold mr-1 ml-3',
+                pathname === '/assignments' ? 'text-text-strong' : 'text-text-weaker'
+              )}
+            >
+              Assignments
+            </p>
+          </Link>
+        </>
+      )}
+    </div>
+  )
+}
