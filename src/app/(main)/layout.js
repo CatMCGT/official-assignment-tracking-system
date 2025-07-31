@@ -10,7 +10,7 @@ export default function MainLayout({ children }) {
   )
 }
 
-MainLayout.Header = ({ children }) => {
+MainLayout.Header = function ({ children }) {
   return (
     <div>
       <BookOpenIcon className="size-9 text-text-strong p-2 rounded bg-fill-weak w-fit" />
@@ -19,6 +19,6 @@ MainLayout.Header = ({ children }) => {
   )
 }
 
-MainLayout.Body = ({ children }) => {
+MainLayout.Body = function ({ children }) {
   return <div className="flex flex-col gap-10 items-start h-full">{children}</div>
 }
