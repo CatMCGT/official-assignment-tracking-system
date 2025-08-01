@@ -9,6 +9,7 @@ export async function logIn(prevState, formData) {
     const password = formData.get('password')
 
     const response = await getAllUsers()
+    console.log(response)
     const userData = response.filter((user) => user.id === userId)[0]
 
     const isMatch = await bcrypt.compare(password, userData.password)

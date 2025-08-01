@@ -61,9 +61,7 @@ export default function Page() {
                 disabled={isPending}
               />
             </div>
-          </div>
 
-          <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <label className="text-sm w-full" htmlFor="password">
                 Password
