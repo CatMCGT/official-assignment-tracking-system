@@ -3,14 +3,14 @@
 import { useState } from 'react'
 import { AcademicCapIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { deleteSession } from '@/actions/userSession'
-import { redirect } from 'next/dist/server/api-utils'
+import { redirect } from 'next/navigation'
 
 export default function UserDisplaySection({ user }) {
   const [isMenuOpened, setIsMenuOpened] = useState(false)
 
   async function logOut() {
-    redirect("/")
     await deleteSession();
+    redirect("/")
   }
 
   return (

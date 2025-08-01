@@ -33,7 +33,7 @@ export default function Page() {
   }, [logInState])
 
   return (
-    <div className="h-full flex flex-col justify-center items-center">
+    <main className="h-full flex flex-col justify-center items-center">
       <Form
         action={logInAction}
         className="flex flex-col items-end gap-4 px-5 py-6 relative rounded-md border border-solid border-stroke-weak"
@@ -92,18 +92,24 @@ export default function Page() {
           )}
         </div>
 
-        <button type="submit" disabled={isPending} className="cursor-pointer">
+        <button type="submit" disabled={isPending} className="cursor-pointer flex flex-row gap-1 text-text-weak items-center">
           {isPending ? (
-            <ArrowPathIcon className="size-6 fill-text-weaker" />
+            <>
+              <p>Pending...</p>
+              <ArrowPathIcon className="size-6 fill-text-weaker" />
+            </>
           ) : (
-            <ArrowRightIcon className="size-6" />
+            <>
+              <p>Continue</p>
+              <ArrowRightIcon className="size-6" />
+            </>
           )}
         </button>
       </Form>
 
-      <p className="absolute bottom-30 text-text-weakest">
+      <p className="absolute bottom-30 text-text-weak">
         Made with ♥︎ by CatMCGT
       </p>
-    </div>
+    </main>
   )
 }

@@ -6,6 +6,7 @@ import Radio from '@/components/Radio'
 import { getAssignments } from '@/db/assignments/getAssignments'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import formatDate from '@/utils/formatDate'
+import AssignmentModel from './AssignmentModel'
 
 export default function Page() {
   const [selectedView, setSelectedView] = useState('all')
@@ -19,13 +20,18 @@ export default function Page() {
     getAssignments().then((res) => setAssignments(res || []))
   }, [])
 
+  const [assignmentModel, setAssignmentModel] = useState({
+    isOpened: false,
+    assignment: [],
+  })
+
   return (
     <div>
       <MainLayout.Header>Assignments</MainLayout.Header>
 
       <MainLayout.Body>
         <div className="flex flex-row gap-4 items-center">
-          <p className="text-text-weakest">Show:</p>
+          <p className="text-text-weak">Show:</p>
           <Radio
             options={viewOptions}
             selected={selectedView}
@@ -45,30 +51,40 @@ export default function Page() {
 
           <div className="w-2xl">
             {assignments.map((a) => (
-              <div
+              <button
                 key={a.id}
-                className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors"
+                className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors w-full"
+                onClick={() =>
+                  setAssignmentModel({ isOpened: true, assignment: a })
+                }
               >
                 <div className="flex flex-row gap-3">
                   <p className="font-bold">{a.title}</p>
-                  <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center">
-                    <p className="uppercase text-xs font-semibold">
-                      {a.subjectInfo.name}
-                    </p>
+                  <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
+                    {a.subjectInfo.name}
                   </div>
                 </div>
 
                 <div className="flex flex-row gap-1 items-center">
                   <ClockIcon className="size-4 text-text-weaker" />
-                  <p className="text-sm text-text-weaker">
+                  <p className="text-sm text-text-weak">
                     {formatDate(a.due_date)}
                   </p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
       </MainLayout.Body>
+
+      {assignmentModel.isOpened && (
+        <AssignmentModel
+          assignment={assignmentModel.assignment}
+          onClose={() =>
+            setAssignmentModel({ isOpened: false, assignment: [] })
+          }
+        />
+      )}
     </div>
   )
 }

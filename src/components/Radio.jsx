@@ -18,7 +18,7 @@ export default function Radio({ options, selected, setSelected }) {
             'px-4 py-[6px] cursor-pointer transition-colors rounded',
             selected === option.id
               ? 'bg-fill-weak text-text-strong'
-              : 'text-text-weaker'
+              : 'text-text-weak'
           )}
         >
           {option.name}
