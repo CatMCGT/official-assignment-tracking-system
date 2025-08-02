@@ -16,13 +16,17 @@ export default function Page() {
   ]
 
   const [assignments, setAssignments] = useState([])
-  useEffect(() => {
+  function refreshAssignments() {
     getAssignments().then((res) => setAssignments(res || []))
+  }
+
+  useEffect(() => {
+    refreshAssignments()
   }, [])
 
   const [assignmentModel, setAssignmentModel] = useState({
     isOpened: false,
-    assignment: [],
+    assignmentId: "",
   })
 
   return (
@@ -55,7 +59,7 @@ export default function Page() {
                 key={a.id}
                 className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors w-full"
                 onClick={() =>
-                  setAssignmentModel({ isOpened: true, assignment: a })
+                  setAssignmentModel({ isOpened: true, assignmentId: a.id })
                 }
               >
                 <div className="flex flex-row gap-3">
@@ -75,16 +79,16 @@ export default function Page() {
             ))}
           </div>
         </div>
+        {assignmentModel.isOpened && (
+          <AssignmentModel
+            assignment={assignments.filter(a => a.id === assignmentModel.assignmentId)[0]}
+            onClose={() =>
+              setAssignmentModel({ isOpened: false, assignment: [] })
+            }
+            refreshAssignments={refreshAssignments}
+          />
+        )}
       </MainLayout.Body>
-
-      {assignmentModel.isOpened && (
-        <AssignmentModel
-          assignment={assignmentModel.assignment}
-          onClose={() =>
-            setAssignmentModel({ isOpened: false, assignment: [] })
-          }
-        />
-      )}
     </div>
   )
 }

@@ -4,20 +4,23 @@ import { XMarkIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline'
 import formatDate from '@/utils/formatDate'
 import setStatus from '@/db/assignments/setStatus'
 
-export default function AssignmentModel({ assignment, onClose }) {
+export default function AssignmentModel({ assignment, onClose, refreshAssignments }) {
   async function handleSetComplete() {
     try {
-      const response = await setStatus(assignment.id, 'complete')
-
-      console.log(response)
+      await setStatus(assignment.id, 'complete')
+      refreshAssignments()
     } catch (err) {
       console.error("Error marking assignment as complete:", err)
     }
   }
 
   async function handleSetTodo() {
-    const response = await setStatus(assignment.id, 'todo')
-    console.log(response)
+    try {
+      await setStatus(assignment.id, 'todo')
+      refreshAssignments()
+    } catch (err) {
+      console.error("Error marking assignment as todo:", err)
+    }
   }
 
   return (
@@ -27,7 +30,7 @@ export default function AssignmentModel({ assignment, onClose }) {
           <h2 className="font-semibold text-2xl ">{assignment?.title}</h2>
           <div className="flex flex-row gap-3 items-center">
             <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
-              {assignment?.subjectInfo.name}
+              {assignment?.subjectInfo?.name}
             </div>
 
             <div className="px-5 py-[5px] rounded-full bg-fill-weak w-fit flex flex-row gap-1 items-center">
