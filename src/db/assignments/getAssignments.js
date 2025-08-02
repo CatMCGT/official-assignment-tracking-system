@@ -8,9 +8,9 @@ export async function getAssignments() {
   const session = await verifySession()
   if (!session) return null
 
-  const sql = neon(`${process.env.DATABASE_URL}`)
+  const sql = neon(`${process.env.STORE_DATABASE_URL}`)
   const assignments =
-    await sql`SELECT id, title, description, subject_id, assigned_date, due_date FROM assignments a, student_assignment s where a.id = s.assignment_id and s.student_id = ${session?.userId}`
+    await sql`SELECT id, title, description, subject_id, assigned_date, due_date, status FROM assignments a, student_assignment s where a.id = s.assignment_id and s.student_id = ${session?.userId}`
 
   const formattedAssignments = assignments.map((a) => {
     const subjectInfo = getSubjectInfo(a.subject_id)
