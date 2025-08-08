@@ -7,6 +7,7 @@ import { getAssignments } from '@/db/assignments/getAssignments'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import formatDate from '@/utils/formatDate'
 import AssignmentModel from './AssignmentModel'
+import { getSubjectsAsMonitor } from '@/db/subjects/getSubjectsAsMonitor'
 
 export default function Page() {
   const [selectedView, setSelectedView] = useState('all')
@@ -22,6 +23,11 @@ export default function Page() {
   function refreshAssignments() {
     getAssignments().then((res) => setAssignments(res || []))
   }
+
+  const [subjectMonitor, setSubjectMonitor] = useState([])
+  useEffect(() => {
+    getSubjectsAsMonitor().then((res) => console.log(res))
+  })
 
   useEffect(() => {
     refreshAssignments()
