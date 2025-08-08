@@ -3,7 +3,7 @@
 import { neon } from '@neondatabase/serverless'
 import { verifySession } from '@/actions/userSession'
 
-export async function getSubjectsAsMonitor() {
+export async function getMonitoredSubjects() {
   const session = await verifySession()
   if (!session) return null
   
