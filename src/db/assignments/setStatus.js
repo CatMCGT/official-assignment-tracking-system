@@ -3,7 +3,7 @@
 import { neon } from '@neondatabase/serverless'
 import { verifySession } from '@/actions/userSession'
 
-export default async function setStatus(assignment_id, status) {
+export async function setStatus(assignment_id, status) {
   const session = await verifySession()
   if (!session) return null
 

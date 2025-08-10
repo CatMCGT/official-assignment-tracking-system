@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react'
 import MainLayout from '../layout'
 import Radio from '@/components/Radio'
-import { getAssignments } from '@/db/assignments/getAssignments'
+import { getMyAssignments } from '@/db/assignments/getMyAssignments'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import formatDate from '@/utils/formatDate'
 import AssignmentModel from './AssignmentModel'
-import { getSubjectsAsMonitor } from '@/db/subjects/getMonitoredSubjects'
 
 export default function Page() {
   const [selectedView, setSelectedView] = useState('all')
@@ -21,9 +20,9 @@ export default function Page() {
   const complete = assignments?.filter((a) => a.status === 'complete')
 
   function refreshAssignments() {
-    getAssignments().then((res) => setAssignments(res || []))
+    getMyAssignments().then((res) => setAssignments(res || []))
   }
-  
+
   useEffect(() => {
     refreshAssignments()
   }, [])
@@ -61,7 +60,7 @@ export default function Page() {
 
           {todo.length > 0 ? (
             <div className="w-2xl">
-              {assignments.map((a) => (
+              {todo?.map((a) => (
                 <button
                   key={a.id}
                   className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors w-full"
@@ -92,7 +91,7 @@ export default function Page() {
           )}
         </div>
 
-        {complete.length > 0 && (
+        {complete?.length > 0 && (
           <div className="flex flex-col gap-6 mt-4 bg-background-weak border-1 border-stroke-weak px-6 py-5">
             <div className="flex flex-row gap-[6px] items-center">
               <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
@@ -104,7 +103,7 @@ export default function Page() {
             </div>
 
             <div className="w-2xl">
-              {assignments.map((a) => (
+              {complete.map((a) => (
                 <button
                   key={a.id}
                   className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors w-full"

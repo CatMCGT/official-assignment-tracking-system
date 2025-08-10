@@ -2,15 +2,19 @@ import Icon from '@/components/Icon'
 import { XMarkIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 import formatDate from '@/utils/formatDate'
-import setStatus from '@/db/assignments/setStatus'
+import { setStatus } from '@/db/assignments/setStatus'
 
-export default function AssignmentModel({ assignment, onClose, refreshAssignments }) {
+export default function AssignmentModel({
+  assignment,
+  onClose,
+  refreshAssignments,
+}) {
   async function handleSetComplete() {
     try {
       await setStatus(assignment.id, 'complete')
       refreshAssignments()
     } catch (err) {
-      console.error("Error marking assignment as complete:", err)
+      console.error('Error marking assignment as complete:', err)
     }
   }
 
@@ -19,7 +23,7 @@ export default function AssignmentModel({ assignment, onClose, refreshAssignment
       await setStatus(assignment.id, 'todo')
       refreshAssignments()
     } catch (err) {
-      console.error("Error marking assignment as todo:", err)
+      console.error('Error marking assignment as todo:', err)
     }
   }
 
