@@ -20,7 +20,7 @@ export async function getMonitoredAssignments(subjectId, studentData = false) {
     const results = await Promise.all(
       assignments.map(async (a) => {
         const students =
-          await sql`SELECT id, s.name as name, collected_status FROM student_assignment sa, students s WHERE assignment_id = ${a.assignment_id} AND sa.student_id = s.id;`
+          await sql`SELECT id, s.name as name, status, collected_date FROM student_assignment sa, students s WHERE assignment_id = ${a.assignment_id} AND sa.student_id = s.id;`
 
         return {
           ...a,

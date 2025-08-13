@@ -34,10 +34,10 @@ export default async function Page({ params }) {
           {assignment?.assignment_description}
         </p>
 
-        <hr className="text-stroke-weak mt-2 mb-2"></hr>
+        <hr className="text-stroke-weak mt-2 mb-5"></hr>
       </div>
 
-      <AssignmentStatus students={assignment.students}/>
+      <AssignmentStatus assignment={assignment} students={assignment.students}/>
     </div>
   )
 }
