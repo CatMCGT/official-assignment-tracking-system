@@ -5,7 +5,7 @@ export async function getAllUsers() {
   //   if (!session) return null
 
   const sql = neon(`${process.env.STORE_DATABASE_URL}`)
-  const users = await sql`SELECT id, password FROM users;`
+  const users = await sql`SELECT id, password, role FROM users;`
 
   return users
 }
