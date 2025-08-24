@@ -9,6 +9,7 @@ import MainLayout from '../../layout'
 import getSubjectInfo from '@/utils/getSubjectInfo'
 import Link from 'next/link'
 import Icon from '@/components/Icon'
+import ArchivedAssignments from './ArchivedAssignments'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
@@ -105,66 +106,7 @@ export default async function Page({ params }) {
         </div>
 
         {archived?.length > 0 && (
-          <div className="flex flex-col gap-5 mt-2">
-            <div className="flex flex-row gap-[6px] items-center">
-              <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
-                Archived
-              </p>
-              <div className="w-4 h-4 text-xs text-text-weak bg-fill-weak rounded flex justify-center items-center">
-                {archived.length}
-              </div>
-              <button type="button" className="ml-2">
-                <Icon>
-                  <ChevronDownIcon className="size-4 text-text-weak" />
-                </Icon>
-              </button>
-            </div>
-
-            <div className="w-2xl flex-col gap-4">
-              {archived.map((a) => {
-                const submittedCount = a.students.filter(
-                  (student) => student.collected_date !== null
-                ).length
-                const stats = {
-                  submitted: submittedCount,
-                  not_submitted: a.students.length - submittedCount,
-                }
-
-                return (
-                  <Link
-                    href={`/monitor/${subjectId}/${a.assignment_id}`}
-                    key={a.assignment_id}
-                  >
-                    <div className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors">
-                      <div className="flex flex-row gap-3">
-                        <p className="font-bold">{a.assignment_title}</p>
-                        <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
-                          {subjectInfo.name}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-row gap-3">
-                        <div className="flex flex-row gap-1 items-center">
-                          <ClockIcon className="size-4 text-text-weaker" />
-                          <p className="text-sm text-text-weak">
-                            {formatDate(a.due_date)}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-row gap-1 items-center">
-                          <CheckCircleIcon className="size-4 text-text-weaker" />
-                          <p className="text-sm text-text-weak">
-                            {stats.submitted} Submitted, {stats.not_submitted}{' '}
-                            Left
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
+          <ArchivedAssignments archived={archived} subjectId={subjectId} subjectInfo={subjectInfo}/>
         )}
       </MainLayout.Body>
     </div>
