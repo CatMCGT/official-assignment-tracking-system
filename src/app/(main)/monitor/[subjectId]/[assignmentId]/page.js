@@ -7,7 +7,7 @@ import AssignmentStatus from './AssignmentStatus'
 export default async function Page({ params }) {
   const { subjectId, assignmentId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
-  const subjectAssignments = await getMonitoredAssignments(subjectId, true)
+  const subjectAssignments = await getMonitoredAssignments(subjectId)
   const assignment = subjectAssignments?.filter(
     (a) => a.assignment_id == assignmentId
   )[0]

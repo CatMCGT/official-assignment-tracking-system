@@ -4,7 +4,7 @@ import { neon } from '@neondatabase/serverless'
 import { verifySession } from '@/actions/userSession'
 import { getMonitoredSubjects } from '../subjects/getMonitoredSubjects'
 
-export async function getMonitoredAssignments(subjectId, studentData = false) {
+export async function getMonitoredAssignments(subjectId) {
   const session = await verifySession()
   if (!session) return null
 
@@ -16,21 +16,17 @@ export async function getMonitoredAssignments(subjectId, studentData = false) {
   const assignments =
     await sql`SELECT subject_id, a.id as assignment_id, a.title as assignment_title, a.description as assignment_description, assigned_date, due_date, t.id as teacher_id, t.name as teacher_name FROM subjects s, assignments a, teachers t WHERE s.id = a.subject_id AND s.teacher_id = t.id;`
 
-  if (studentData) {
-    const results = await Promise.all(
-      assignments.map(async (a) => {
-        const students =
-          await sql`SELECT id, s.name as name, status, collected_date FROM student_assignment sa, students s WHERE assignment_id = ${a.assignment_id} AND sa.student_id = s.id;`
+  const results = await Promise.all(
+    assignments.map(async (a) => {
+      const students =
+        await sql`SELECT id, s.name as name, status, collected_date FROM student_assignment sa, students s WHERE assignment_id = ${a.assignment_id} AND sa.student_id = s.id;`
 
-        return {
-          ...a,
-          students: students,
-        }
-      })
-    )
+      return {
+        ...a,
+        students: students,
+      }
+    })
+  )
 
-    return results
-  } else {
-    return assignments
-  }
+  return results
 }
