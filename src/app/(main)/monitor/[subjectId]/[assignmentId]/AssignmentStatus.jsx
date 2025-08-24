@@ -9,6 +9,7 @@ import {
   MagnifyingGlassIcon,
   ArrowPathIcon,
   CheckCircleIcon,
+  CheckIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import formatDate from '@/utils/formatDate'
@@ -19,6 +20,13 @@ export default function AssignmentStatus({ assignment, students }) {
   const [isEdited, setIsEdited] = useState(false)
   const [isPendingSave, setIsPendingSave] = useState(false)
   const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [isStatsOpened, setIsStatsOpened] = useState(false)
+
+  const stats = {
+    submitted: updatedStudents?.filter(
+      (student) => student.collected_date !== null
+    ).length,
+  }
 
   useEffect(() => {
     if (
@@ -75,8 +83,13 @@ export default function AssignmentStatus({ assignment, students }) {
     })
   }
 
+  function closeMenus() {
+    setIsMenuOpened(false)
+    setIsStatsOpened(false)
+  }
+
   return (
-    <div onClick={() => setIsMenuOpened(false)}>
+    <div onClick={closeMenus}>
       <div className="flex flex-row justify-between items-center">
         <Radio
           options={viewOptions}
@@ -99,11 +112,34 @@ export default function AssignmentStatus({ assignment, students }) {
             </div>
           </div>
 
-          <button type="button">
-            <Icon tooltip="Statistics" border>
-              <ChartBarIcon className="text-text-weak size-5" />
-            </Icon>
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsStatsOpened((prev) => !prev)
+              }}
+            >
+              <Icon tooltip={isStatsOpened ? null : 'Statistics'} border>
+                <ChartBarIcon className="text-text-weak size-5" />
+              </Icon>
+            </button>
+
+            {isStatsOpened && (
+              <div
+                className="border-1 border-stroke-weak bg-white py-1.5 px-2 rounded absolute right-[-4px] top-10 w-44 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-row items-center justify-between rounded py-1 px-2 transition-colors">
+                  <div className="flex flex-row gap-1 items-center">
+                    <CheckIcon className="size-4 text-text-weak" />
+                    <p className="text-nowrap text-text-weak">Submitted</p>
+                  </div>
+                  <p className="text-nowrap">{stats.submitted}</p>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="relative">
             <button
@@ -119,7 +155,10 @@ export default function AssignmentStatus({ assignment, students }) {
             </button>
 
             {isMenuOpened && (
-              <div className="border-1 border-stroke-weak bg-white py-1.5 px-2 rounded absolute right-[-4px] top-10">
+              <div
+                className="border-1 border-stroke-weak bg-white py-1.5 px-2 rounded absolute right-[-4px] top-10 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <button
                   type="button"
                   className="flex flex-row gap-2 items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors"
@@ -220,7 +259,7 @@ export default function AssignmentStatus({ assignment, students }) {
                         <p className="text-red-700">(Late submission)</p>
                       ) : (
                         <p className="text-green-700">
-                          ( {formatDate(student.collected_date)})
+                          ({formatDate(student.collected_date)})
                         </p>
                       ))}
                   </div>
