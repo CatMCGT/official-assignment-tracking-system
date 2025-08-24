@@ -7,15 +7,18 @@ import {
   ChartBarIcon,
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
-  ArrowPathIcon
+  ArrowPathIcon,
+  CheckCircleIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import formatDate from '@/utils/formatDate'
 import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignments.js'
 
 export default function AssignmentStatus({ assignment, students }) {
   const [updatedStudents, setUpdatedStudents] = useState(students)
   const [isEdited, setIsEdited] = useState(false)
   const [isPendingSave, setIsPendingSave] = useState(false)
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
 
   useEffect(() => {
     if (
@@ -41,7 +44,6 @@ export default function AssignmentStatus({ assignment, students }) {
     { id: 'absent', name: 'Absent' },
   ]
 
-  const [isSearching, setIsSearching] = useState(false)
   const [search, setSearch] = useState('')
 
   async function handleSubmit() {
@@ -57,8 +59,24 @@ export default function AssignmentStatus({ assignment, students }) {
     }
   }
 
+  function markAllSubmitted() {
+    setUpdatedStudents((prev) => {
+      const updated = prev.map((student) => {
+        if (student.collected_date === null) {
+          return {
+            ...student,
+            collected_date: new Date(),
+          }
+        }
+
+        return student
+      })
+      return updated
+    })
+  }
+
   return (
-    <div>
+    <div onClick={() => setIsMenuOpened(false)}>
       <div className="flex flex-row justify-between items-center">
         <Radio
           options={viewOptions}
@@ -87,11 +105,32 @@ export default function AssignmentStatus({ assignment, students }) {
             </Icon>
           </button>
 
-          <button type="button">
-            <Icon tooltip="More actions">
-              <EllipsisVerticalIcon className="text-text-weak size-5" />
-            </Icon>
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsMenuOpened((prev) => !prev)
+              }}
+            >
+              <Icon tooltip={isMenuOpened ? null : 'More actions'}>
+                <EllipsisVerticalIcon className="text-text-weak size-5" />
+              </Icon>
+            </button>
+
+            {isMenuOpened && (
+              <div className="border-1 border-stroke-weak bg-white py-1.5 px-2 rounded absolute right-[-4px] top-10">
+                <button
+                  type="button"
+                  className="flex flex-row gap-2 items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors"
+                  onClick={markAllSubmitted}
+                >
+                  <CheckCircleIcon className="size-5 text-text-weak" />
+                  <p className="text-nowrap">Mark all as submitted</p>
+                </button>
+              </div>
+            )}
+          </div>
 
           {isEdited && !isPendingSave && (
             <button
@@ -107,10 +146,10 @@ export default function AssignmentStatus({ assignment, students }) {
           <button
             type="submit"
             className={clsx(
-              'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest',
+              'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
               isEdited ? 'bg-text-weak' : 'bg-text-weakest'
             )}
-            disabled={isPendingSave}
+            disabled={isPendingSave || !isEdited}
             onClick={handleSubmit}
           >
             {isPendingSave ? (
@@ -143,7 +182,7 @@ export default function AssignmentStatus({ assignment, students }) {
                 <button
                   key={student.id}
                   className={clsx(
-                    'flex flex-col items-start px-6 py-5 rounded-lg cursor-pointer transition-colors',
+                    'flex flex-col items-start px-6 py-5 rounded-lg cursor-pointer transition-colors text-left min-w-[345px]',
                     student.collected_date
                       ? late
                         ? 'border-red-400 border-1 bg-red-50 hover:border-red-500'
@@ -180,7 +219,9 @@ export default function AssignmentStatus({ assignment, students }) {
                       (late ? (
                         <p className="text-red-700">(Late submission)</p>
                       ) : (
-                        <p className="text-green-700">(Submitted)</p>
+                        <p className="text-green-700">
+                          ( {formatDate(student.collected_date)})
+                        </p>
                       ))}
                   </div>
                   <p className="text-text-weak">#{student.id}</p>
