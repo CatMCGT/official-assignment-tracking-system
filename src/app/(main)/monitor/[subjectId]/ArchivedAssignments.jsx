@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import {
-  ChevronDownIcon,
   ClockIcon,
   CheckCircleIcon,
   ChevronUpIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/24/outline'
 import Icon from '@/components/Icon'
 import formatDate from '@/utils/formatDate'
@@ -36,7 +36,7 @@ export default function ArchivedAssignments({
             {isArchivedOpen ? (
               <ChevronUpIcon className="size-4 text-text-weak" />
             ) : (
-              <ChevronDownIcon className="size-4 text-text-weak" />
+              <ChevronRightIcon className="size-4 text-text-weak" />
             )}
           </Icon>
         </button>
