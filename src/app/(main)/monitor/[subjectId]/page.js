@@ -1,7 +1,10 @@
 import {
+  AcademicCapIcon,
   CheckCircleIcon,
   ChevronDownIcon,
   ClockIcon,
+  HashtagIcon,
+  PencilSquareIcon,
 } from '@heroicons/react/24/outline'
 import formatDate from '@/utils/formatDate'
 import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
@@ -10,6 +13,7 @@ import getSubjectInfo from '@/utils/getSubjectInfo'
 import Link from 'next/link'
 import Icon from '@/components/Icon'
 import ArchivedAssignments from './ArchivedAssignments'
+import Properties from './Properties'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
@@ -21,7 +25,7 @@ export default async function Page({ params }) {
   const archived = subjectAssignments?.filter(
     (a) => new Date(a.due_date) < new Date()
   )
-  
+
   return (
     <div>
       <MainLayout.Header>
@@ -37,9 +41,30 @@ export default async function Page({ params }) {
       </MainLayout.Header>
 
       <MainLayout.Body>
-        <p className="text-text-weak">
-          Managed by {subjectAssignments[0].teacher_name}.
-        </p>
+        <Properties>
+          <Properties.Property name="Teacher">
+            <AcademicCapIcon className="size-5 text-text-weak" />
+          </Properties.Property>
+          <Properties.Property.Value>
+            {subjectAssignments[0].teacher_name}
+          </Properties.Property.Value>
+
+          <Properties.Property name="Student Monitor">
+            <PencilSquareIcon className="size-5 text-text-weak" />
+          </Properties.Property>
+          <Properties.Property.Value>
+            {subjectAssignments[0].monitor_name}
+          </Properties.Property.Value>
+
+          <Properties.Property name="Number of Students">
+            <HashtagIcon className="size-5 text-text-weak" />
+          </Properties.Property>
+          <Properties.Property.Value>
+            {subjectAssignments.length}
+          </Properties.Property.Value>
+        </Properties>
+
+        <hr className='text-stroke-weak w-full'></hr>
 
         <div className="flex flex-col gap-6 mt-2 bg-background-weak border-1 border-stroke-weak px-6 py-5">
           <div className="flex flex-row gap-[6px] items-center">
@@ -106,7 +131,11 @@ export default async function Page({ params }) {
         </div>
 
         {archived?.length > 0 && (
-          <ArchivedAssignments archived={archived} subjectId={subjectId} subjectInfo={subjectInfo}/>
+          <ArchivedAssignments
+            archived={archived}
+            subjectId={subjectId}
+            subjectInfo={subjectInfo}
+          />
         )}
       </MainLayout.Body>
     </div>

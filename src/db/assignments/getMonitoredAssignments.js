@@ -14,7 +14,7 @@ export async function getMonitoredAssignments(subjectId) {
 
   const sql = neon(`${process.env.STORE_DATABASE_URL}`)
   const assignments =
-    await sql`SELECT subject_id, a.id as assignment_id, a.title as assignment_title, a.description as assignment_description, assigned_date, due_date, t.id as teacher_id, t.name as teacher_name FROM subjects s, assignments a, teachers t WHERE s.id = a.subject_id AND s.teacher_id = t.id;`
+    await sql`SELECT subject_id, st.name as monitor_name, monitor_id, a.id as assignment_id, a.title as assignment_title, a.description as assignment_description, assigned_date, due_date, t.id as teacher_id, t.name as teacher_name FROM subjects s, assignments a, teachers t, students st WHERE s.id = a.subject_id AND s.teacher_id = t.id AND s.monitor_id = st.id;`
 
   const results = await Promise.all(
     assignments.map(async (a) => {
