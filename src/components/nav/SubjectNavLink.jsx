@@ -1,0 +1,31 @@
+'use client'
+
+import Link from 'next/link'
+import clsx from 'clsx'
+import { usePathname } from 'next/navigation'
+
+import { BookmarkIcon } from '@heroicons/react/20/solid'
+import getSubjectInfo from '@/utils/getSubjectInfo'
+
+export default function SubjectNavLink({ subject }) {
+  const pathname = usePathname()
+  const subjectInfo = getSubjectInfo(subject.subject_id)
+  const subjectPathname = `/monitor/${subject.subject_id}`
+
+  return (
+    <Link
+      href={subjectPathname}
+      className={clsx('nav-tab', pathname === subjectPathname ? 'active' : '')}
+    >
+      <BookmarkIcon className="size-6 text-text-weaker" />
+      <p
+        className={clsx(
+          'font-bold mr-1 ml-3',
+          pathname === subjectPathname ? 'text-text-strong' : 'text-text-weaker'
+        )}
+      >
+        {subjectInfo.name}
+      </p>
+    </Link>
+  )
+}

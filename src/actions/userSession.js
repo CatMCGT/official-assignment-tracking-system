@@ -1,36 +1,34 @@
-"use server";
+'use server'
 
-import { cookies } from "next/headers";
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 
-export async function getCurrentUser() {
-  const cookieStore = await cookies();
+export async function verifySession() {
+  const sessionUserId = (await cookies()).get('session')?.value
 
-  if (cookieStore.has("userData")) {
-    const userDataString = cookieStore.get("userData").value;
-    const userData = JSON.parse(userDataString);
-
-    return userData;
+  if (!sessionUserId) {
+    redirect('/login')
   }
+
+  return { isAuth: true, userId: sessionUserId }
 }
 
-export async function setCurrentUser(userData) {
-  const userDataString = JSON.stringify(userData);
+export async function createSession(userId) {
+  const expirationDate = new Date()
+  expirationDate.setDate(expirationDate.getDate() + 7)
 
-  try {
-    const cookieStore = await cookies();
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 7);
+  const cookieStore = await cookies()
 
-    cookieStore.set("userData", userDataString, { secure: true, expires: expirationDate });
-
-    return true;
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
+  cookieStore.set('session', userId, {
+    httpOnly: true,
+    secure: true,
+    expires: expirationDate,
+    sameSite: 'lax',
+    path: '/',
+  })
 }
 
-export async function deleteCurrentUser() {
-  const cookieStore = await cookies();
-  cookieStore.delete("userData");
+export async function deleteSession() {
+  const cookieStore = await cookies()
+  cookieStore.delete('session')
 }

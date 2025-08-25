@@ -1,46 +1,33 @@
-"use server";
+'use server'
 
-import { neon } from "@neondatabase/serverless";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt'
+import { getAllUsers } from '@/db/users/getAllUsers'
 
-import { checkRole } from "@/libs/utils";
-import { getAllUsers } from "@/db/users";
+export async function logIn(prevState, formData) {
+  try {
+    const userId = formData.get('userId')
+    const password = formData.get('password')
 
-export async function signIn(prevState, formData) {
-  const userId = formData.get("userId");
-  const password = formData.get("password");
+    const response = await getAllUsers()
+    const userData = response.filter((user) => user.id === userId)[0]
 
-  // parametised query -> don't need real_escape_string
+    const isMatch = await bcrypt.compare(password, userData.password)
 
-  const response = await getAllUsers();
-  if (!response.success) {
-    return {
-      success: false,
-      message: `Error fetching all users.`,
-    };
-  }
-  const userDataDB = JSON.parse(response.data).filter(
-    (user) => user.id === userId
-  )[0];
-  // const response = await sql.query("SELECT * FROM users WHERE name = ($1)", [
-  //   username,
-  // ]);
+    if (!isMatch) {
+      throw new Error('Incorrect credentials.')
+    }
 
-  const storedPassword = userDataDB.password;
-  const isMatch = await bcrypt.compare(password, storedPassword);
-
-  // bcrypt -> hasing (process password using sophisticated mathematical function, and is one-way) + salt(a random number unique to each password and is attached to it before hashing) more: https://www.freecodecamp.org/news/how-to-hash-passwords-with-bcrypt-in-nodejs/
-
-  if (isMatch) {
     return {
       success: true,
-      message: `Signing into ${userId} ${userDataDB.role} account...`,
-      userData: { ...userDataDB },
-    };
-  } else {
+      message: `Logging into ${userId} ${userData.role} account...`,
+      data: userData,
+    }
+  } catch (err) {
+    console.error('Error logging in:', err)
+
     return {
       success: false,
-      message: `Username or password is incorrect.`,
-    };
+      message: 'Incorrect credentials.',
+    }
   }
 }
