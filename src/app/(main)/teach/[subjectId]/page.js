@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import {
   AcademicCapIcon,
   CheckCircleIcon,
@@ -5,13 +6,12 @@ import {
   HashtagIcon,
   PencilSquareIcon,
 } from '@heroicons/react/24/outline'
-import formatDate from '@/utils/formatDate'
-import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
 import MainLayout from '../../layout'
+import formatDate from '@/utils/formatDate'
 import getSubjectInfo from '@/utils/getSubjectInfo'
-import Link from 'next/link'
-import ArchivedAssignments from '../../../../components/ArchivedAssignments'
-import Properties from '../../../../components/Properties'
+import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
+import ArchivedAssignments from '@/components/ArchivedAssignments'
+import Properties from '@/components/Properties'
 
 export default async function Page({ params }) {
   const { subjectId } = await params

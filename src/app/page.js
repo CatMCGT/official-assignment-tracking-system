@@ -1,5 +1,12 @@
-import { redirect } from "next/navigation";
+import { getUser } from "@/db/users/getUser"
+import { redirect } from "next/navigation"
 
-export default function Page() {
-  redirect("/login")
+export default async function Page() {
+  const user = await getUser()
+  if (user.role === "student") {
+    redirect("/assignments")
+  } else if (user.role === "teacher") {
+    // redirect("/teach/")
+    redirect("/assignments")
+  }
 }

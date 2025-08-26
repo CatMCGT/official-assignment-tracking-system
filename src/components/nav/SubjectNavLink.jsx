@@ -7,10 +7,12 @@ import { usePathname } from 'next/navigation'
 import { BookmarkIcon } from '@heroicons/react/20/solid'
 import getSubjectInfo from '@/utils/getSubjectInfo'
 
-export default function SubjectNavLink({ subject }) {
+export default function SubjectNavLink({ subject, action }) {
+  if (!action in ["monitor", "teacher"]) return
+
   const pathname = usePathname()
   const subjectInfo = getSubjectInfo(subject.subject_id)
-  const subjectPathname = `/monitor/${subject.subject_id}`
+  const subjectPathname = `/${action}/${subject.subject_id}`
 
   return (
     <Link

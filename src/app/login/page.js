@@ -19,7 +19,7 @@ export default function Page() {
   useEffect(() => {
     verifySession().then((res) => {
       if (res.isAuth) {
-        redirect('/assignments')
+        redirect('/')
       }
     })
   }, [])
@@ -27,7 +27,7 @@ export default function Page() {
   useEffect(() => {
     if (logInState?.success) {
       createSession(logInState.data.id).then(() => {
-        redirect('/assignments')
+        redirect('/')
       })
     }
   }, [logInState])

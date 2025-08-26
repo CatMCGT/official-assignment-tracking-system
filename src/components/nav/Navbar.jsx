@@ -5,9 +5,12 @@ import UserDisplaySection from './UserDisplay'
 import NavLinks from './NavLinks'
 import { getMonitoredSubjects } from '@/db/subjects/getMonitoredSubjects'
 import SubjectNavLink from './SubjectNavLink'
+import { getTaughtSubjects } from '@/db/subjects/getTaughtSubjects'
 
 export default async function Navbar() {
   const user = await getUser()
+  const role = user.role
+  const taughtSubjects = await getTaughtSubjects()
   const monitoredSubjects = await getMonitoredSubjects()
 
   return (
@@ -17,7 +20,22 @@ export default async function Navbar() {
 
         <NavLinks user={user} />
 
-        {monitoredSubjects.length > 0 && (
+        {role === "teacher" && taughtSubjects.length > 0 && (
+          <div>
+            <p className="text-sm text-text-weak tracking-wide">
+              Taught Subjects
+            </p>
+            <div className='flex flex-col gap-2 mt-3'>
+              {taughtSubjects.map((subject) => (
+                <Fragment key={subject.subject_id}>
+                  <SubjectNavLink subject={subject} action="teach"/>
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {role === "student" && monitoredSubjects.length > 0 && (
           <div>
             <p className="text-sm text-text-weak tracking-wide">
               Monitored Subjects
@@ -25,7 +43,7 @@ export default async function Navbar() {
             <div className='flex flex-col gap-2 mt-3'>
               {monitoredSubjects.map((subject) => (
                 <Fragment key={subject.subject_id}>
-                  <SubjectNavLink subject={subject} />
+                  <SubjectNavLink subject={subject} action="monitor"/>
                 </Fragment>
               ))}
             </div>

@@ -1,14 +1,15 @@
 'use server'
 
 import bcrypt from 'bcrypt'
-import { getAllUsers } from '@/db/users/getAllUsers'
+import { neon } from '@neondatabase/serverless'
 
 export async function logIn(prevState, formData) {
   try {
     const userId = formData.get('userId')
     const password = formData.get('password')
 
-    const response = await getAllUsers()
+    const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+    const response = await sql`SELECT id, password, role FROM users;`
     const userData = response.filter((user) => user.id === userId)[0]
 
     const isMatch = await bcrypt.compare(password, userData.password)
