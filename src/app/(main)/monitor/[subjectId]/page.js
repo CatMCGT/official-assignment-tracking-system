@@ -29,7 +29,7 @@ export default async function Page({ params }) {
   return (
     <div>
       <MainLayout.Header>
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-3 mb-2">
           {subjectInfo.grade
             ? `Grade ${subjectInfo.grade}`
             : `Class ${subjectInfo.class}`}{' '}
@@ -64,7 +64,7 @@ export default async function Page({ params }) {
           </Properties.Property.Value>
         </Properties>
 
-        <hr className='text-stroke-weak w-full'></hr>
+        <hr className="text-stroke-weak w-full"></hr>
 
         <div className="flex flex-col gap-6 mt-2 bg-background-weak border-1 border-stroke-weak px-6 py-5">
           <div className="flex flex-row gap-[6px] items-center">
