@@ -14,6 +14,7 @@ import ArchivedAssignments from '@/components/ArchivedAssignments'
 import Properties from '@/components/Properties'
 import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
 import SubjectMonitor from './SubjectMonitor'
+import Icon from '@/components/Icon'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
@@ -59,15 +60,39 @@ export default async function Page({ params }) {
             subjectStudents={subjectStudents}
           />
 
-          <Properties.Property name="Number of Students">
+          {/* <Properties.Property name="Number of Students">
             <HashtagIcon className="size-5 text-text-weak" />
           </Properties.Property>
           <Properties.Property.Value>
-            {subjectAssignments.length}
-          </Properties.Property.Value>
+            {subjectStudents.length}
+          </Properties.Property.Value> */}
         </Properties>
 
         <hr className="text-stroke-weak w-full"></hr>
+
+        <div>
+          <div className="flex flex-row gap-3 items-center mb-2">
+            <h2 className="font-semibold text-xl">All Students</h2>
+            <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
+              {subjectStudents.length}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[200px_300px_auto] items-center px-3 py-2 text-sm text-text-weak">
+            <p>Name</p>
+            <p>ID</p>
+            <p>On-time Submission</p>
+          </div>
+          <div className="w-2xl flex flex-col gap-2 max-h-72 overflow-scroll">
+            {subjectStudents?.map((student) => (
+              <div className="grid grid-cols-[200px_300px_auto] items-center border-1 border-stroke-weak rounded px-3 py-2">
+                <p className="text-lg">{student.name}</p>
+                <p className="text-text-weak">#{student.id}</p>
+                <p>100%</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="flex flex-col gap-6 mt-2 bg-background-weak border-1 border-stroke-weak px-6 py-5">
           <div className="flex flex-row gap-[6px] items-center">
