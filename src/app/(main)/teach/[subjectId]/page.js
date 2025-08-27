@@ -12,11 +12,14 @@ import getSubjectInfo from '@/utils/getSubjectInfo'
 import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
 import ArchivedAssignments from '@/components/ArchivedAssignments'
 import Properties from '@/components/Properties'
+import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
+import SubjectMonitor from './SubjectMonitor'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
   const subjectAssignments = await getMonitoredAssignments(subjectId)
+  const subjectStudents = await getSubjectStudents(subjectId)
   const inProgress = subjectAssignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
   )
@@ -47,12 +50,14 @@ export default async function Page({ params }) {
             {subjectAssignments[0].teacher_name}
           </Properties.Property.Value>
 
-          <Properties.Property name="Student Monitor">
+          <Properties.Property name="Subject Monitor">
             <PencilSquareIcon className="size-5 text-text-weak" />
           </Properties.Property>
-          <Properties.Property.Value>
-            {subjectAssignments[0].monitor_name}
-          </Properties.Property.Value>
+          <SubjectMonitor
+            subjectId={subjectId}
+            subjectAssignments={subjectAssignments}
+            subjectStudents={subjectStudents}
+          />
 
           <Properties.Property name="Number of Students">
             <HashtagIcon className="size-5 text-text-weak" />
