@@ -40,7 +40,7 @@ export default function SubjectMonitorProperty({
           {subjectMonitorState.name}
         </button>
 
-        {subjectMonitorState !== monitor && (
+        {subjectMonitorState.id !== monitor.id && (
           <>
             <button
               type="button"

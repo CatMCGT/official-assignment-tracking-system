@@ -131,7 +131,7 @@ export default async function Page({ params }) {
             </div>
 
             {inProgress?.length > 0 ? (
-              <div className="w-2xl">
+              <div className="w-2xl flex flex-col gap-2">
                 {inProgress.map((a) => {
                   const submittedCount = a.students.filter(
                     (student) => student.collected_date !== null

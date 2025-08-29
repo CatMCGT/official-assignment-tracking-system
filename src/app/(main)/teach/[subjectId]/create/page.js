@@ -6,6 +6,7 @@ import { getUser } from '@/db/users/getUser'
 import getSubjectInfo from '@/utils/getSubjectInfo'
 import {
   AcademicCapIcon,
+  ArrowPathIcon,
   BookOpenIcon,
   CalendarDateRangeIcon,
   PencilSquareIcon,
@@ -16,10 +17,11 @@ import DueDate from './DueDate'
 import clsx from 'clsx'
 import AssignedStudents from './AssignedStudents'
 import { createAssignment } from '@/db/assignments/createAssignment'
+import { redirect } from 'next/navigation'
 
 export default function Page({ params }) {
   const [user, setUser] = useState()
-  const [subjectId, setSubjectId] = useState("")
+  const [subjectId, setSubjectId] = useState('')
   const [subjectStudents, setSubjectStudents] = useState()
   const [assignedStudentIds, setAssignedStudentIds] = useState([])
   const [subjectInfo, setSubjectInfo] = useState()
@@ -51,6 +53,7 @@ export default function Page({ params }) {
     dueDate: new Date().toLocaleDateString('en-CA') + 'T00:00',
   })
   const [isFilledIn, setIsFilledIn] = useState(false)
+  const [isPending, setIsPending] = useState(false)
 
   useEffect(() => {
     console.log(assignment, assignedStudentIds)
@@ -66,7 +69,12 @@ export default function Page({ params }) {
   }, [assignment, assignedStudentIds])
 
   function handleCreateAssignment() {
-    createAssignment(subjectId, assignment, assignedStudentIds)
+    setIsPending(true)
+    createAssignment(subjectId, assignment, assignedStudentIds).then((res) => {
+      const assignmentId = res.assignmentId
+      redirect(`/monitor/${subjectId}/${assignmentId}`)
+      setIsPending(false)
+    })
   }
 
   return (
@@ -128,6 +136,15 @@ export default function Page({ params }) {
         <textarea
           className="border-1 border-stroke-weak h-48 focus:outline-1 outline-text-weakest p-4 rounded resize-none"
           placeholder="Enter description..."
+          value={assignment.description}
+          onChange={(e) =>
+            setAssignment((prev) => {
+              return {
+                ...prev,
+                description: e.target.value,
+              }
+            })
+          }
         ></textarea>
       </div>
 
@@ -137,10 +154,17 @@ export default function Page({ params }) {
           'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
           isFilledIn ? 'bg-text-weak' : 'bg-text-weakest'
         )}
-        disabled={!isFilledIn}
+        disabled={isPending || !isFilledIn}
         onClick={handleCreateAssignment}
       >
-        Create assignment
+        {
+          isPending ? (
+            <ArrowPathIcon className='size-5 text-white'/>
+          ) : (
+
+            "Create assignment"
+          )
+        }
       </button>
     </div>
   )
