@@ -3,35 +3,35 @@ import { XMarkIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 import formatDate from '@/utils/formatDate'
 import { setStatus } from '@/db/assignments/setStatus'
+import Properties from '@/components/Properties'
 
 export default function AssignmentModel({
   assignment,
   onClose,
   refreshAssignments,
 }) {
-  async function handleSetComplete() {
-    try {
-      await setStatus(assignment.assignment_id, 'complete')
-      refreshAssignments()
-    } catch (err) {
-      console.error('Error marking assignment as complete:', err)
-    }
-  }
+  // async function handleSetComplete() {
+  //   try {
+  //     await setStatus(assignment.assignment_id, 'complete')
+  //     refreshAssignments()
+  //   } catch (err) {
+  //     console.error('Error marking assignment as complete:', err)
+  //   }
+  // }
 
-  async function handleSetTodo() {
-    try {
-      await setStatus(assignment.assignment_id, 'todo')
-      refreshAssignments()
-    } catch (err) {
-      console.error('Error marking assignment as todo:', err)
-    }
-  }
+  // async function handleSetTodo() {
+  //   try {
+  //     await setStatus(assignment.assignment_id, 'todo')
+  //     refreshAssignments()
+  //   } catch (err) {
+  //     console.error('Error marking assignment as todo:', err)
+  //   }
+  // }
 
   return (
     <div className="border-l-1 border-l-stroke-weak bg-white z-10 absolute right-0 h-screen top-0 px-11 py-15">
       <div className="flex flex-row justify-between items-start gap-2 mb-4">
         <div className="flex flex-col gap-4 w-[560px]">
-          <h2 className="font-semibold text-2xl ">{assignment?.assignment_title}</h2>
           <div className="flex flex-row gap-3 items-center">
             <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
               {assignment?.subjectInfo?.name}
@@ -44,6 +44,25 @@ export default function AssignmentModel({
               </p>
             </div>
           </div>
+          <h2 className="font-semibold text-2xl ">
+            {assignment?.assignment_title}
+          </h2>
+
+          <Properties>
+            <Properties.Property name="Teacher">
+              <AcademicCapIcon className="size-5 text-text-weak" />
+            </Properties.Property>
+            <Properties.Property.Value>
+              {assignment?.teacher_name}
+            </Properties.Property.Value>
+
+            <Properties.Property name="Student Monitor">
+              <PencilSquareIcon className="size-5 text-text-weak" />
+            </Properties.Property>
+            <Properties.Property.Value>
+              {assignment?.monitor_name}
+            </Properties.Property.Value>
+          </Properties>
 
           <hr className="text-stroke-weak mt-2 mb-2"></hr>
 

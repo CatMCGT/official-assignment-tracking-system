@@ -1,3 +1,5 @@
+"use server"
+
 import { neon } from '@neondatabase/serverless'
 import { verifySession } from '@/actions/userSession'
 

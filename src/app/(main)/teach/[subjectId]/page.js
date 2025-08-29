@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import {
   AcademicCapIcon,
+  BookOpenIcon,
   CheckCircleIcon,
   ClockIcon,
-  HashtagIcon,
   PencilSquareIcon,
 } from '@heroicons/react/24/outline'
 import MainLayout from '../../layout'
@@ -15,11 +15,16 @@ import Properties from '@/components/Properties'
 import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
 import SubjectMonitor from './SubjectMonitor'
 import Icon from '@/components/Icon'
+import SelectProperty from './create/AssignedStudents'
+import { setSubjectMonitor } from '@/db/subjects/setSubjectMonitor'
+import SubjectMonitorProperty from './SubjectMonitor'
+import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
   const subjectAssignments = await getMonitoredAssignments(subjectId)
+  const subjectAdmin = await getSubjectAdmin(subjectId)
   const subjectStudents = await getSubjectStudents(subjectId)
   const inProgress = subjectAssignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
@@ -54,10 +59,13 @@ export default async function Page({ params }) {
           <Properties.Property name="Subject Monitor">
             <PencilSquareIcon className="size-5 text-text-weak" />
           </Properties.Property>
-          <SubjectMonitor
+          <SubjectMonitorProperty
             subjectId={subjectId}
-            subjectAssignments={subjectAssignments}
             subjectStudents={subjectStudents}
+            monitor={{
+              id: subjectAdmin.monitor_id,
+              name: subjectAdmin.monitor_name,
+            }}
           />
 
           {/* <Properties.Property name="Number of Students">
@@ -85,7 +93,10 @@ export default async function Page({ params }) {
           </div>
           <div className="w-2xl flex flex-col gap-2 max-h-72 overflow-scroll">
             {subjectStudents?.map((student) => (
-              <div className="grid grid-cols-[200px_300px_auto] items-center border-1 border-stroke-weak rounded px-3 py-2">
+              <div
+                key={student.id}
+                className="grid grid-cols-[200px_300px_auto] items-center border-1 border-stroke-weak rounded px-3 py-2"
+              >
                 <p className="text-lg">{student.name}</p>
                 <p className="text-text-weak">#{student.id}</p>
                 <p>100%</p>
@@ -94,77 +105,91 @@ export default async function Page({ params }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 mt-2 bg-background-weak border-1 border-stroke-weak px-6 py-5">
-          <div className="flex flex-row gap-[6px] items-center">
-            <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
-              In progress
-            </p>
-            {inProgress?.length > 0 && (
-              <div className="w-4 h-4 text-xs text-text-weak bg-fill-weak rounded flex justify-center items-center">
-                {inProgress.length}
+        <div>
+          <div className="flex flex-row gap-3 items-center justify-between mb-3">
+            <h2 className="font-semibold text-xl">Assignments</h2>
+            <Link href={`/teach/${subjectId}/create`}>
+              <Icon tooltip="Create new assignment" border>
+                <div className="flex flex-row gap-1 items-center px-1">
+                  New
+                  <BookOpenIcon className="size-5 text-text-weak font-bold" />
+                </div>
+              </Icon>
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-6 bg-background-weak border-1 border-stroke-weak px-6 py-5">
+            <div className="flex flex-row gap-[6px] items-center">
+              <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
+                In progress
+              </p>
+              {inProgress?.length > 0 && (
+                <div className="w-4 h-4 text-xs text-text-weak bg-fill-weak rounded flex justify-center items-center">
+                  {inProgress.length}
+                </div>
+              )}
+            </div>
+
+            {inProgress?.length > 0 ? (
+              <div className="w-2xl">
+                {inProgress.map((a) => {
+                  const submittedCount = a.students.filter(
+                    (student) => student.collected_date !== null
+                  ).length
+                  const stats = {
+                    submitted: submittedCount,
+                    not_submitted: a.students.length - submittedCount,
+                  }
+
+                  return (
+                    <Link
+                      href={`/monitor/${subjectId}/${a.assignment_id}`}
+                      key={a.assignment_id}
+                    >
+                      <div className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors">
+                        <div className="flex flex-row gap-3">
+                          <p className="font-bold">{a.assignment_title}</p>
+                          <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
+                            {subjectInfo.name}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-row gap-3">
+                          <div className="flex flex-row gap-1 items-center">
+                            <ClockIcon className="size-4 text-text-weaker" />
+                            <p className="text-sm text-text-weak">
+                              {formatDate(a.due_date)}
+                            </p>
+                          </div>
+
+                          <div className="flex flex-row gap-1 items-center">
+                            <CheckCircleIcon className="size-4 text-text-weaker" />
+                            <p className="text-sm text-text-weak">
+                              {stats.submitted} Submitted, {stats.not_submitted}{' '}
+                              Left
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
               </div>
+            ) : (
+              <p className="w-2xl text-text-weak mt-[-8px]">
+                Wonderful! There are no assignments to be collected 🎉
+              </p>
             )}
           </div>
 
-          {inProgress?.length > 0 ? (
-            <div className="w-2xl">
-              {inProgress.map((a) => {
-                const submittedCount = a.students.filter(
-                  (student) => student.collected_date !== null
-                ).length
-                const stats = {
-                  submitted: submittedCount,
-                  not_submitted: a.students.length - submittedCount,
-                }
-
-                return (
-                  <Link
-                    href={`/monitor/${subjectId}/${a.assignment_id}`}
-                    key={a.assignment_id}
-                  >
-                    <div className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors">
-                      <div className="flex flex-row gap-3">
-                        <p className="font-bold">{a.assignment_title}</p>
-                        <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
-                          {subjectInfo.name}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-row gap-3">
-                        <div className="flex flex-row gap-1 items-center">
-                          <ClockIcon className="size-4 text-text-weaker" />
-                          <p className="text-sm text-text-weak">
-                            {formatDate(a.due_date)}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-row gap-1 items-center">
-                          <CheckCircleIcon className="size-4 text-text-weaker" />
-                          <p className="text-sm text-text-weak">
-                            {stats.submitted} Submitted, {stats.not_submitted}{' '}
-                            Left
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="w-2xl text-text-weak mt-[-8px]">
-              Wonderful! There are no assignments to be collected 🎉
-            </p>
+          {archived?.length > 0 && (
+            <ArchivedAssignments
+              archived={archived}
+              subjectId={subjectId}
+              subjectInfo={subjectInfo}
+            />
           )}
         </div>
-
-        {archived?.length > 0 && (
-          <ArchivedAssignments
-            archived={archived}
-            subjectId={subjectId}
-            subjectInfo={subjectInfo}
-          />
-        )}
       </MainLayout.Body>
     </div>
   )

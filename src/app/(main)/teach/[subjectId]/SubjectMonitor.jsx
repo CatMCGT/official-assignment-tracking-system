@@ -7,16 +7,16 @@ import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function SubjectMonitor({
+export default function SubjectMonitorProperty({
   subjectId,
-  subjectAssignments,
+  monitor,
   subjectStudents,
 }) {
   const [isMenuOpened, setIsMenuOpened] = useState(false)
   const [search, setSearch] = useState('')
   const [subjectMonitorState, setSubjectMonitorState] = useState({
-    id: subjectAssignments[0].monitor_id,
-    name: subjectAssignments[0].monitor_name,
+    id: monitor.id,
+    name: monitor.name,
   })
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
@@ -40,7 +40,7 @@ export default function SubjectMonitor({
           {subjectMonitorState.name}
         </button>
 
-        {subjectMonitorState.id !== subjectAssignments[0].monitor_id && (
+        {subjectMonitorState !== monitor && (
           <>
             <button
               type="button"
@@ -57,8 +57,8 @@ export default function SubjectMonitor({
               className="disabled:cursor-not-allowed"
               onClick={() =>
                 setSubjectMonitorState({
-                  id: subjectAssignments[0].monitor_id,
-                  name: subjectAssignments[0].monitor_name,
+                  id: monitor.id,
+                  name: monitor.name,
                 })
               }
               disabled={isPending}
