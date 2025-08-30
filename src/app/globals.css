@@ -59,6 +59,10 @@
 }
 
 @theme {
+  --breakpoint-xl: 90rem;
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 150rem;
+
   --animate-rotating: rotating 1s ease;
 
   @keyframes rotating {

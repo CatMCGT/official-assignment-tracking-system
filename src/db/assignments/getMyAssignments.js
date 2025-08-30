@@ -10,7 +10,7 @@ export async function getMyAssignments() {
 
   const sql = neon(`${process.env.STORE_DATABASE_URL}`)
   const assignments =
-    await sql`SELECT assignment_id, title as assignment_title, description as assignment_description, subject_id, assigned_date, due_date, status, t.id as teacher_id, t.name as teacher_name FROM assignments a, student_assignment s, subjects su, teachers t WHERE a.id = s.assignment_id AND s.student_id = ${session?.userId} AND a.subject_id = su.id AND su.teacher_id = t.id ORDER BY due_date DESC;`
+    await sql`SELECT assignment_id, title as assignment_title, description as assignment_description, subject_id, assigned_date, due_date, status, t.id as teacher_id, t.name as teacher_name, su.monitor_id as monitor_id, st.name as monitor_name FROM assignments a, student_assignment s, subjects su, teachers t, students st WHERE a.id = s.assignment_id AND s.student_id = ${session?.userId} AND a.subject_id = su.id AND su.teacher_id = t.id AND su.monitor_id = st.id ORDER BY due_date DESC;`
 
   const formattedAssignments = assignments.map((a) => {
     const subjectInfo = getSubjectInfo(a.subject_id)

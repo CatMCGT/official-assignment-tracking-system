@@ -1,6 +1,6 @@
 export default function Properties({ children }) {
   return (
-    <div className="grid grid-cols-[200px_auto] grid-rows-3 gap-2 text-nowrap">
+    <div className="grid grid-cols-[200px_400px] gap-2 text-nowrap">
       {children}
     </div>
   )

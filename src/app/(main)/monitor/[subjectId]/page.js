@@ -1,7 +1,6 @@
 import {
   AcademicCapIcon,
   CheckCircleIcon,
-  ChevronDownIcon,
   ClockIcon,
   HashtagIcon,
   PencilSquareIcon,
@@ -11,9 +10,8 @@ import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignment
 import MainLayout from '../../layout'
 import getSubjectInfo from '@/utils/getSubjectInfo'
 import Link from 'next/link'
-import Icon from '@/components/Icon'
-import ArchivedAssignments from './ArchivedAssignments'
-import Properties from './Properties'
+import ArchivedAssignments from '../../../../components/ArchivedAssignments'
+import Properties from '../../../../components/Properties'
 
 export default async function Page({ params }) {
   const { subjectId } = await params

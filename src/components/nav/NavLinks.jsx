@@ -9,7 +9,7 @@ export default function NavLinks({ user }) {
   const pathname = usePathname()
 
   return (
-    <div>
+    <>
       {user?.role === 'student' && (
         <>
           <Link href="/assignments" className={clsx(
@@ -28,6 +28,6 @@ export default function NavLinks({ user }) {
           </Link>
         </>
       )}
-    </div>
+    </>
   )
 }

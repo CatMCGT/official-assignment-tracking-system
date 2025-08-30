@@ -48,7 +48,7 @@ export default function AssignmentStatus({ assignment, students }) {
   const viewOptions = [
     { id: 'all', name: 'All' },
     { id: 'late', name: 'Late' },
-    { id: 'submitted', name: 'Submitted' },
+    { id: 'submitted', name: 'On-time' },
     { id: 'absent', name: 'Absent' },
   ]
 
@@ -201,7 +201,7 @@ export default function AssignmentStatus({ assignment, students }) {
       </div>
 
       {updatedStudents && (
-        <div className="grid grid-cols-3 mt-5">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5 mt-5">
           {updatedStudents
             .filter((student) => {
               if (selectedView === 'all') return true
@@ -221,7 +221,7 @@ export default function AssignmentStatus({ assignment, students }) {
                 <button
                   key={student.id}
                   className={clsx(
-                    'flex flex-col items-start px-6 py-5 rounded-lg cursor-pointer transition-colors text-left min-w-[345px]',
+                    'flex flex-col items-start px-6 py-5 rounded-lg cursor-pointer transition-colors text-left text-nowrap',
                     student.collected_date
                       ? late
                         ? 'border-red-400 border-1 bg-red-50 hover:border-red-500'
@@ -239,6 +239,7 @@ export default function AssignmentStatus({ assignment, students }) {
                               : new Date(),
                           }
                         }
+                        return s
                       })
                     )
                   }}
