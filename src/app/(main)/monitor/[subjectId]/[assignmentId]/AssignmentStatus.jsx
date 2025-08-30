@@ -68,6 +68,7 @@ export default function AssignmentStatus({ assignment, students }) {
   }
 
   function markAllSubmitted() {
+    setIsMenuOpened(false)
     setUpdatedStudents((prev) => {
       const updated = prev.map((student) => {
         if (student.collected_date === null) {

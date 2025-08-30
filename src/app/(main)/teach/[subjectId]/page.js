@@ -13,10 +13,7 @@ import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignment
 import ArchivedAssignments from '@/components/ArchivedAssignments'
 import Properties from '@/components/Properties'
 import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
-import SubjectMonitor from './SubjectMonitor'
 import Icon from '@/components/Icon'
-import SelectProperty from './create/AssignedStudents'
-import { setSubjectMonitor } from '@/db/subjects/setSubjectMonitor'
 import SubjectMonitorProperty from './SubjectMonitor'
 import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
 
