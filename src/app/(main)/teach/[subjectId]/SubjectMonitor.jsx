@@ -26,7 +26,7 @@ export default function SubjectMonitorProperty({
     setIsPending(true)
     setSubjectMonitor(subjectId, subjectMonitorState.id).then(() => {
       setIsPending(false)
-      router.refresh()
+      router.refresh
     })
   }
 

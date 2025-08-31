@@ -5,7 +5,7 @@ export default function MainLayout({ children }) {
   return (
     <div className="h-screen flex flex-row">
       <Navbar />
-      <main className="py-10 px-20 w-full">{children}</main>
+      <main className="py-10 pr-20 pl-80 w-full">{children}</main>
     </div>
   )
 }

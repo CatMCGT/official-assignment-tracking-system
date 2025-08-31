@@ -16,6 +16,8 @@ import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
 import Icon from '@/components/Icon'
 import SubjectMonitorProperty from './SubjectMonitor'
 import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
+import { Suspense } from 'react'
+import Loading from './loading'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
@@ -30,8 +32,10 @@ export default async function Page({ params }) {
     (a) => new Date(a.due_date) < new Date()
   )
 
+  //return <Loading />
+
   return (
-    <div>
+    <Suspense fallback={<Loading />}>
       <MainLayout.Header>
         <div className="flex flex-row gap-3 mb-2">
           {subjectInfo.grade
@@ -188,6 +192,6 @@ export default async function Page({ params }) {
           )}
         </div>
       </MainLayout.Body>
-    </div>
+    </Suspense>
   )
 }
