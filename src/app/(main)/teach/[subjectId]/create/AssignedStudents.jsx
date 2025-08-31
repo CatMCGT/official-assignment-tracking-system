@@ -1,10 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import clsx from 'clsx'
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import Icon from '@/components/Icon'
+import { CheckIcon } from '@heroicons/react/24/outline'
 import { XCircleIcon } from '@heroicons/react/20/solid'
 
 export default function AssignedStudents({
