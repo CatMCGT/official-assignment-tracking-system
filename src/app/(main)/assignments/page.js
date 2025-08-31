@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import MainLayout from '../layout'
-import Radio from '@/components/Radio'
 import { getMyAssignments } from '@/db/assignments/getMyAssignments'
 import {
   ClockIcon,
@@ -21,6 +20,7 @@ export default function Page() {
   // ]
 
   const [assignments, setAssignments] = useState([])
+  console.log(assignments)
   const notSubmitted = assignments?.filter((a) => a.collected_date === null)
   const submitted = assignments?.filter(
     (a) => a.collected_date !== null && new Date(a.due_date) > new Date()
@@ -68,7 +68,7 @@ export default function Page() {
           </div>
 
           {notSubmitted.length > 0 ? (
-            <div className="w-2xl">
+            <div className="w-2xl flex flex-col gap-3">
               {notSubmitted?.map((a) => (
                 <button
                   key={a.assignment_id}
@@ -114,7 +114,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="w-2xl">
+            <div className="w-2xl flex flex-col gap-3">
               {submitted.map((a) => (
                 <button
                   key={a.assignment_id}
@@ -169,7 +169,7 @@ export default function Page() {
           </div>
 
           {isArchivedOpen && (
-            <div className="w-2xl flex-col gap-4">
+            <div className="w-2xl flex flex-col gap-3">
               {archived.map((a) => {
                 return (
                   <button

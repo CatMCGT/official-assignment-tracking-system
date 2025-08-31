@@ -1,32 +1,33 @@
+'use client'
+
 import Icon from '@/components/Icon'
-import { XMarkIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline'
+import {
+  XMarkIcon,
+  ClockIcon,
+  AcademicCapIcon,
+  PencilSquareIcon,
+} from '@heroicons/react/24/outline'
 
 import formatDate from '@/utils/formatDate'
-import { setStatus } from '@/db/assignments/setStatus'
 import Properties from '@/components/Properties'
+import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
+import { useEffect,useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 
-export default function AssignmentModel({
-  assignment,
-  onClose,
-  refreshAssignments,
-}) {
-  // async function handleSetComplete() {
-  //   try {
-  //     await setStatus(assignment.assignment_id, 'complete')
-  //     refreshAssignments()
-  //   } catch (err) {
-  //     console.error('Error marking assignment as complete:', err)
-  //   }
-  // }
+export default function AssignmentModel({ assignment, onClose }) {
+  const [subjectAdmin, setSubjectAdmin] = useState({})
 
-  // async function handleSetTodo() {
-  //   try {
-  //     await setStatus(assignment.assignment_id, 'todo')
-  //     refreshAssignments()
-  //   } catch (err) {
-  //     console.error('Error marking assignment as todo:', err)
-  //   }
-  // }
+  useEffect(() => {
+    async function fetchSubjectAdmin() {
+      try {
+        const res = await getSubjectAdmin(assignment.subjectId)
+        setSubjectAdmin(res)
+      } catch (error) {
+        console.error('Failed to fetch subject admin:', error)
+      }
+    }
+    fetchSubjectAdmin()
+  }, [assignment.subjectId])
 
   return (
     <div className="border-l-1 border-l-stroke-weak bg-white z-10 absolute right-0 h-screen top-0 px-11 py-15">
@@ -48,21 +49,35 @@ export default function AssignmentModel({
             {assignment?.assignment_title}
           </h2>
 
-          <Properties>
-            <Properties.Property name="Teacher">
-              <AcademicCapIcon className="size-5 text-text-weak" />
-            </Properties.Property>
-            <Properties.Property.Value>
-              {assignment?.teacher_name}
-            </Properties.Property.Value>
+          {subjectAdmin?.teacher_id?.length > 0 ? (
+            <Properties>
+              <Properties.Property name="Teacher">
+                <AcademicCapIcon className="size-5 text-text-weak" />
+              </Properties.Property>
+              <Properties.Property.Value>
+                {subjectAdmin?.teacher_name}
+              </Properties.Property.Value>
 
-            <Properties.Property name="Student Monitor">
-              <PencilSquareIcon className="size-5 text-text-weak" />
-            </Properties.Property>
-            <Properties.Property.Value>
-              {assignment?.monitor_name}
-            </Properties.Property.Value>
-          </Properties>
+              <Properties.Property name="Student Monitor">
+                <PencilSquareIcon className="size-5 text-text-weak" />
+              </Properties.Property>
+              <Properties.Property.Value>
+                {subjectAdmin?.monitor_name}
+              </Properties.Property.Value>
+            </Properties>
+          ) : (
+            <Properties>
+              <Properties.Property name="Teacher">
+                <AcademicCapIcon className="size-5 text-text-weak" />
+              </Properties.Property>
+              <Skeleton className="w-full h-8" />
+
+              <Properties.Property name="Student Monitor">
+                <PencilSquareIcon className="size-5 text-text-weak" />
+              </Properties.Property>
+              <Skeleton className="w-full h-8" />
+            </Properties>
+          )}
 
           <hr className="text-stroke-weak mt-2 mb-2"></hr>
 
