@@ -23,9 +23,11 @@ export default function Page() {
   console.log(assignments)
   const notSubmitted = assignments?.filter((a) => a.collected_date === null)
   const submitted = assignments?.filter(
-    (a) => a.collected_date !== null && new Date(a.due_date) > new Date()
+    (a) => a.collected_date !== null && new Date(a.due_date) >= new Date()
   )
-  const archived = assignments?.filter((a) => new Date(a.due_date) < new Date())
+  const archived = assignments?.filter(
+    (a) => a.collected_date !== null && new Date(a.due_date) < new Date()
+  )
   const [isArchivedOpen, setIsArchivedOpen] = useState(false)
 
   function refreshAssignments() {
