@@ -1,12 +1,30 @@
 'use client'
 
-import Icon from '@/components/Icon'
-import { UserIcon } from '@heroicons/react/24/outline'
+import { createUser } from '@/db/users/createUser'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import Form from 'next/form'
+import { useActionState } from 'react'
 
 export default function CreateUser() {
+  const [createUserState, createUserAction, isPending] = useActionState(
+    createUser,
+    {
+      role: 'student',
+      id: '',
+      name: '',
+      password: '',
+    }
+  )
+
+  function createUserClient(formData) {
+
+  }
+
   return (
-    <Form className="border-1 border-stroke-weak rounded p-4 w-72">
+    <Form
+      action={createUserAction}
+      className="border-1 border-stroke-weak rounded p-4 w-72"
+    >
       <h2 className="text-lg font-bold mb-3">Create User</h2>
 
       <div className="flex flex-col gap-3">
@@ -74,14 +92,28 @@ export default function CreateUser() {
           />
         </div>
 
-        <button className='w-fit mt-4'>
-          <Icon border className="border-text-weakest">
-            <div className="flex flex-row gap-1 items-center px-1">
-              Create
-              <UserIcon className="size-5 text-text-weak font-bold" />
-            </div>
-          </Icon>
+        <button
+          type="submit"
+          className="px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit mt-2 bg-text-weak"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <ArrowPathIcon className="size-6 text-white" />
+          ) : (
+            'Create'
+          )}
         </button>
+
+        {createUserState?.message && (
+          <p
+            className={clsx(
+              'font-bold text-sm mt-0' && true,
+              createUserState?.success ? 'text-green-400' : 'text-red-400'
+            )}
+          >
+            {createUserState.message}
+          </p>
+        )}
       </div>
     </Form>
   )
