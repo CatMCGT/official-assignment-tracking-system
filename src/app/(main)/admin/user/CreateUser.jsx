@@ -1,24 +1,23 @@
-'use client'
+"use client";
 
-import { createUser } from '@/db/users/createUser'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
-import Form from 'next/form'
-import { useActionState } from 'react'
+import { createUser } from "@/db/users/createUser";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import Form from "next/form";
+import { useState, useActionState } from "react";
+import EnrolledSubjects from "./EnrolledSubjects";
 
-export default function CreateUser() {
+export default function CreateUser({ allSubjects }) {
+  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([]);
   const [createUserState, createUserAction, isPending] = useActionState(
-    createUser,
+    createUser.bind({ enrolledSubjectIds: enrolledSubjectIds }),
     {
-      role: 'student',
-      id: '',
-      name: '',
-      password: '',
+      role: "student",
+      id: "",
+      name: "",
+      password: "",
     }
-  )
-
-  function createUserClient(formData) {
-
-  }
+  );
 
   return (
     <Form
@@ -92,6 +91,26 @@ export default function CreateUser() {
           />
         </div>
 
+        <div className="flex flex-col gap-1">
+          <label htmlFor="subjects">Enrolled Subjects</label>
+          <EnrolledSubjects
+            allSubjects={allSubjects}
+            enrolledSubjectIds={enrolledSubjectIds}
+            setEnrolledSubjectIds={setEnrolledSubjectIds}
+          />
+        </div>
+
+        {createUserState?.message && (
+          <p
+            className={clsx(
+              "font-bold text-sm mt-0" && true,
+              createUserState?.success ? "text-green-400" : "text-red-400"
+            )}
+          >
+            {createUserState.message}
+          </p>
+        )}
+
         <button
           type="submit"
           className="px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit mt-2 bg-text-weak"
@@ -100,21 +119,10 @@ export default function CreateUser() {
           {isPending ? (
             <ArrowPathIcon className="size-6 text-white" />
           ) : (
-            'Create'
+            "Create"
           )}
         </button>
-
-        {createUserState?.message && (
-          <p
-            className={clsx(
-              'font-bold text-sm mt-0' && true,
-              createUserState?.success ? 'text-green-400' : 'text-red-400'
-            )}
-          >
-            {createUserState.message}
-          </p>
-        )}
       </div>
     </Form>
-  )
+  );
 }
