@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import { createUser } from "@/db/users/createUser";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import Form from "next/form";
-import { useState, useActionState } from "react";
-import EnrolledSubjects from "./EnrolledSubjects";
+import { createUser } from '@/db/users/createUser'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import Form from 'next/form'
+import { useState, useActionState, useEffect } from 'react'
+import EnrolledSubjects from './EnrolledSubjects'
 
 export default function CreateUser({ allSubjects }) {
-  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([]);
+  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([])
   const [createUserState, createUserAction, isPending] = useActionState(
-    createUser.bind({ enrolledSubjectIds: enrolledSubjectIds }),
+    createUser.bind(null, enrolledSubjectIds),
     {
-      role: "student",
-      id: "",
-      name: "",
-      password: "",
+      role: 'student',
+      id: '',
+      name: '',
+      password: '',
     }
-  );
+  )
 
   return (
     <Form
@@ -42,9 +42,6 @@ export default function CreateUser({ allSubjects }) {
             </option>
             <option name="role" value="teacher">
               Teacher
-            </option>
-            <option name="role" value="admin">
-              Admin
             </option>
           </select>
         </div>
@@ -103,8 +100,8 @@ export default function CreateUser({ allSubjects }) {
         {createUserState?.message && (
           <p
             className={clsx(
-              "font-bold text-sm mt-0" && true,
-              createUserState?.success ? "text-green-400" : "text-red-400"
+              'font-bold text-sm mt-0' && true,
+              createUserState?.success ? 'text-green-400' : 'text-red-400'
             )}
           >
             {createUserState.message}
@@ -119,10 +116,10 @@ export default function CreateUser({ allSubjects }) {
           {isPending ? (
             <ArrowPathIcon className="size-6 text-white" />
           ) : (
-            "Create"
+            'Create'
           )}
         </button>
       </div>
     </Form>
-  );
+  )
 }
