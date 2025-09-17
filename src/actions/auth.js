@@ -18,7 +18,10 @@ export async function logIn(prevState, formData) {
     const isMatch = await bcrypt.compare(password, userData.password);
 
     if (!isMatch) {
-      throw new Error("Incorrect credentials.");
+      return {
+        success: false,
+        message: "Incorrect credentials.",
+      };
     }
 
     return {
@@ -31,7 +34,7 @@ export async function logIn(prevState, formData) {
 
     return {
       success: false,
-      message: "Incorrect credentials.",
+      message: "Error loggin in. Please check the developer console.",
     };
   }
 }

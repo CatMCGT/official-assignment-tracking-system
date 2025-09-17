@@ -1,23 +1,43 @@
-'use client'
+"use client";
 
-import { createUser } from '@/db/users/createUser'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
-import Form from 'next/form'
-import { useState, useActionState, useEffect } from 'react'
-import EnrolledSubjects from './EnrolledSubjects'
+import { createUser } from "@/db/users/createUser";
+import { ArrowPathIcon, CheckIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import Form from "next/form";
+import { useState, useActionState, useEffect } from "react";
+import EnrolledSubjects from "./EnrolledSubjects";
+import { toTitleCase } from "@/utils/toTitleCase";
 
 export default function CreateUser({ allSubjects }) {
-  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([])
+  const [role, setRole] = useState("student");
+  const roleOptions = ["student", "teacher", "admin"];
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([]);
+  const [taughtSubjectIds, setTaughtSubjectIds] = useState([]);
+
+  const additionalData =
+    role === "student"
+      ? {
+          enrolledSubjectIds: enrolledSubjectIds,
+          role: role,
+        }
+      : role === "teacher"
+      ? {
+          taughtSubjectIds: taughtSubjectIds,
+          role: role,
+        }
+      : {
+          role: role,
+        };
+
   const [createUserState, createUserAction, isPending] = useActionState(
-    createUser.bind(null, enrolledSubjectIds),
+    createUser.bind(null, additionalData),
     {
-      role: 'student',
-      id: '',
-      name: '',
-      password: '',
+      id: "",
+      name: "",
+      password: "",
     }
-  )
+  );
 
   return (
     <Form
@@ -27,7 +47,39 @@ export default function CreateUser({ allSubjects }) {
       <h2 className="text-lg font-bold mb-3">Create User</h2>
 
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1">
+        <div className="relative">
+          <label>
+            Role <span className="text-red-500">*</span>
+          </label>
+          <div
+            className="border-1 border-stroke-weak rounded p-2 cursor-pointer transition-colors w-full text-left"
+            onClick={() => setIsMenuOpened((prev) => !prev)}
+          >
+            <p>{toTitleCase(role)}</p>
+          </div>
+          {isMenuOpened && (
+            <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-12 z-10 w-64">
+              <div className="flex flex-col gap-1">
+                {roleOptions.map((option) => {
+                  <button
+                    key={option}
+                    type="button"
+                    className="flex flex-row gap-2 justify-between items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full"
+                    onClick={() => {
+                      setRole(option);
+                    }}
+                  >
+                    <p>{toTitleCase(option)}</p>
+                    {role === option && (
+                      <CheckIcon className="size-4 text-text-weak" />
+                    )}
+                  </button>;
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+        {/* <div className="flex flex-col gap-1">
           <label htmlFor="role">
             Role <span className="text-red-500">*</span>
           </label>
@@ -44,7 +96,7 @@ export default function CreateUser({ allSubjects }) {
               Teacher
             </option>
           </select>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-1">
           <label htmlFor="userId">
@@ -88,20 +140,33 @@ export default function CreateUser({ allSubjects }) {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="subjects">Enrolled Subjects</label>
-          <EnrolledSubjects
-            allSubjects={allSubjects}
-            enrolledSubjectIds={enrolledSubjectIds}
-            setEnrolledSubjectIds={setEnrolledSubjectIds}
-          />
-        </div>
+        {role === "student" && (
+          <div className="flex flex-col gap-1">
+            <label htmlFor="subjects">Enrolled Subjects</label>
+            <EnrolledSubjects
+              allSubjects={allSubjects}
+              enrolledSubjectIds={enrolledSubjectIds}
+              setEnrolledSubjectIds={setEnrolledSubjectIds}
+            />
+          </div>
+        )}
+
+        {role === "teacher" && (
+          <div className="flex flex-col gap-1">
+            <label htmlFor="subjects">Taught Subjects</label>
+            <EnrolledSubjects
+              allSubjects={allSubjects}
+              enrolledSubjectIds={taughtSubjectIds}
+              setEnrolledSubjectIds={setTaughtSubjectIds}
+            />
+          </div>
+        )}
 
         {createUserState?.message && (
           <p
             className={clsx(
-              'font-bold text-sm mt-0' && true,
-              createUserState?.success ? 'text-green-400' : 'text-red-400'
+              "font-bold text-sm mt-0" && true,
+              createUserState?.success ? "text-green-400" : "text-red-400"
             )}
           >
             {createUserState.message}
@@ -116,10 +181,10 @@ export default function CreateUser({ allSubjects }) {
           {isPending ? (
             <ArrowPathIcon className="size-6 text-white" />
           ) : (
-            'Create'
+            "Create"
           )}
         </button>
       </div>
     </Form>
-  )
+  );
 }
