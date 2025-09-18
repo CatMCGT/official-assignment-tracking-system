@@ -48,7 +48,7 @@ export async function createUser(additionalData, prevState, formData) {
       await Promise.all(
         taughtSubjectIds.map(async (subjectId) => {
           await client.query(
-            "UPDATE subject SET teacher_id = $1 WHERE id = $2",
+            "UPDATE subjects SET teacher_id = $1 WHERE id = $2",
             [id, subjectId]
           );
 
