@@ -1,46 +1,46 @@
-'use client'
+"use client";
 
-import { createUser } from '@/db/users/createUser'
-import { ArrowPathIcon, CheckIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
-import Form from 'next/form'
-import { useState, useActionState, useEffect } from 'react'
-import EnrolledSubjects from './EnrolledSubjects'
-import { toTitleCase } from '@/utils/toTitleCase'
+import { createUser } from "@/db/users/createUser";
+import { ArrowPathIcon, CheckIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import Form from "next/form";
+import { useState, useActionState, useEffect } from "react";
+import EnrolledSubjects from "./EnrolledSubjects";
+import toTitleCase from "@/utils/toTitleCase";
 
 export default function CreateUser({ allSubjects }) {
-  const [role, setRole] = useState('student')
-  const roleOptions = ['student', 'teacher', 'admin']
-  const [isMenuOpened, setIsMenuOpened] = useState(false)
-  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([])
-  const [taughtSubjectIds, setTaughtSubjectIds] = useState([])
+  const [role, setRole] = useState("student");
+  const roleOptions = ["student", "teacher", "admin"];
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([]);
+  const [taughtSubjectIds, setTaughtSubjectIds] = useState([]);
   const availableSubjectsToTeach = allSubjects.filter(
     (s) => s.teacherId === null
-  )
+  );
 
   const additionalData =
-    role === 'student'
+    role === "student"
       ? {
           enrolledSubjectIds: enrolledSubjectIds,
           role: role,
         }
-      : role === 'teacher'
+      : role === "teacher"
       ? {
           taughtSubjectIds: taughtSubjectIds,
           role: role,
         }
       : {
           role: role,
-        }
+        };
 
   const [createUserState, createUserAction, isPending] = useActionState(
     createUser.bind(null, additionalData),
     {
-      id: '',
-      name: '',
-      password: '',
+      id: "",
+      name: "",
+      password: "",
     }
-  )
+  );
 
   return (
     <Form
@@ -70,7 +70,7 @@ export default function CreateUser({ allSubjects }) {
                     type="button"
                     className="flex flex-row gap-2 justify-between items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full"
                     onClick={() => {
-                      setRole(option)
+                      setRole(option);
                     }}
                   >
                     <p>{toTitleCase(option)}</p>
@@ -144,7 +144,7 @@ export default function CreateUser({ allSubjects }) {
           />
         </div>
 
-        {role === 'student' && (
+        {role === "student" && (
           <div className="flex flex-col gap-1">
             <label htmlFor="subjects">Enrolled Subjects</label>
             <EnrolledSubjects
@@ -155,7 +155,7 @@ export default function CreateUser({ allSubjects }) {
           </div>
         )}
 
-        {role === 'teacher' && (
+        {role === "teacher" && (
           <div className="flex flex-col gap-1">
             <label htmlFor="subjects">Taught Subjects</label>
             <EnrolledSubjects
@@ -169,8 +169,8 @@ export default function CreateUser({ allSubjects }) {
         {createUserState?.message && (
           <p
             className={clsx(
-              'font-bold text-sm mt-0' && true,
-              createUserState?.success ? 'text-green-400' : 'text-red-400'
+              "font-bold text-sm mt-0" && true,
+              createUserState?.success ? "text-green-400" : "text-red-400"
             )}
           >
             {createUserState.message}
@@ -185,10 +185,10 @@ export default function CreateUser({ allSubjects }) {
           {isPending ? (
             <ArrowPathIcon className="size-6 text-white" />
           ) : (
-            'Create'
+            "Create"
           )}
         </button>
       </div>
     </Form>
-  )
+  );
 }

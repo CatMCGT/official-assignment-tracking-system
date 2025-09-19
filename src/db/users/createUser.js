@@ -4,6 +4,7 @@ import { Pool } from "@neondatabase/serverless";
 import { verifySession } from "@/actions/userSession";
 import bcrypt from "bcrypt";
 import { getUser } from "./getUser";
+import { revalidatePath } from "next/cache";
 
 export async function createUser(additionalData, prevState, formData) {
   const pool = new Pool({ connectionString: process.env.STORE_DATABASE_URL });
@@ -58,6 +59,8 @@ export async function createUser(additionalData, prevState, formData) {
     } else {
       await client.query("COMMIT");
     }
+
+    revalidatePath("/admin/user");
 
     return {
       success: true,
