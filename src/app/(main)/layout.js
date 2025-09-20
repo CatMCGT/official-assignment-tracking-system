@@ -23,7 +23,7 @@ MainLayout.Header = Header
 
 function Body({ children }) {
   return (
-    <div className="flex flex-col gap-10 items-start h-full">{children}</div>
+    <div className="flex flex-col gap-10 items-start">{children}</div>
   )
 }
 

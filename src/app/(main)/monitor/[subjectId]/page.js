@@ -12,6 +12,8 @@ import getSubjectInfo from '@/utils/getSubjectInfo'
 import Link from 'next/link'
 import ArchivedAssignments from '../../../../components/ArchivedAssignments'
 import Properties from '../../../../components/Properties'
+import { Suspense } from 'react'
+import Loading from './loading'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
@@ -25,7 +27,7 @@ export default async function Page({ params }) {
   )
 
   return (
-    <div>
+    <Suspense fallback={<Loading />}>
       <MainLayout.Header>
         <div className="flex flex-row gap-3 mb-2">
           {subjectInfo.grade
@@ -77,7 +79,7 @@ export default async function Page({ params }) {
           </div>
 
           {inProgress?.length > 0 ? (
-            <div className="w-2xl">
+            <div className="w-2xl flex flex-col gap-3">
               {inProgress.map((a) => {
                 const submittedCount = a.students.filter(
                   (student) => student.collected_date !== null
@@ -136,6 +138,6 @@ export default async function Page({ params }) {
           />
         )}
       </MainLayout.Body>
-    </div>
+    </Suspense>
   )
 }

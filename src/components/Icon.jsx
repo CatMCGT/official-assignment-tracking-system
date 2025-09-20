@@ -1,11 +1,11 @@
 import clsx from 'clsx'
 
-export default function Icon({ children, tooltip, border }) {
+export default function Icon({ children, tooltip, border, className }) {
   return (
     <div className="relative">
       <div
         className={clsx(
-          'hover:bg-fill-weak border-stroke-weak p-[6px] w-fit rounded flex justify-center items-center cursor-pointer peer transition-colors',
+          `${className} hover:bg-fill-weak border-stroke-weak p-[6px] w-fit rounded flex justify-center items-center cursor-pointer peer transition-colors`,
           border ? 'border-1' : ''
         )}
       >
