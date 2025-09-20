@@ -4,11 +4,10 @@ import { useState } from "react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { XCircleIcon } from "@heroicons/react/20/solid";
 
-export default function AssignedStudents({
-  subjectStudents,
-  subjectStudentIds = [],
-  assignedStudentIds,
-  setAssignedStudentIds,
+export default function EnrolledSubjects({
+  allSubjects,
+  enrolledSubjectIds,
+  setEnrolledSubjectIds,
 }) {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [search, setSearch] = useState("");
@@ -20,14 +19,12 @@ export default function AssignedStudents({
           className="border-1 border-stroke-weak rounded p-2 cursor-pointer transition-colors w-full text-left"
           onClick={() => setIsMenuOpened((prev) => !prev)}
         >
-          {assignedStudentIds.length == subjectStudentIds.length ? (
-            "All students enrolled"
-          ) : assignedStudentIds.length === 0 ? (
-            "No students"
+          {enrolledSubjectIds.length === 0 ? (
+            "No enrolled subjects"
           ) : (
             <div>
-              {subjectStudents
-                .filter((s) => assignedStudentIds.includes(s.id))
+              {allSubjects
+                .filter((s) => enrolledSubjectIds.includes(s.id))
                 .map((s) => (
                   <div
                     key={s.id}
@@ -35,10 +32,11 @@ export default function AssignedStudents({
                   >
                     <p>{s.name}</p>
                     <button
+                      type="button"
                       className="cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setAssignedStudentIds((prev) =>
+                        setEnrolledSubjectIds((prev) =>
                           prev.filter((id) => id !== s.id)
                         );
                       }}
@@ -53,7 +51,7 @@ export default function AssignedStudents({
       </div>
 
       {isMenuOpened && (
-        <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-14 z-10 w-64">
+        <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-12 z-10 w-64">
           <input
             type="text"
             placeholder="Search..."
@@ -63,7 +61,7 @@ export default function AssignedStudents({
             autoFocus
           ></input>
           <div className="max-h-32 overflow-scroll flex flex-col gap-1 overflow-x-hidden overflow-y-auto">
-            {subjectStudents
+            {allSubjects
               ?.filter(
                 (option) =>
                   option.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -75,7 +73,7 @@ export default function AssignedStudents({
                   type="button"
                   className="flex flex-row gap-2 justify-between items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full"
                   onClick={() => {
-                    setAssignedStudentIds((prev) => {
+                    setEnrolledSubjectIds((prev) => {
                       if (prev.includes(option.id)) {
                         return prev.filter((id) => id !== option.id);
                       } else {
@@ -84,8 +82,11 @@ export default function AssignedStudents({
                     });
                   }}
                 >
-                  {option.name}
-                  {assignedStudentIds.includes(option.id) && (
+                  <div className="flex flex-row gap-2 items-end">
+                    <p>{option.name}</p>
+                    <p className="text-sm text-text-weak">{option.id}</p>
+                  </div>
+                  {enrolledSubjectIds.includes(option.id) && (
                     <CheckIcon className="size-4 text-text-weak" />
                   )}
                 </button>
