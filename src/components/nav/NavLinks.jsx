@@ -1,6 +1,6 @@
 'use client'
 
-import { BookOpenIcon } from '@heroicons/react/20/solid'
+import { BookOpenIcon, ChartPieIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
@@ -24,6 +24,25 @@ export default function NavLinks({ user }) {
               )}
             >
               Assignments
+            </p>
+          </Link>
+        </>
+      )}
+
+      {user?.role === 'teacher' && (
+        <>
+          <Link href="/dashboard" className={clsx(
+                'nav-tab',
+                pathname === '/dashboard' ? 'active' : ''
+              )}>
+            <ChartPieIcon className="size-6 text-text-weaker" />
+            <p
+              className={clsx(
+                'font-bold mr-1 ml-3',
+                pathname === '/dashboard' ? 'text-text-strong' : 'text-text-weaker'
+              )}
+            >
+              Dashboard
             </p>
           </Link>
         </>

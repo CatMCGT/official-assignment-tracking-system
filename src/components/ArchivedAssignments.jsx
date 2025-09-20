@@ -43,7 +43,7 @@ export default function ArchivedAssignments({
       </div>
 
       {isArchivedOpen && (
-        <div className="w-2xl flex-col gap-4">
+        <div className="w-2xl flex flex-col gap-4">
           {archived.map((a) => {
             const submittedCount = a.students.filter(
               (student) => student.collected_date !== null

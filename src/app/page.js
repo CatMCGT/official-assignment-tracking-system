@@ -6,7 +6,6 @@ export default async function Page() {
   if (user.role === "student") {
     redirect("/assignments")
   } else if (user.role === "teacher") {
-    // redirect("/teach/")
-    redirect("/assignments")
+    redirect("/dashboard")
   }
 }
