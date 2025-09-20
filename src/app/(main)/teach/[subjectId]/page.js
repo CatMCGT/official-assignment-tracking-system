@@ -100,7 +100,7 @@ export default async function Page({ params }) {
               >
                 <p className="text-lg">{student.name}</p>
                 <p className="text-text-weak">#{student.id}</p>
-                <p>100%</p>
+                <p>-%</p>
               </div>
             ))}
           </div>
@@ -119,7 +119,7 @@ export default async function Page({ params }) {
             </Link>
           </div>
 
-          <div className="flex flex-col gap-6 bg-background-weak border-1 border-stroke-weak px-6 py-5">
+          <div className="flex flex-col gap-6 bg-background-weak border-1 border-stroke-weak px-6 py-5 mb-4">
             <div className="flex flex-row gap-[6px] items-center">
               <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
                 In progress
