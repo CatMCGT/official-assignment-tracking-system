@@ -154,19 +154,21 @@ export default function Page() {
             <div className="w-4 h-4 text-xs text-text-weak bg-fill-weak rounded flex justify-center items-center">
               {archived.length}
             </div>
-            <button
-              type="button"
-              className="ml-2"
-              onClick={() => setIsArchivedOpen((prev) => !prev)}
-            >
-              <Icon>
-                {isArchivedOpen ? (
-                  <ChevronUpIcon className="size-4 text-text-weak" />
-                ) : (
-                  <ChevronRightIcon className="size-4 text-text-weak" />
-                )}
-              </Icon>
-            </button>
+            {archived.length > 0 && (
+              <button
+                type="button"
+                className="ml-2"
+                onClick={() => setIsArchivedOpen((prev) => !prev)}
+              >
+                <Icon>
+                  {isArchivedOpen ? (
+                    <ChevronUpIcon className="size-4 text-text-weak" />
+                  ) : (
+                    <ChevronRightIcon className="size-4 text-text-weak" />
+                  )}
+                </Icon>
+              </button>
+            )}
           </div>
 
           {isArchivedOpen && (

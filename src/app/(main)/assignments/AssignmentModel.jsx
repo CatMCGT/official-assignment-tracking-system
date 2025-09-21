@@ -58,7 +58,7 @@ export default function AssignmentModel({ assignment, onClose }) {
                 {subjectAdmin?.teacher_name}
               </Properties.Property.Value>
 
-              <Properties.Property name="Student Monitor">
+              <Properties.Property name="Subject Monitor">
                 <PencilSquareIcon className="size-5 text-text-weak" />
               </Properties.Property>
               <Properties.Property.Value>
@@ -72,7 +72,7 @@ export default function AssignmentModel({ assignment, onClose }) {
               </Properties.Property>
               <Skeleton className="w-full h-8" />
 
-              <Properties.Property name="Student Monitor">
+              <Properties.Property name="Subject Monitor">
                 <PencilSquareIcon className="size-5 text-text-weak" />
               </Properties.Property>
               <Skeleton className="w-full h-8" />

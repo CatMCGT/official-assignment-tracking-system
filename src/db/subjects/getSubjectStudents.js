@@ -14,7 +14,7 @@ export async function getSubjectStudents(subjectId) {
 
   const sql = neon(`${process.env.STORE_DATABASE_URL}`)
   const students =
-    await sql`SELECT DISTINCT id, name FROM student_subject, students st WHERE subject_id = ${subjectId};`
+    await sql`SELECT id, name FROM student_subject su, students st WHERE su.student_id = st.id AND subject_id = ${subjectId};`
 
   return students
 }
