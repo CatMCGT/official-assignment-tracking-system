@@ -1,19 +1,41 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import formatDate from "@/utils/formatDate";
-import toTitleCase from "@/utils/toTitleCase";
+import { useState, useEffect } from 'react'
+import formatDate from '@/utils/formatDate'
+import toTitleCase from '@/utils/toTitleCase'
 import {
   MagnifyingGlassIcon,
   ChartBarIcon,
   EllipsisVerticalIcon,
   ArrowUpRightIcon,
-} from "@heroicons/react/24/outline";
-import Icon from "@/components/Icon";
+} from '@heroicons/react/24/outline'
+import Icon from '@/components/Icon'
 
 export default function AllUsers({ allUsers }) {
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const allUserIds = allUsers.map((u) => u.id);
+  const [selectedUsers, setSelectedUsers] = useState([])
+  const [viewUsers, setViewUsers] = useState(allUsers)
+  const viewUserIds = viewUsers.map((u) => u.id)
+
+  const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    if (search.length > 0) {
+      setViewUsers(
+        allUsers?.filter((user) => {
+          return (
+            user.name.toLowerCase().includes(search.toLowerCase()) ||
+            user.id.toLowerCase().includes(search.toLowerCase()) ||
+            formatDate(user.reg_date)
+              .toLowerCase()
+              .includes(search.toLowerCase()) ||
+            user.role.toLowerCase().includes(search.toLowerCase())
+          )
+        })
+      )
+    } else {
+      setViewUsers(allUsers)
+    }
+  }, [search])
 
   return (
     <div className="flex flex-col gap-2">
@@ -32,6 +54,8 @@ export default function AllUsers({ allUsers }) {
             <input
               type="text"
               className="border-1 border-stroke-weak rounded focus:outline-text-weaker focus:outline-1 h-8 pl-2 pr-8"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <div className="absolute right-0 top-0">
               <Icon tooltip="Search">
@@ -60,18 +84,22 @@ export default function AllUsers({ allUsers }) {
 
       <div className="flex flex-col gap-2">
         <div className="grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center px-3 py-2 text-sm text-text-weak">
-          <input
-            type="checkbox"
-            className="border-1 border-text-weak accent-text-weak"
-            checked={selectedUsers.length === allUserIds.length}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedUsers(allUserIds);
-              } else {
-                setSelectedUsers([]);
-              }
-            }}
-          />
+          {search.length === 0 ? (
+            <input
+              type="checkbox"
+              className="border-1 border-text-weak accent-text-weak"
+              checked={selectedUsers.length === viewUsers.length}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedUsers(viewUserIds)
+                } else {
+                  setSelectedUsers([])
+                }
+              }}
+            />
+          ) : (
+            <div></div>
+          )}
           <p>Name</p>
           <p>ID</p>
           <p>Password</p>
@@ -79,7 +107,7 @@ export default function AllUsers({ allUsers }) {
           <p>Role</p>
         </div>
         <div className="w-2xl flex flex-col gap-2 h-[400px] overflow-y-auto overflow-x-hidden">
-          {allUsers?.map((user) => (
+          {viewUsers.map((user) => (
             <div
               key={user.id}
               className="grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center border-1 border-stroke-weak rounded px-3 py-2"
@@ -88,13 +116,13 @@ export default function AllUsers({ allUsers }) {
                 type="checkbox"
                 className="border-1 border-text-weak accent-text-weak"
                 checked={selectedUsers.includes(user.id)}
-                onChange={(e) => {
+                onChange={() => {
                   if (selectedUsers.includes(user.id)) {
                     setSelectedUsers((prev) =>
                       prev.filter((id) => id !== user.id)
-                    );
+                    )
                   } else {
-                    setSelectedUsers((prev) => [...prev, user.id]);
+                    setSelectedUsers((prev) => [...prev, user.id])
                   }
                 }}
               />
@@ -102,7 +130,7 @@ export default function AllUsers({ allUsers }) {
               <p className="text-text-weak text-sm">#{user.id}</p>
               {true ? (
                 <p className="text-text-weaker text-sm">
-                  {" "}
+                  {' '}
                   &#8226; &#8226; &#8226; &#8226;
                 </p>
               ) : (
@@ -118,5 +146,5 @@ export default function AllUsers({ allUsers }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
