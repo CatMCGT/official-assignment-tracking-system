@@ -24,7 +24,6 @@ export default function CreateUser({ allSubjects }) {
       name: 'Admin',
     },
   ]
-  const [isMenuOpened, setIsMenuOpened] = useState(false)
   const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([])
   const [taughtSubjectIds, setTaughtSubjectIds] = useState([])
   const availableSubjectsToTeach = allSubjects.filter(

@@ -8,6 +8,7 @@ import {
   ChartBarIcon,
   EllipsisVerticalIcon,
   ArrowUpRightIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
 import Icon from '@/components/Icon'
 
@@ -15,6 +16,8 @@ export default function AllUsers({ allUsers }) {
   const [selectedUsers, setSelectedUsers] = useState([])
   const [viewUsers, setViewUsers] = useState(allUsers)
   const viewUserIds = viewUsers.map((u) => u.id)
+
+  const [bulkMenuOpened, setBulkMenuOpened] = useState(null)
 
   const [search, setSearch] = useState('')
 
@@ -38,7 +41,10 @@ export default function AllUsers({ allUsers }) {
   }, [search])
 
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      className="flex flex-col gap-2"
+      onClick={() => setBulkMenuOpened(null)}
+    >
       <div className="flex flex-row gap-3 items-center">
         <h2 className="font-semibold text-xl">All Users</h2>
         <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
@@ -106,7 +112,7 @@ export default function AllUsers({ allUsers }) {
           <p>Registration Date</p>
           <p>Role</p>
         </div>
-        <div className="w-2xl flex flex-col gap-2 h-[400px] overflow-y-auto overflow-x-hidden">
+        <div className="w-2xl flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
           {viewUsers.map((user) => (
             <div
               key={user.id}
@@ -145,6 +151,45 @@ export default function AllUsers({ allUsers }) {
           ))}
         </div>
       </div>
+
+      {selectedUsers.length > 0 && (
+        <div className="flex flex-row gap-4 items-center">
+          <p>Actions:</p>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setBulkMenuOpened(bulkMenuOpened === 'role' ? null : 'role')
+              }}
+            >
+              <Icon border className="flex flex-row gap-1 items-center px-2">
+                <UserIcon className="size-5 text-text-weak" />
+                <p className="tracking-wide">Set role...</p>
+              </Icon>
+            </button>
+
+            {bulkMenuOpened === 'role' && (
+              <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-12 z-10 w-64">
+                <div className="max-h-32 overflow-scroll flex flex-col gap-1 overflow-x-hidden overflow-y-auto">
+                  {['student', 'teacher', 'admin'].map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className="flex flex-row gap-2 justify-between items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex flex-row gap-2 items-end">
+                        <p>{toTitleCase(option)}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
