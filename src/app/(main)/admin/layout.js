@@ -1,6 +1,6 @@
 import { getUser } from "@/db/users/getUser"
 
-export default async function MainLayout({ children }) {
+export default async function Layout({ children }) {
   const user = await getUser()
   const role = user.role
 

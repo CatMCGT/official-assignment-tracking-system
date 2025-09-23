@@ -12,6 +12,7 @@ import {
 import Icon from '@/components/Icon'
 import BulkActions from './BulkActions'
 import clsx from 'clsx'
+import Link from 'next/link'
 
 export default function AllUsers({ allUsers }) {
   const [selectedUserIds, setSelectedUserIds] = useState([])
@@ -112,11 +113,19 @@ export default function AllUsers({ allUsers }) {
         <div className="w-2xl flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
           {viewUsers.map((user) => {
             const originalUser = allUsers.filter((u) => u.id === user.id)[0]
+            const editted =
+              originalUser.id !== user.id ||
+              originalUser.name !== user.name ||
+              originalUser.password !== user.password ||
+              originalUser.role !== user.role
             return (
               <div
                 key={user.id}
                 className={clsx(
-                  'grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center border-1 border-stroke-weak rounded px-3 py-2'
+                  'grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center border-1 rounded px-3 py-2',
+                  editted
+                    ? 'border-green-500 bg-green-50 border-dashed'
+                    : 'border-stroke-weak'
                 )}
               >
                 <input
@@ -144,10 +153,20 @@ export default function AllUsers({ allUsers }) {
                   <p>{user.password}</p>
                 )}
                 <p className="text-sm">{formatDate(user.reg_date)}</p>
-                <p className="text-sm">{toTitleCase(user.role)}</p>
-                <Icon tooltip="See details">
-                  <ArrowUpRightIcon className="size-4 text-text-weak" />
-                </Icon>
+                <p
+                  className={clsx(
+                    'text-sm',
+                    originalUser.role !== user.role &&
+                      'font-bold text-green-700'
+                  )}
+                >
+                  {toTitleCase(user.role)}
+                </p>
+                <Link href={`/admin/user/${user.id}`}>
+                  <Icon tooltip="See details">
+                    <ArrowUpRightIcon className="size-4 text-text-weak" />
+                  </Icon>
+                </Link>
               </div>
             )
           })}
