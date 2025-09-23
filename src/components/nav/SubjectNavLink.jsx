@@ -8,7 +8,7 @@ import { BookmarkIcon } from '@heroicons/react/20/solid'
 import getSubjectInfo from '@/utils/getSubjectInfo'
 
 export default function SubjectNavLink({ subject, action }) {
-  if (!action in ["monitor", "teacher"]) return
+  if (!action in ['monitor', 'teacher']) return
 
   const pathname = usePathname()
   const subjectInfo = getSubjectInfo(subject.subject_id)
@@ -26,6 +26,11 @@ export default function SubjectNavLink({ subject, action }) {
           pathname === subjectPathname ? 'text-text-strong' : 'text-text-weaker'
         )}
       >
+        {subjectInfo.grade && `G${subjectInfo.grade}`}{' '}
+        {subjectInfo.block && `(block ${subjectInfo.block})`}
+        
+        {subjectInfo.class && subjectInfo.class.toUpperCase()}
+        {' | '}
         {subjectInfo.name}
       </p>
     </Link>
