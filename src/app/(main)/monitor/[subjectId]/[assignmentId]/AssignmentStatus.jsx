@@ -10,6 +10,8 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
   CheckIcon,
+  ArrowUpRightIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import formatDate from '@/utils/formatDate'
@@ -17,6 +19,8 @@ import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignment
 
 export default function AssignmentStatus({ assignment, students }) {
   const [updatedStudents, setUpdatedStudents] = useState(students)
+  const studentIds = students.map((s) => s.id)
+  const [selectedStudents, setSelectedStudents] = useState([])
   const [isEdited, setIsEdited] = useState(false)
   const [isPendingSave, setIsPendingSave] = useState(false)
   const [isMenuOpened, setIsMenuOpened] = useState(false)
@@ -201,10 +205,28 @@ export default function AssignmentStatus({ assignment, students }) {
         </div>
       </div>
 
-      {updatedStudents && (
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5 mt-5">
+      <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-[40px_200px_180px_180px_auto] items-center px-3 py-2 text-sm text-text-weak">
+          <input
+            type="checkbox"
+            className="border-1 border-text-weak accent-text-weak"
+            checked={selectedStudents.length === studentIds.length}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedStudents(studentIds)
+              } else {
+                setSelectedStudents([])
+              }
+            }}
+          />
+          <p>Name</p>
+          <p>ID</p>
+          <p>Collected date</p>
+          <p>Actions</p>
+        </div>
+        <div className="flex flex-col gap-2 h-[400px] overflow-y-auto overflow-x-hidden">
           {updatedStudents
-            .filter((student) => {
+            ?.filter((student) => {
               if (selectedView === 'all') return true
               if (selectedView === 'late') {
                 return student.collected_date > assignment.due_date
@@ -218,32 +240,19 @@ export default function AssignmentStatus({ assignment, students }) {
             })
             .map((student) => {
               const late = student.collected_date > assignment.due_date
+
               return (
-                <button
+                <div
                   key={student.id}
                   className={clsx(
-                    'flex flex-col items-start px-6 py-5 rounded-lg cursor-pointer transition-colors text-left text-nowrap',
-                    student.collected_date
-                      ? late
-                        ? 'border-red-400 border-1 bg-red-50 hover:border-red-500'
-                        : 'border-green-400 border-1 bg-green-50 hover:border-green-500'
-                      : 'border-stroke-weak border-1 hover:border-1 hover:border-text-weakest'
+                    'grid grid-cols-[40px_200px_180px_180px_auto] items-center border-1 rounded px-3 py-2',
+                    student.collected_date && "border-dashed",
+                    late
+                      ? 'border-red-500 bg-red-50'
+                      : student.collected_date
+                      ? 'border-green-500 bg-green-50'
+                      : "border-stroke-weak"
                   )}
-                  onClick={() => {
-                    setUpdatedStudents((prev) =>
-                      prev.map((s) => {
-                        if (s.id == student.id) {
-                          return {
-                            ...s,
-                            collected_date: s.collected_date
-                              ? null
-                              : new Date(),
-                          }
-                        }
-                        return s
-                      })
-                    )
-                  }}
                   hidden={
                     search.length > 0 &&
                     !(
@@ -254,23 +263,67 @@ export default function AssignmentStatus({ assignment, students }) {
                     )
                   }
                 >
-                  <div className="flex flex-row items-center gap-2">
-                    <p className="font-bold text-lg">{student.name}</p>
-                    {student.collected_date &&
-                      (late ? (
-                        <p className="text-red-700">(Late submission)</p>
+                  <input
+                    type="checkbox"
+                    className="border-1 border-text-weak accent-text-weak"
+                    checked={selectedStudents.includes(student.id)}
+                    onChange={(e) => {
+                      if (selectedStudents.includes(student.id)) {
+                        setSelectedStudents((prev) =>
+                          prev.filter((id) => id !== student.id)
+                        )
+                      } else {
+                        setSelectedStudents((prev) => [...prev, user.id])
+                      }
+                    }}
+                  />
+                  <p className="">{student.name}</p>
+                  <p className="text-text-weak text-sm">#{student.id}</p>
+                  <p className="text-sm">
+                    {student.collected_date
+                      ? formatDate(student.collected_date)
+                      : '-'}
+                  </p>
+
+                  <button
+                    type="button"
+                    className="disabled:cursor-not-allowed w-fit"
+                    onClick={() => {
+                      setUpdatedStudents((prev) =>
+                        prev.map((s) => {
+                          if (s.id == student.id) {
+                            return {
+                              ...s,
+                              collected_date: s.collected_date
+                                ? null
+                                : new Date(),
+                            }
+                          }
+                          return s
+                        })
+                      )
+                    }}
+                  >
+                    <Icon
+                      tooltip={
+                        student.collected_date
+                          ? 'Mark as unsubmitted'
+                          : 'Mark as submitted'
+                      }
+                      border
+                    >
+                      {student.collected_date ? (
+                        <XMarkIcon className="size-5 text-red-600" />
                       ) : (
-                        <p className="text-green-700">
-                          ({formatDate(student.collected_date)})
-                        </p>
-                      ))}
-                  </div>
-                  <p className="text-text-weak">#{student.id}</p>
-                </button>
+                        <CheckIcon className="size-5 text-green-600" />
+                      )}
+                    </Icon>
+                  </button>
+                </div>
               )
             })}
         </div>
-      )}
+      </div>
     </div>
   )
 }
