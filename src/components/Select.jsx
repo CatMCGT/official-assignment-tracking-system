@@ -19,6 +19,7 @@ export default function Select({
     <div className="relative">
       <div
         className="border-1 border-stroke-weak rounded p-2 cursor-pointer transition-colors w-full text-left"
+        tabIndex="0"
         onClick={() => setIsMenuOpened((prev) => !prev)}
       >
         {selected.length === 0 ? (
@@ -92,6 +93,7 @@ export default function Select({
                     } else {
                       setSelected(option.id)
                     }
+                    setIsMenuOpened(false)
                   }}
                 >
                   <div className="flex flex-row gap-2 items-end">

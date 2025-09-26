@@ -5,6 +5,7 @@ import formatDate from '@/utils/formatDate'
 import AssignmentStatus from './AssignmentStatus'
 import { Suspense } from 'react'
 import Loading from './loading'
+import { getUser } from '@/db/users/getUser'
 
 export default async function Page({ params }) {
   const { subjectId, assignmentId } = await params
@@ -13,6 +14,7 @@ export default async function Page({ params }) {
   const assignment = subjectAssignments?.filter(
     (a) => a.assignment_id == assignmentId
   )[0]
+  const user = await getUser()
 
   return (
     <Suspense fallback={<Loading />}>
@@ -43,6 +45,7 @@ export default async function Page({ params }) {
         <AssignmentStatus
           assignment={assignment}
           students={assignment.students}
+          userRole={user.role}
         />
       </div>
     </Suspense>

@@ -10,14 +10,13 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
   CheckIcon,
-  ArrowUpRightIcon,
-  XMarkIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import formatDate from '@/utils/formatDate'
 import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignments.js'
+import Select from '@/components/Select'
 
-export default function AssignmentStatus({ assignment, students }) {
+export default function AssignmentStatus({ assignment, students, userRole }) {
   const [updatedStudents, setUpdatedStudents] = useState(students)
   const studentIds = students.map((s) => s.id)
   const [selectedStudents, setSelectedStudents] = useState([])
@@ -206,7 +205,7 @@ export default function AssignmentStatus({ assignment, students }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="grid grid-cols-[40px_200px_180px_180px_auto] items-center px-3 py-2 text-sm text-text-weak">
+        <div className="grid grid-cols-[40px_200px_180px_180px_300px_auto] items-center px-3 py-2 text-sm text-text-weak">
           <input
             type="checkbox"
             className="border-1 border-text-weak accent-text-weak"
@@ -222,7 +221,8 @@ export default function AssignmentStatus({ assignment, students }) {
           <p>Name</p>
           <p>ID</p>
           <p>Collected date</p>
-          <p>Actions</p>
+          <p>Status</p>
+          {userRole === 'teacher' && <p>Grade</p>}
         </div>
         <div className="flex flex-col gap-2 h-[400px] overflow-y-auto overflow-x-hidden">
           {updatedStudents
@@ -245,13 +245,13 @@ export default function AssignmentStatus({ assignment, students }) {
                 <div
                   key={student.id}
                   className={clsx(
-                    'grid grid-cols-[40px_200px_180px_180px_auto] items-center border-1 rounded px-3 py-2',
-                    student.collected_date && "border-dashed",
+                    'grid grid-cols-[40px_200px_180px_180px_300px_auto] items-center border-1 rounded px-3 py-2',
+                    student.collected_date && 'border-dashed',
                     late
                       ? 'border-red-500 bg-red-50'
                       : student.collected_date
                       ? 'border-green-500 bg-green-50'
-                      : "border-stroke-weak"
+                      : 'border-stroke-weak'
                   )}
                   hidden={
                     search.length > 0 &&
@@ -273,7 +273,7 @@ export default function AssignmentStatus({ assignment, students }) {
                           prev.filter((id) => id !== student.id)
                         )
                       } else {
-                        setSelectedStudents((prev) => [...prev, user.id])
+                        setSelectedStudents((prev) => [...prev, student.id])
                       }
                     }}
                   />
@@ -285,40 +285,55 @@ export default function AssignmentStatus({ assignment, students }) {
                       : '-'}
                   </p>
 
-                  <button
-                    type="button"
-                    className="disabled:cursor-not-allowed w-fit"
-                    onClick={() => {
-                      setUpdatedStudents((prev) =>
-                        prev.map((s) => {
-                          if (s.id == student.id) {
-                            return {
-                              ...s,
-                              collected_date: s.collected_date
-                                ? null
-                                : new Date(),
-                            }
-                          }
-                          return s
-                        })
-                      )
-                    }}
-                  >
-                    <Icon
-                      tooltip={
-                        student.collected_date
-                          ? 'Mark as unsubmitted'
-                          : 'Mark as submitted'
+                  <div className="bg-white w-60">
+                    <Select
+                      options={
+                        late ||
+                        (new Date() > assignment.due_date &&
+                          !student.collected_date)
+                          ? [
+                              { id: 'late', name: 'Late Submission 🛑' },
+                              { id: 'absent', name: 'Absent 😷' },
+                            ]
+                          : [
+                              { id: 'submitted', name: 'Submitted ✅' },
+                              { id: 'absent', name: 'Absent 😷' },
+                            ]
                       }
-                      border
-                    >
-                      {student.collected_date ? (
-                        <XMarkIcon className="size-5 text-red-600" />
-                      ) : (
-                        <CheckIcon className="size-5 text-green-600" />
-                      )}
-                    </Icon>
-                  </button>
+                      selected={[student.status]}
+                      setSelected={(newStatus) =>
+                        setUpdatedStudents((prev) =>
+                          prev.map((s) =>
+                            s.id === student.id
+                              ? {
+                                  ...s,
+                                  status: newStatus,
+                                  collected_date: [
+                                    'submitted',
+                                    'late',
+                                  ].includes(newStatus)
+                                    ? new Date()
+                                    : null,
+                                }
+                              : s
+                          )
+                        )
+                      }
+                      placeholder="Not submitted 📄"
+                    />
+                  </div>
+
+                  {userRole === 'teacher' && (
+                    <div>
+                      <input
+                        type="number"
+                        className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
+                        min="0"
+                        max="40"
+                      />{' '}
+                      / 40
+                    </div>
+                  )}
                 </div>
               )
             })}
