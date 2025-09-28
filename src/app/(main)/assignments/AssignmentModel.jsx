@@ -11,7 +11,7 @@ import {
 import formatDate from '@/utils/formatDate'
 import Properties from '@/components/Properties'
 import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import Skeleton from '@/components/Skeleton'
 
 export default function AssignmentModel({ assignment, onClose }) {
@@ -80,29 +80,6 @@ export default function AssignmentModel({ assignment, onClose }) {
           )}
 
           <hr className="text-stroke-weak mt-2 mb-2"></hr>
-
-          {/* <div className="flex flex-row gap-2 items-center">
-            <p className="text-text-weak">Actions:</p>
-            {assignment?.status === 'todo' ? (
-              <button
-                type="button"
-                className="flex flex-row gap-2 border-1 border-stroke-weak px-3 py-2 rounded-lg text-sm w-fit hover:bg-fill-weak cursor-pointer transition-colors"
-                onClick={handleSetComplete}
-              >
-                Mark as complete
-                <CheckIcon className="size-5 text-green-500" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="flex flex-row gap-2 border-1 border-stroke-weak px-3 py-2 rounded-lg text-sm w-fit hover:bg-fill-weak cursor-pointer transition-colors"
-                onClick={handleSetTodo}
-              >
-                Mark as todo
-                <ClockIcon className="size-5 text-text-weakest" />
-              </button>
-            )}
-          </div> */}
         </div>
 
         <button type="button" onClick={onClose}>
@@ -112,7 +89,16 @@ export default function AssignmentModel({ assignment, onClose }) {
         </button>
       </div>
 
-      <h3 className="font-semibold text-lg mb-2">Description</h3>
+      {assignment.grade !== null && (
+        <div className="flex flex-row justify-between items-center">
+          <h3 className="font-semibold text-lg">Grade</h3>
+          <p>
+            {assignment.grade !== "" ? assignment.grade : "-"} / {assignment.assignment_grade}
+          </p>
+        </div>
+      )}
+
+      <h3 className="font-semibold text-lg mt-4 mb-2">Description</h3>
       <p className="text-text-weak">{assignment?.assignment_description}</p>
     </div>
   )

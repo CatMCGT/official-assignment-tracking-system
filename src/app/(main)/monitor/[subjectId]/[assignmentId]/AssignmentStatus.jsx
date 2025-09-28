@@ -240,7 +240,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             })
             .map((student) => {
               const late = student.collected_date > assignment.due_date
-
+              
               return (
                 <div
                   key={student.id}
@@ -292,10 +292,12 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                         (new Date() > assignment.due_date &&
                           !student.collected_date)
                           ? [
+                              { id: null, name: 'Not submitted 📄' },
                               { id: 'late', name: 'Late Submission 🛑' },
                               { id: 'absent', name: 'Absent 😷' },
                             ]
                           : [
+                              { id: null, name: 'Not submitted 📄' },
                               { id: 'submitted', name: 'Submitted ✅' },
                               { id: 'absent', name: 'Absent 😷' },
                             ]
@@ -319,7 +321,6 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                           )
                         )
                       }
-                      placeholder="Not submitted 📄"
                     />
                   </div>
 
@@ -329,9 +330,24 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                         type="number"
                         className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
                         min="0"
-                        max="40"
+                        max={assignment.assignment_grade}
+                        value={student.grade != null ? student.grade : ""}
+                        onChange={(e) => {
+                          setUpdatedStudents((prev) => {
+                            return prev.map((s) => {
+                              if (s.id === student.id) {
+                                return {
+                                  ...s,
+                                  grade: e.target.value,
+                                }
+                              } else {
+                                return s
+                              }
+                            })
+                          })
+                        }}
                       />{' '}
-                      / 40
+                      / {assignment.assignment_grade}
                     </div>
                   )}
                 </div>

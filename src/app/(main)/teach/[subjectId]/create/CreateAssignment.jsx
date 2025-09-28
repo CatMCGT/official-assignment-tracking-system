@@ -31,6 +31,7 @@ export default function CreateAssignment({
     title: '',
     description: '',
     dueDate: new Date().toLocaleDateString('en-CA') + 'T00:00',
+    grade: '',
   })
   const [isFilledIn, setIsFilledIn] = useState(false)
   const [isPending, setIsPending] = useState(false)
@@ -39,7 +40,8 @@ export default function CreateAssignment({
     if (
       assignment.title != '' &&
       assignment.dueDate &&
-      assignedStudentIds.length > 0
+      assignedStudentIds.length > 0 &&
+      (assignment.grade != '' || assignment.grade === null)
     ) {
       setIsFilledIn(true)
     } else {
@@ -57,7 +59,7 @@ export default function CreateAssignment({
     const assignmentId = res?.assignmentId
     router.push(`/monitor/${subjectId}/${assignmentId}`)
   }, [isFilledIn])
-  
+
   return (
     <Suspense fallback={<Loading />}>
       <div className="flex flex-col gap-10 justify-between items-start">
@@ -111,6 +113,55 @@ export default function CreateAssignment({
           </Properties>
 
           <hr className="text-stroke-weak mt-2 mb-2 w-3xl"></hr>
+
+          <div>
+            {assignment.grade !== null && (
+              <div className="flex flex-row justify-between items-center">
+                <h3 className="font-semibold text-lg">
+                  Grade<span className="text-red-500">*</span>
+                </h3>
+                <div className="flex flex-row items-center gap-2">
+                  <p>- /</p>
+                  <input
+                    type="number"
+                    className="w-14 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
+                    min="1"
+                    required
+                    value={assignment.grade}
+                    onChange={(e) =>
+                      setAssignment((prev) => {
+                        return {
+                          ...prev,
+                          grade: e.target.value,
+                        }
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            )}
+            <div className="flex flex-row items-center gap-2 text-text-weak">
+              (
+              <input
+                type="checkbox"
+                id="disable-grade"
+                className="accent-text-weak cursor-pointer"
+                checked={assignment.grade === null}
+                onChange={(e) =>
+                  setAssignment((prev) => {
+                    return {
+                      ...prev,
+                      grade: e.target.checked ? null : '',
+                    }
+                  })
+                }
+              />
+              <label htmlFor="disable-grade" className="cursor-pointer">
+                Disable Grade
+              </label>
+              )
+            </div>
+          </div>
 
           <h3 className="font-semibold text-lg">
             Description <span className="text-text-weaker">(Optional)</span>
