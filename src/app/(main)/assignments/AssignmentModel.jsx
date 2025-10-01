@@ -89,17 +89,31 @@ export default function AssignmentModel({ assignment, onClose }) {
         </button>
       </div>
 
-      {assignment.grade !== null && (
-        <div className="flex flex-row justify-between items-center">
-          <h3 className="font-semibold text-lg">Grade</h3>
-          <p>
-            {assignment.grade !== "" ? assignment.grade : "-"} / {assignment.assignment_grade}
-          </p>
+      <h3 className="font-semibold text-lg mb-2">Description</h3>
+      <p className="text-text-weak">{assignment?.assignment_description}</p>
+
+      {assignment.grade !== null && assignment.feedback !== null && (
+        <div className="border-1 border-stroke-weak px-5 py-4 mx-[-12px] mt-16 rounded">
+          {assignment.grade !== null && (
+            <div className="flex flex-row justify-between items-center">
+              <h3 className="font-semibold text-lg">Grade</h3>
+              <p>
+                {assignment.grade !== '' ? assignment.grade : '-'} /{' '}
+                {assignment.assignment_grade}
+              </p>
+            </div>
+          )}
+
+          {assignment.feedback !== null && (
+            <>
+              <h3 className="font-semibold text-lg mt-4 mb-2">
+                Feedback from teacher
+              </h3>
+              <p className="text-text-weak">"{assignment?.feedback}"</p>
+            </>
+          )}
         </div>
       )}
-
-      <h3 className="font-semibold text-lg mt-4 mb-2">Description</h3>
-      <p className="text-text-weak">{assignment?.assignment_description}</p>
     </div>
   )
 }

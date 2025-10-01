@@ -206,7 +206,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 mt-2">
         <div className="grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center px-3 py-2 text-sm text-text-weak">
           <input
             type="checkbox"
