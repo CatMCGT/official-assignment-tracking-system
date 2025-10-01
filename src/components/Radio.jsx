@@ -4,7 +4,7 @@ import clsx from "clsx"
 
 export default function Radio({ options, selected, setSelected }) {
   return (
-    <div className="w-full px-2 py-[6px] gap-3 flex flex-row bg-background-weak rounded">
+    <div className="w-fit px-2 py-[6px] gap-3 flex flex-row bg-background-weak rounded">
       {options.map((option) => (
         <button
           type="button"

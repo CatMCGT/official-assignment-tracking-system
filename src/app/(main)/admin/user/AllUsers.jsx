@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import formatDate from '@/utils/formatDate'
-import toTitleCase from '@/utils/toTitleCase'
+import { useState, useEffect } from "react";
+import formatDate from "@/utils/formatDate";
+import toTitleCase from "@/utils/toTitleCase";
 import {
   MagnifyingGlassIcon,
   ChartBarIcon,
   EllipsisVerticalIcon,
   ArrowUpRightIcon,
-} from '@heroicons/react/24/outline'
-import Icon from '@/components/Icon'
-import BulkActions from './BulkActions'
-import clsx from 'clsx'
-import Link from 'next/link'
+} from "@heroicons/react/24/outline";
+import Icon from "@/components/Icon";
+import BulkActions from "./BulkActions";
+import clsx from "clsx";
+import Link from "next/link";
 
 export default function AllUsers({ allUsers }) {
-  const [selectedUserIds, setSelectedUserIds] = useState([])
-  const [viewUsers, setViewUsers] = useState(allUsers)
-  const [editedUsers, setEditedUsers] = useState(allUsers)
-  const viewUserIds = viewUsers.map((u) => u.id)
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [viewUsers, setViewUsers] = useState(allUsers);
+  const [editedUsers, setEditedUsers] = useState(allUsers);
+  const viewUserIds = viewUsers.map((u) => u.id);
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (search.length > 0) {
@@ -33,13 +33,13 @@ export default function AllUsers({ allUsers }) {
               .toLowerCase()
               .includes(search.toLowerCase()) ||
             user.role.toLowerCase().includes(search.toLowerCase())
-          )
+          );
         })
-      )
+      );
     } else {
-      setViewUsers(editedUsers)
+      setViewUsers(editedUsers);
     }
-  }, [search, editedUsers])
+  }, [search, editedUsers]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -95,9 +95,9 @@ export default function AllUsers({ allUsers }) {
               checked={selectedUserIds.length === viewUsers.length}
               onChange={(e) => {
                 if (e.target.checked) {
-                  setSelectedUserIds(viewUserIds)
+                  setSelectedUserIds(viewUserIds);
                 } else {
-                  setSelectedUserIds([])
+                  setSelectedUserIds([]);
                 }
               }}
             />
@@ -112,20 +112,20 @@ export default function AllUsers({ allUsers }) {
         </div>
         <div className="w-2xl flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
           {viewUsers.map((user) => {
-            const originalUser = allUsers.filter((u) => u.id === user.id)[0]
+            const originalUser = allUsers.filter((u) => u.id === user.id)[0];
             const editted =
               originalUser.id !== user.id ||
               originalUser.name !== user.name ||
               originalUser.password !== user.password ||
-              originalUser.role !== user.role
+              originalUser.role !== user.role;
             return (
               <div
                 key={user.id}
                 className={clsx(
-                  'grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center border-1 rounded px-3 py-2',
+                  "grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center border-1 rounded px-3 py-2",
                   editted
-                    ? 'border-green-500 bg-green-50 border-dashed'
-                    : 'border-stroke-weak'
+                    ? "border-green-500 bg-green-50 border-dashed"
+                    : "border-stroke-weak"
                 )}
               >
                 <input
@@ -136,9 +136,9 @@ export default function AllUsers({ allUsers }) {
                     if (selectedUserIds.includes(user.id)) {
                       setSelectedUserIds((prev) =>
                         prev.filter((id) => id !== user.id)
-                      )
+                      );
                     } else {
-                      setSelectedUserIds((prev) => [...prev, user.id])
+                      setSelectedUserIds((prev) => [...prev, user.id]);
                     }
                   }}
                 />
@@ -146,7 +146,7 @@ export default function AllUsers({ allUsers }) {
                 <p className="text-text-weak text-sm">#{user.id}</p>
                 {true ? (
                   <p className="text-text-weaker text-sm">
-                    {' '}
+                    {" "}
                     &#8226; &#8226; &#8226; &#8226;
                   </p>
                 ) : (
@@ -155,9 +155,9 @@ export default function AllUsers({ allUsers }) {
                 <p className="text-sm">{formatDate(user.reg_date)}</p>
                 <p
                   className={clsx(
-                    'text-sm',
+                    "text-sm",
                     originalUser.role !== user.role &&
-                      'font-bold text-green-700'
+                      "font-bold text-green-700"
                   )}
                 >
                   {toTitleCase(user.role)}
@@ -168,7 +168,7 @@ export default function AllUsers({ allUsers }) {
                   </Icon>
                 </Link>
               </div>
-            )
+            );
           })}
         </div>
       </div>
@@ -182,5 +182,5 @@ export default function AllUsers({ allUsers }) {
         />
       )}
     </div>
-  )
+  );
 }

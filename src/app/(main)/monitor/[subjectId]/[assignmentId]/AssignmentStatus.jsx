@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Radio from '@/components/Radio'
-import Icon from '@/components/Icon'
+import { useEffect, useState } from "react";
+import Radio from "@/components/Radio";
+import Icon from "@/components/Icon";
 import {
   ChartBarIcon,
   EllipsisVerticalIcon,
@@ -11,86 +11,87 @@ import {
   CheckCircleIcon,
   CheckIcon,
   ArrowUpRightIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
-import clsx from 'clsx'
-import formatDate from '@/utils/formatDate'
-import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignments.js'
+} from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import formatDate from "@/utils/formatDate";
+import { setCollectedAssignments } from "@/db/assignments/setCollectedAssignments.js";
+import Select from "@/components/Select";
+import Link from "next/link";
 
-export default function AssignmentStatus({ assignment, students }) {
-  const [updatedStudents, setUpdatedStudents] = useState(students)
-  const studentIds = students.map((s) => s.id)
-  const [selectedStudents, setSelectedStudents] = useState([])
-  const [isEdited, setIsEdited] = useState(false)
-  const [isPendingSave, setIsPendingSave] = useState(false)
-  const [isMenuOpened, setIsMenuOpened] = useState(false)
-  const [isStatsOpened, setIsStatsOpened] = useState(false)
+export default function AssignmentStatus({ assignment, students, userRole }) {
+  const [updatedStudents, setUpdatedStudents] = useState(students);
+  const studentIds = students.map((s) => s.id);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [isEdited, setIsEdited] = useState(false);
+  const [isPendingSave, setIsPendingSave] = useState(false);
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [isStatsOpened, setIsStatsOpened] = useState(false);
 
   const stats = {
     submitted: updatedStudents?.filter(
       (student) => student.collected_date !== null
     ).length,
-  }
+  };
 
   useEffect(() => {
     if (
       updatedStudents.length > 0 &&
       JSON.stringify(updatedStudents) != JSON.stringify(students)
     ) {
-      setIsEdited(true)
+      setIsEdited(true);
     } else {
-      setIsEdited(false)
+      setIsEdited(false);
     }
-  }, [updatedStudents])
+  }, [updatedStudents]);
 
   useEffect(() => {
-    setUpdatedStudents(students)
-    setIsPendingSave(false)
-  }, [students])
+    setUpdatedStudents(students);
+    setIsPendingSave(false);
+  }, [students]);
 
-  const [selectedView, setSelectedView] = useState('all')
+  const [selectedView, setSelectedView] = useState("all");
   const viewOptions = [
-    { id: 'all', name: 'All' },
-    { id: 'late', name: 'Late' },
-    { id: 'submitted', name: 'On-time' },
-    { id: 'absent', name: 'Absent' },
-  ]
+    { id: "all", name: "All" },
+    { id: "late", name: "Late" },
+    { id: "submitted", name: "On-time" },
+    { id: "absent", name: "Absent" },
+  ];
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
 
   async function handleSubmit() {
     try {
-      setIsPendingSave(true)
+      setIsPendingSave(true);
       await setCollectedAssignments(
         assignment.subject_id,
         assignment.assignment_id,
         updatedStudents
-      )
+      );
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   }
 
   function markAllSubmitted() {
-    setIsMenuOpened(false)
+    setIsMenuOpened(false);
     setUpdatedStudents((prev) => {
       const updated = prev.map((student) => {
         if (student.collected_date === null) {
           return {
             ...student,
             collected_date: new Date(),
-          }
+          };
         }
 
-        return student
-      })
-      return updated
-    })
+        return student;
+      });
+      return updated;
+    });
   }
 
   function closeMenus() {
-    setIsMenuOpened(false)
-    setIsStatsOpened(false)
+    setIsMenuOpened(false);
+    setIsStatsOpened(false);
   }
 
   return (
@@ -121,11 +122,11 @@ export default function AssignmentStatus({ assignment, students }) {
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation()
-                setIsStatsOpened((prev) => !prev)
+                e.stopPropagation();
+                setIsStatsOpened((prev) => !prev);
               }}
             >
-              <Icon tooltip={isStatsOpened ? null : 'Statistics'} border>
+              <Icon tooltip={isStatsOpened ? null : "Statistics"} border>
                 <ChartBarIcon className="text-text-weak size-5" />
               </Icon>
             </button>
@@ -150,11 +151,11 @@ export default function AssignmentStatus({ assignment, students }) {
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation()
-                setIsMenuOpened((prev) => !prev)
+                e.stopPropagation();
+                setIsMenuOpened((prev) => !prev);
               }}
             >
-              <Icon tooltip={isMenuOpened ? null : 'More actions'}>
+              <Icon tooltip={isMenuOpened ? null : "More actions"}>
                 <EllipsisVerticalIcon className="text-text-weak size-5" />
               </Icon>
             </button>
@@ -180,7 +181,7 @@ export default function AssignmentStatus({ assignment, students }) {
             <button
               className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
               onClick={() => {
-                setUpdatedStudents(students)
+                setUpdatedStudents(students);
               }}
             >
               Undo
@@ -190,8 +191,8 @@ export default function AssignmentStatus({ assignment, students }) {
           <button
             type="submit"
             className={clsx(
-              'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
-              isEdited ? 'bg-text-weak' : 'bg-text-weakest'
+              "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
+              isEdited ? "bg-text-weak" : "bg-text-weakest"
             )}
             disabled={isPendingSave || !isEdited}
             onClick={handleSubmit}
@@ -199,58 +200,59 @@ export default function AssignmentStatus({ assignment, students }) {
             {isPendingSave ? (
               <ArrowPathIcon className="size-6 text-white" />
             ) : (
-              'Save'
+              "Save"
             )}
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="grid grid-cols-[40px_200px_180px_180px_auto] items-center px-3 py-2 text-sm text-text-weak">
+      <div className="flex flex-col gap-2 mt-2">
+        <div className="grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center px-3 py-2 text-sm text-text-weak">
           <input
             type="checkbox"
             className="border-1 border-text-weak accent-text-weak"
             checked={selectedStudents.length === studentIds.length}
             onChange={(e) => {
               if (e.target.checked) {
-                setSelectedStudents(studentIds)
+                setSelectedStudents(studentIds);
               } else {
-                setSelectedStudents([])
+                setSelectedStudents([]);
               }
             }}
           />
           <p>Name</p>
           <p>ID</p>
           <p>Collected date</p>
-          <p>Actions</p>
+          <p>Status</p>
+          {userRole === "teacher" && <p>Grade</p>}
         </div>
-        <div className="flex flex-col gap-2 h-[400px] overflow-y-auto overflow-x-hidden">
+        <div className="flex flex-col gap-2 h-[400px] w-fit overflow-y-auto overflow-x-hidden">
           {updatedStudents
             ?.filter((student) => {
-              if (selectedView === 'all') return true
-              if (selectedView === 'late') {
-                return student.collected_date > assignment.due_date
+              if (selectedView === "all") return true;
+              if (selectedView === "late") {
+                return student.collected_date > assignment.due_date;
               }
-              if (selectedView === 'submitted') {
+              if (selectedView === "submitted") {
                 return (
                   student.collected_date &&
                   student.collected_date < assignment.due_date
-                )
+                );
               }
             })
             .map((student) => {
-              const late = student.collected_date > assignment.due_date
+              const late = student.collected_date > assignment.due_date;
 
               return (
                 <div
                   key={student.id}
                   className={clsx(
-                    'grid grid-cols-[40px_200px_180px_180px_auto] items-center border-1 rounded px-3 py-2',
+                    "grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center border-1 rounded px-3 py-2",
                     student.collected_date && "border-dashed",
                     late
-                      ? 'border-red-500 bg-red-50'
+                      ? "border-red-500 bg-red-50"
                       : student.collected_date
-                      ? 'border-green-500 bg-green-50'
+                      ? "border-green-500 bg-green-50"
                       : "border-stroke-weak"
                   )}
                   hidden={
@@ -271,9 +273,9 @@ export default function AssignmentStatus({ assignment, students }) {
                       if (selectedStudents.includes(student.id)) {
                         setSelectedStudents((prev) =>
                           prev.filter((id) => id !== student.id)
-                        )
+                        );
                       } else {
-                        setSelectedStudents((prev) => [...prev, user.id])
+                        setSelectedStudents((prev) => [...prev, student.id]);
                       }
                     }}
                   />
@@ -282,48 +284,88 @@ export default function AssignmentStatus({ assignment, students }) {
                   <p className="text-sm">
                     {student.collected_date
                       ? formatDate(student.collected_date)
-                      : '-'}
+                      : "-"}
                   </p>
 
-                  <button
-                    type="button"
-                    className="disabled:cursor-not-allowed w-fit"
-                    onClick={() => {
-                      setUpdatedStudents((prev) =>
-                        prev.map((s) => {
-                          if (s.id == student.id) {
-                            return {
-                              ...s,
-                              collected_date: s.collected_date
-                                ? null
-                                : new Date(),
-                            }
-                          }
-                          return s
-                        })
-                      )
-                    }}
-                  >
-                    <Icon
-                      tooltip={
-                        student.collected_date
-                          ? 'Mark as unsubmitted'
-                          : 'Mark as submitted'
+                  <div className="bg-white w-60">
+                    <Select
+                      options={
+                        late ||
+                        (new Date() > assignment.due_date &&
+                          !student.collected_date)
+                          ? [
+                              { id: null, name: "Not submitted 📄" },
+                              { id: "late", name: "Late Submission 🛑" },
+                              { id: "absent", name: "Absent 😷" },
+                            ]
+                          : [
+                              { id: null, name: "Not submitted 📄" },
+                              { id: "submitted", name: "Submitted ✅" },
+                              { id: "absent", name: "Absent 😷" },
+                            ]
                       }
-                      border
-                    >
-                      {student.collected_date ? (
-                        <XMarkIcon className="size-5 text-red-600" />
-                      ) : (
-                        <CheckIcon className="size-5 text-green-600" />
-                      )}
-                    </Icon>
-                  </button>
+                      selected={[student.status]}
+                      setSelected={(newStatus) =>
+                        setUpdatedStudents((prev) =>
+                          prev.map((s) =>
+                            s.id === student.id
+                              ? {
+                                  ...s,
+                                  status: newStatus,
+                                  collected_date: [
+                                    "submitted",
+                                    "late",
+                                  ].includes(newStatus)
+                                    ? new Date()
+                                    : null,
+                                }
+                              : s
+                          )
+                        )
+                      }
+                    />
+                  </div>
+
+                  {userRole === "teacher" && (
+                    <>
+                      <div>
+                        <input
+                          type="number"
+                          className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
+                          min="0"
+                          max={assignment.assignment_grade}
+                          value={student.grade != null ? student.grade : ""}
+                          onChange={(e) => {
+                            setUpdatedStudents((prev) => {
+                              return prev.map((s) => {
+                                if (s.id === student.id) {
+                                  return {
+                                    ...s,
+                                    grade: e.target.value,
+                                  };
+                                } else {
+                                  return s;
+                                }
+                              });
+                            });
+                          }}
+                        />{" "}
+                        / {assignment.assignment_grade}
+                      </div>
+                      <Link
+                        href={`/monitor/${assignment.subject_id}/${assignment.assignment_id}/${student.id}`}
+                      >
+                        <Icon tooltip="See details">
+                          <ArrowUpRightIcon className="size-4 text-text-weak" />
+                        </Icon>
+                      </Link>
+                    </>
+                  )}
                 </div>
-              )
+              );
             })}
         </div>
       </div>
     </div>
-  )
+  );
 }
