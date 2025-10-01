@@ -1,58 +1,58 @@
-"use client";
+'use client'
 
-import Properties from "@/components/Properties";
-import Select from "@/components/Select";
-import { setCollectedAssignments } from "@/db/assignments/setCollectedAssignments.js";
-import formatDate from "@/utils/formatDate";
+import Properties from '@/components/Properties'
+import Select from '@/components/Select'
+import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignments.js'
+import formatDate from '@/utils/formatDate'
 import {
   AcademicCapIcon,
   ArrowPathIcon,
   CalendarDateRangeIcon,
   ClockIcon,
   UserCircleIcon,
-} from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import { useEffect, useState } from "react";
+} from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import { useEffect, useState } from 'react'
 
 export default function StuAssignmentDetails({
   subjectInfo,
   assignment,
   student,
 }) {
-  const [updatedStudent, setUpdatedStudent] = useState(student);
-  const [isEdited, setIsEdited] = useState(false);
-  const [isPendingSave, setIsPendingSave] = useState(false);
+  const [updatedStudent, setUpdatedStudent] = useState(student)
+  const [isEdited, setIsEdited] = useState(false)
+  const [isPendingSave, setIsPendingSave] = useState(false)
 
   useEffect(() => {
     if (JSON.stringify(updatedStudent) != JSON.stringify(student)) {
-      setIsEdited(true);
+      setIsEdited(true)
     } else {
-      setIsEdited(false);
+      setIsEdited(false)
     }
-  }, [updatedStudent]);
+  }, [updatedStudent])
 
   useEffect(() => {
-    setUpdatedStudent(student);
-    setIsPendingSave(false);
-  }, [student]);
+    setUpdatedStudent(student)
+    setIsPendingSave(false)
+  }, [student])
 
   async function handleSubmit() {
     try {
-      setIsPendingSave(true);
+      setIsPendingSave(true)
       const newStudents = assignment.students.map((s) => {
         if (s.id === student.id) {
-          return updatedStudent;
+          return updatedStudent
         } else {
-          return s;
+          return s
         }
-      });
+      })
       await setCollectedAssignments(
         assignment.subject_id,
         assignment.assignment_id,
         newStudents
-      );
+      )
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
@@ -78,7 +78,7 @@ export default function StuAssignmentDetails({
         </Properties.Property>
 
         <p>
-          {student.name}{" "}
+          {student.name}{' '}
           <span className="text-text-weaker">(#{student.id})</span>
         </p>
 
@@ -90,9 +90,11 @@ export default function StuAssignmentDetails({
           type="datetime-local"
           className="border-1 border-stroke-weak rounded py-1 px-2 hover:bg-fill-weak cursor-pointer transition-colors w-full outline-text-weakest focus:outline-1"
           value={
-            new Date(updatedStudent?.collected_date).toLocaleDateString(
-              "en-CA"
-            ) + "T00:00"
+            new Date(
+              updatedStudent?.collected_date === null
+                ? ''
+                : updatedStudent.collected_date
+            ).toLocaleDateString('en-CA') + 'T00:00'
           }
           onChange={(e) =>
             setUpdatedStudent((prev) => ({
@@ -110,14 +112,14 @@ export default function StuAssignmentDetails({
             updatedStudent.collected_date > assignment.due_date ||
             (new Date() > assignment.due_date && !updatedStudent.collected_date)
               ? [
-                  { id: null, name: "Not submitted 📄" },
-                  { id: "late", name: "Late Submission 🛑" },
-                  { id: "absent", name: "Absent 😷" },
+                  { id: null, name: 'Not submitted 📄' },
+                  { id: 'late', name: 'Late Submission 🛑' },
+                  { id: 'absent', name: 'Absent 😷' },
                 ]
               : [
-                  { id: null, name: "Not submitted 📄" },
-                  { id: "submitted", name: "Submitted ✅" },
-                  { id: "absent", name: "Absent 😷" },
+                  { id: null, name: 'Not submitted 📄' },
+                  { id: 'submitted', name: 'Submitted ✅' },
+                  { id: 'absent', name: 'Absent 😷' },
                 ]
           }
           selected={[updatedStudent.status]}
@@ -125,9 +127,9 @@ export default function StuAssignmentDetails({
             setUpdatedStudent((prev) => ({
               ...prev,
               status: newStatus,
-              collected_date: ["submitted", "late"].includes(newStatus)
+              collected_date: ['submitted', 'late'].includes(newStatus)
                 ? new Date()
-                : "",
+                : '',
             }))
           }
         />
@@ -143,14 +145,14 @@ export default function StuAssignmentDetails({
               className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
               min="0"
               max={assignment.assignment_grade}
-              value={updatedStudent.grade != null ? updatedStudent.grade : ""}
+              value={updatedStudent.grade != null ? updatedStudent.grade : ''}
               onChange={(e) => {
                 setUpdatedStudent((prev) => ({
                   ...prev,
                   grade: e.target.value,
-                }));
+                }))
               }}
-            />{" "}
+            />{' '}
             / {assignment.assignment_grade}
           </div>
         </div>
@@ -162,13 +164,13 @@ export default function StuAssignmentDetails({
       <textarea
         className="border-1 border-stroke-weak h-48 focus:outline-1 outline-text-weakest p-4 rounded resize-none"
         placeholder="Enter feedback..."
-        value={updatedStudent.feedback != null ? updatedStudent.feedback : ""}
+        value={updatedStudent.feedback != null ? updatedStudent.feedback : ''}
         onChange={(e) =>
           setUpdatedStudent((prev) => {
             return {
               ...prev,
               feedback: e.target.value,
-            };
+            }
           })
         }
       ></textarea>
@@ -178,7 +180,7 @@ export default function StuAssignmentDetails({
           <button
             className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
             onClick={() => {
-              setUpdatedStudent(student);
+              setUpdatedStudent(student)
             }}
           >
             Undo
@@ -188,8 +190,8 @@ export default function StuAssignmentDetails({
         <button
           type="submit"
           className={clsx(
-            "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
-            isEdited ? "bg-text-weak" : "bg-text-weakest"
+            'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
+            isEdited ? 'bg-text-weak' : 'bg-text-weakest'
           )}
           disabled={isPendingSave || !isEdited}
           onClick={handleSubmit}
@@ -197,10 +199,10 @@ export default function StuAssignmentDetails({
           {isPendingSave ? (
             <ArrowPathIcon className="size-6 text-white" />
           ) : (
-            "Save"
+            'Save'
           )}
         </button>
       </div>
     </div>
-  );
+  )
 }
