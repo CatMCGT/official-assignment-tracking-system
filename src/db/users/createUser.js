@@ -30,7 +30,7 @@ export async function createUser(additionalData, prevState, formData) {
 
     await client.query("BEGIN");
     await client.query(
-      "INSERT INTO users (id, name, password, role, reg_date) VALUES ($1, $2, $3, $4, $5)",
+      "INSERT INTO users (id, name, password, role, reg_date, deactivated_date) VALUES ($1, $2, $3, $4, $5, null)",
       [id, name, hashedPassword, role, new Date().toISOString()]
     );
 

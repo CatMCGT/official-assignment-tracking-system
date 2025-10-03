@@ -8,16 +8,21 @@ import {
   ChartBarIcon,
   EllipsisVerticalIcon,
   ArrowUpRightIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import Icon from "@/components/Icon";
 import BulkActions from "./BulkActions";
 import clsx from "clsx";
 import Link from "next/link";
+import { setUsers } from "@/db/users/setUsers";
 
 export default function AllUsers({ allUsers }) {
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [viewUsers, setViewUsers] = useState(allUsers);
   const [editedUsers, setEditedUsers] = useState(allUsers);
+  const [editedUsersDB, setEditedUsersDB] = useState([]);
+  const [isEdited, setIsEdited] = useState(false);
+  const [isPendingSave, setIsPendingSave] = useState(false);
   const viewUserIds = viewUsers.map((u) => u.id);
 
   const [search, setSearch] = useState("");
@@ -41,8 +46,19 @@ export default function AllUsers({ allUsers }) {
     }
   }, [search, editedUsers]);
 
+  async function handleSubmit() {
+    try {
+      setIsPendingSave(true);
+      await setUsers(editedUsersDB);
+      setIsPendingSave(false);
+      setIsEdited(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-4xl">
       <div className="flex flex-row gap-3 items-center">
         <h2 className="font-semibold text-xl">All Users</h2>
         <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
@@ -83,11 +99,38 @@ export default function AllUsers({ allUsers }) {
               </Icon>
             </button>
           </div>
+
+          {isEdited && !isPendingSave && (
+            <button
+              className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
+              onClick={() => {
+                setEditedUsers(allUsers);
+              }}
+            >
+              Undo
+            </button>
+          )}
+
+          <button
+            type="submit"
+            className={clsx(
+              "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
+              isEdited ? "bg-text-weak" : "bg-text-weakest"
+            )}
+            disabled={isPendingSave || !isEdited}
+            onClick={handleSubmit}
+          >
+            {isPendingSave ? (
+              <ArrowPathIcon className="size-6 text-white" />
+            ) : (
+              "Save"
+            )}
+          </button>
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center px-3 py-2 text-sm text-text-weak">
+        <div className="grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center px-3 py-2 text-sm text-text-weak">
           {search.length === 0 ? (
             <input
               type="checkbox"
@@ -110,7 +153,7 @@ export default function AllUsers({ allUsers }) {
           <p>Registration Date</p>
           <p>Role</p>
         </div>
-        <div className="w-2xl flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
+        <div className="flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
           {viewUsers.map((user) => {
             const originalUser = allUsers.filter((u) => u.id === user.id)[0];
             const editted =
@@ -122,7 +165,7 @@ export default function AllUsers({ allUsers }) {
               <div
                 key={user.id}
                 className={clsx(
-                  "grid grid-cols-[30px_180px_100px_80px_140px_76px_auto] items-center border-1 rounded px-3 py-2",
+                  "grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2",
                   editted
                     ? "border-green-500 bg-green-50 border-dashed"
                     : "border-stroke-weak"
@@ -142,7 +185,19 @@ export default function AllUsers({ allUsers }) {
                     }
                   }}
                 />
-                <p className="">{user.name}</p>
+                <div className="flex flex-row gap-1 items-center">
+                  <p>{user.name}</p>
+                  {user.deactivated_date !== null && (
+                    <div className="w-fit">
+                      <Icon
+                        tooltip={formatDate(user.deactivated_date)}
+                        className="hover:bg-white"
+                      >
+                        <span className="text-red-500">(deactivated)</span>
+                      </Icon>
+                    </div>
+                  )}
+                </div>
                 <p className="text-text-weak text-sm">#{user.id}</p>
                 {true ? (
                   <p className="text-text-weaker text-sm">
@@ -179,6 +234,9 @@ export default function AllUsers({ allUsers }) {
           setSelectedUserIds={setSelectedUserIds}
           editedUsers={editedUsers}
           setEditedUsers={setEditedUsers}
+          setIsEdited={setIsEdited}
+          editedUsersDB={editedUsersDB}
+          setEditedUsersDB={setEditedUsersDB}
         />
       )}
     </div>
