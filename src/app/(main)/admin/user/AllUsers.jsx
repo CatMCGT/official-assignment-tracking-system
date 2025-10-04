@@ -1,60 +1,67 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import formatDate from "@/utils/formatDate";
-import toTitleCase from "@/utils/toTitleCase";
+import { useState, useEffect } from 'react'
+import formatDate from '@/utils/formatDate'
+import toTitleCase from '@/utils/toTitleCase'
 import {
   MagnifyingGlassIcon,
   ChartBarIcon,
   EllipsisVerticalIcon,
   ArrowUpRightIcon,
   ArrowPathIcon,
-} from "@heroicons/react/24/outline";
-import Icon from "@/components/Icon";
-import BulkActions from "./BulkActions";
-import clsx from "clsx";
-import Link from "next/link";
-import { setUsers } from "@/db/users/setUsers";
+} from '@heroicons/react/24/outline'
+import Icon from '@/components/Icon'
+import BulkActions from './BulkActions'
+import clsx from 'clsx'
+import Link from 'next/link'
+import { setUsers } from '@/db/users/setUsers'
 
 export default function AllUsers({ allUsers }) {
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
-  const [viewUsers, setViewUsers] = useState(allUsers);
-  const [editedUsers, setEditedUsers] = useState(allUsers);
-  const [editedUsersDB, setEditedUsersDB] = useState([]);
-  const [isEdited, setIsEdited] = useState(false);
-  const [isPendingSave, setIsPendingSave] = useState(false);
-  const viewUserIds = viewUsers.map((u) => u.id);
+  const [updatedUsers, setUpdatedUsers] = useState(allUsers)
+  const [selectedUserIds, setSelectedUserIds] = useState([])
+  const [search, setSearch] = useState('')
+  const [isEdited, setIsEdited] = useState(false)
+  const [isPendingSave, setIsPendingSave] = useState(false)
 
-  const [search, setSearch] = useState("");
+  const filteredUsers = search
+    ? updatedUsers.filter((user) => {
+        return (
+          user.name.toLowerCase().includes(search.toLowerCase()) ||
+          user.id.toLowerCase().includes(search.toLowerCase()) ||
+          formatDate(user.reg_date)
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          user.role.toLowerCase().includes(search.toLowerCase())
+        )
+      })
+    : updatedUsers
 
-  useEffect(() => {
-    if (search.length > 0) {
-      setViewUsers(
-        editedUsers?.filter((user) => {
-          return (
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.id.toLowerCase().includes(search.toLowerCase()) ||
-            formatDate(user.reg_date)
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            user.role.toLowerCase().includes(search.toLowerCase())
-          );
-        })
-      );
-    } else {
-      setViewUsers(editedUsers);
-    }
-  }, [search, editedUsers]);
+  function isUserEdited(user) {
+    const originalUser = allUsers.find((u) => u.id === user.id)
+    return (
+      originalUser.id !== user.id ||
+      originalUser.name !== user.name ||
+      originalUser.password !== user.password ||
+      originalUser.role !== user.role ||
+      originalUser.deactivated_date !== user.deactivated_date
+    )
+  }
 
   async function handleSubmit() {
     try {
-      setIsPendingSave(true);
-      await setUsers(editedUsersDB);
-      setIsPendingSave(false);
-      setIsEdited(false);
+      setIsPendingSave(true)
+      await setUsers(updatedUsers.filter((user) => isUserEdited(user)))
+      setIsEdited(false)
     } catch (err) {
-      console.error(err);
+      console.error(err)
+    } finally {
+      setIsPendingSave(false)
     }
+  }
+
+  async function handleUndo() {
+    setUpdatedUsers(allUsers)
+    setIsEdited(false)
   }
 
   return (
@@ -62,7 +69,7 @@ export default function AllUsers({ allUsers }) {
       <div className="flex flex-row gap-3 items-center">
         <h2 className="font-semibold text-xl">All Users</h2>
         <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
-          {editedUsers.length}
+          {updatedUsers.length}
         </div>
       </div>
 
@@ -103,9 +110,7 @@ export default function AllUsers({ allUsers }) {
           {isEdited && !isPendingSave && (
             <button
               className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
-              onClick={() => {
-                setEditedUsers(allUsers);
-              }}
+              onClick={handleUndo}
             >
               Undo
             </button>
@@ -114,8 +119,8 @@ export default function AllUsers({ allUsers }) {
           <button
             type="submit"
             className={clsx(
-              "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
-              isEdited ? "bg-text-weak" : "bg-text-weakest"
+              'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
+              isEdited ? 'bg-text-weak' : 'bg-text-weakest'
             )}
             disabled={isPendingSave || !isEdited}
             onClick={handleSubmit}
@@ -123,7 +128,7 @@ export default function AllUsers({ allUsers }) {
             {isPendingSave ? (
               <ArrowPathIcon className="size-6 text-white" />
             ) : (
-              "Save"
+              'Save'
             )}
           </button>
         </div>
@@ -131,18 +136,16 @@ export default function AllUsers({ allUsers }) {
 
       <div className="flex flex-col gap-2">
         <div className="grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center px-3 py-2 text-sm text-text-weak">
-          {search.length === 0 ? (
+          {!search ? (
             <input
               type="checkbox"
               className="border-1 border-text-weak accent-text-weak"
-              checked={selectedUserIds.length === viewUsers.length}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setSelectedUserIds(viewUserIds);
-                } else {
-                  setSelectedUserIds([]);
-                }
-              }}
+              checked={selectedUserIds.length === updatedUsers.length}
+              onChange={(e) =>
+                setSelectedUserIds(
+                  e.target.checked ? filteredUsers.map((u) => u.id) : []
+                )
+              }
             />
           ) : (
             <div></div>
@@ -154,21 +157,15 @@ export default function AllUsers({ allUsers }) {
           <p>Role</p>
         </div>
         <div className="flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
-          {viewUsers.map((user) => {
-            const originalUser = allUsers.filter((u) => u.id === user.id)[0];
-            const editted =
-              originalUser.id !== user.id ||
-              originalUser.name !== user.name ||
-              originalUser.password !== user.password ||
-              originalUser.role !== user.role;
+          {filteredUsers.map((user) => {
             return (
               <div
                 key={user.id}
                 className={clsx(
-                  "grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2",
-                  editted
-                    ? "border-green-500 bg-green-50 border-dashed"
-                    : "border-stroke-weak"
+                  'grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2',
+                  isUserEdited(user)
+                    ? 'border-green-500 bg-green-50 border-dashed'
+                    : 'border-stroke-weak'
                 )}
               >
                 <input
@@ -179,9 +176,9 @@ export default function AllUsers({ allUsers }) {
                     if (selectedUserIds.includes(user.id)) {
                       setSelectedUserIds((prev) =>
                         prev.filter((id) => id !== user.id)
-                      );
+                      )
                     } else {
-                      setSelectedUserIds((prev) => [...prev, user.id]);
+                      setSelectedUserIds((prev) => [...prev, user.id])
                     }
                   }}
                 />
@@ -201,7 +198,7 @@ export default function AllUsers({ allUsers }) {
                 <p className="text-text-weak text-sm">#{user.id}</p>
                 {true ? (
                   <p className="text-text-weaker text-sm">
-                    {" "}
+                    {' '}
                     &#8226; &#8226; &#8226; &#8226;
                   </p>
                 ) : (
@@ -210,9 +207,8 @@ export default function AllUsers({ allUsers }) {
                 <p className="text-sm">{formatDate(user.reg_date)}</p>
                 <p
                   className={clsx(
-                    "text-sm",
-                    originalUser.role !== user.role &&
-                      "font-bold text-green-700"
+                    'text-sm',
+                    isUserEdited(user) && 'font-bold text-green-700'
                   )}
                 >
                   {toTitleCase(user.role)}
@@ -223,7 +219,7 @@ export default function AllUsers({ allUsers }) {
                   </Icon>
                 </Link>
               </div>
-            );
+            )
           })}
         </div>
       </div>
@@ -232,13 +228,11 @@ export default function AllUsers({ allUsers }) {
         <BulkActions
           selectedUserIds={selectedUserIds}
           setSelectedUserIds={setSelectedUserIds}
-          editedUsers={editedUsers}
-          setEditedUsers={setEditedUsers}
+          updatedUsers={updatedUsers}
+          setUpdatedUsers={setUpdatedUsers}
           setIsEdited={setIsEdited}
-          editedUsersDB={editedUsersDB}
-          setEditedUsersDB={setEditedUsersDB}
         />
       )}
     </div>
-  );
+  )
 }

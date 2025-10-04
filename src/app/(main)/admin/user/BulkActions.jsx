@@ -1,68 +1,45 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   ArrowUpTrayIcon,
   TrashIcon,
   UserIcon,
-} from "@heroicons/react/24/outline";
-import Icon from "@/components/Icon";
-import { XCircleIcon } from "@heroicons/react/20/solid";
-import toTitleCase from "@/utils/toTitleCase";
+} from '@heroicons/react/24/outline'
+import Icon from '@/components/Icon'
+import { XCircleIcon } from '@heroicons/react/20/solid'
+import toTitleCase from '@/utils/toTitleCase'
 
 export default function BulkActions({
   selectedUserIds,
   setSelectedUserIds,
-  editedUsers,
-  setEditedUsers,
+  updatedUsers,
+  setUpdatedUsers,
   setIsEdited,
-  editedUsersDB,
-  setEditedUsersDB,
 }) {
-  const [bulkMenuOpened, setBulkMenuOpened] = useState(null);
+  const [bulkMenuOpened, setBulkMenuOpened] = useState(null)
 
-  function handleEdited(newUser) {
-    setIsEdited(true);
-    setEditedUsersDB((prev) => {
-      let found = false;
-      const newUsers = prev.map((user) => {
-        console.log(user.id, newUser.id);
-        if (user.id === newUser.id) {
-          found = true;
-          return newUser;
-        }
-        return user;
-      });
-
-      if (found) {
-        return newUsers;
-      } else {
-        return [...prev, newUser];
-      }
-    });
+  function updateUsers(updateFunction) {
+    setUpdatedUsers((prev) =>
+      prev.map((user) =>
+        selectedUserIds.includes(user.id) ? updateFunction(user) : user
+      )
+    )
+    setIsEdited(true)
   }
 
-  function updateRole(role) {
-    let updatedUser = {};
-    setEditedUsers((prev) => {
-      return prev.map((user) => {
-        if (!selectedUserIds.includes(user.id)) return user;
-
-        updatedUser = {
-          ...user,
-          role: role,
-        };
-
-        return {
-          ...user,
-          role: role,
-        };
-      });
-    });
-
-    handleEdited(updatedUser);
+  function handleRoleChange(role) {
+    updateUsers((user) => ({ ...user, role: role }))
+    setBulkMenuOpened(null)
   }
 
+  function handleDeactivate() {
+    updateUsers((user) => ({ ...user, deactivated_date: new Date() }))
+  }
+
+  function handleActivate() {
+    updateUsers((user) => ({ ...user, deactivated_date: null }))
+  }
   return (
     <div className="flex flex-row gap-4 items-center">
       <div className="border-1 border-stroke-weak p-0.5 rounded">
@@ -72,8 +49,8 @@ export default function BulkActions({
             type="button"
             className="cursor-pointer"
             onClick={(e) => {
-              e.stopPropagation();
-              setSelectedUserIds([]);
+              e.stopPropagation()
+              setSelectedUserIds([])
             }}
           >
             <XCircleIcon className="size-4 text-text-weaker"></XCircleIcon>
@@ -85,8 +62,8 @@ export default function BulkActions({
         <button
           type="button"
           onClick={(e) => {
-            e.stopPropagation();
-            setBulkMenuOpened(bulkMenuOpened === "role" ? null : "role");
+            e.stopPropagation()
+            setBulkMenuOpened(bulkMenuOpened === 'role' ? null : 'role')
           }}
         >
           <Icon border className="flex flex-row gap-1 items-center px-2">
@@ -95,22 +72,21 @@ export default function BulkActions({
           </Icon>
         </button>
 
-        {bulkMenuOpened === "role" && (
+        {bulkMenuOpened === 'role' && (
           <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-12 z-10 w-64">
             <div className="max-h-32 overflow-scroll flex flex-col gap-1 overflow-x-hidden overflow-y-auto">
-              {["student", "teacher", "admin"].map((option) => (
+              {['student', 'teacher', 'admin'].map((role) => (
                 <button
-                  key={option}
+                  key={role}
                   type="button"
                   className="flex flex-row gap-2 justify-between items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    updateRole(option);
-                    setBulkMenuOpened(null);
+                    e.stopPropagation()
+                    handleRoleChange(role)
                   }}
                 >
                   <div className="flex flex-row gap-2 items-end">
-                    <p>{toTitleCase(option)}</p>
+                    <p>{toTitleCase(role)}</p>
                   </div>
                 </button>
               ))}
@@ -123,26 +99,8 @@ export default function BulkActions({
         <button
           type="button"
           onClick={(e) => {
-            e.stopPropagation();
-
-            let updatedUser = {};
-            setEditedUsers((prev) => {
-              return prev.map((user) => {
-                if (!selectedUserIds.includes(user.id)) return user;
-
-                updatedUser = {
-                  ...user,
-                  deactivated_date: new Date(),
-                };
-
-                return {
-                  ...user,
-                  deactivated_date: new Date(),
-                };
-              });
-            });
-
-            handleEdited(updatedUser);
+            e.stopPropagation()
+            handleDeactivate()
           }}
         >
           <Icon border className="flex flex-row gap-1 items-center px-2">
@@ -156,26 +114,8 @@ export default function BulkActions({
         <button
           type="button"
           onClick={(e) => {
-            e.stopPropagation();
-
-            let updatedUser = {};
-            setEditedUsers((prev) => {
-              return prev.map((user) => {
-                if (!selectedUserIds.includes(user.id)) return user;
-
-                updatedUser = {
-                  ...user,
-                  deactivated_date: null,
-                };
-
-                return {
-                  ...user,
-                  deactivated_date: null,
-                };
-              });
-            });
-
-            handleEdited(updatedUser);
+            e.stopPropagation()
+            handleActivate()
           }}
         >
           <Icon border className="flex flex-row gap-1 items-center px-2">
@@ -185,5 +125,5 @@ export default function BulkActions({
         </button>
       </div>
     </div>
-  );
+  )
 }

@@ -5,7 +5,6 @@ import { ArrowPathIcon, CheckIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Form from 'next/form'
 import { useState, useActionState, useEffect } from 'react'
-import toTitleCase from '@/utils/toTitleCase'
 import Select from '@/components/Select'
 
 export default function CreateUser({ allSubjects, user }) {

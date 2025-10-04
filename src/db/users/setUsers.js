@@ -3,6 +3,7 @@
 import { neon } from "@neondatabase/serverless";
 import { verifySession } from "@/actions/userSession";
 import { getUser } from "./getUser";
+import { revalidatePath } from "next/cache";
 
 export async function setUsers(updatedUsers) {
   try {
@@ -22,6 +23,8 @@ export async function setUsers(updatedUsers) {
           await sql`UPDATE users SET name=${user.name}, role=${user.role}, deactivated_date=${user.deactivated_date} WHERE id=${user.id}`;
       })
     );
+
+    revalidatePath("/admin/user")
 
     return {
       success: true,

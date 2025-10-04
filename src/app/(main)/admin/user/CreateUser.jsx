@@ -25,9 +25,6 @@ export default function CreateUser({ allSubjects }) {
   ]
   const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([])
   const [taughtSubjectIds, setTaughtSubjectIds] = useState([])
-  const availableSubjectsToTeach = allSubjects.filter(
-    (s) => s.teacherId === null
-  )
 
   const additionalData =
     role === 'student'
