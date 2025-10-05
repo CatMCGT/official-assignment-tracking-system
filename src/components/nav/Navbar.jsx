@@ -14,7 +14,7 @@ export default async function Navbar() {
   const monitoredSubjects = await getMonitoredSubjects();
 
   return (
-    <div className="h-full fixed z-100">
+    <div className="h-full fixed z-20">
       <nav className="bg-background-weak flex flex-col gap-5 px-5 py-4 w-64 h-full border-r-2 border-r-stroke-weak">
         <UserDisplaySection user={user} />
 

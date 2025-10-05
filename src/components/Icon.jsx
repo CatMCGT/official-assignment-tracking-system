@@ -5,7 +5,7 @@ export default function Icon({ children, tooltip, border, className }) {
     <div className="relative">
       <div
         className={clsx(
-          `${className} hover:bg-fill-weak border-stroke-weak p-[6px] w-fit rounded flex justify-center items-center cursor-pointer peer transition-colors`,
+          `hover:bg-fill-weak border-stroke-weak p-[6px] w-fit rounded flex justify-center items-center cursor-pointer peer transition-colors ${className}`,
           border ? 'border-1' : ''
         )}
       >

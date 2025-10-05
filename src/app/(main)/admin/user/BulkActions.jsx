@@ -58,7 +58,7 @@ export default function BulkActions({
         </div>
       </div>
 
-      <div className="relative">
+      {/* <div className="relative">
         <button
           type="button"
           onClick={(e) => {
@@ -93,7 +93,7 @@ export default function BulkActions({
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       <div className="relative">
         <button
