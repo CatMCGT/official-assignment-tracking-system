@@ -1,23 +1,25 @@
-import { getAllSubjects } from '@/db/subjects/getAllSubjects'
-import { getAllUsers } from '@/db/users/getAllUsers'
-import MainLayout from '../../layout'
-import CreateUser from './CreateUser'
-import AllUsers from './AllUsers'
-import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
+import { getAllSubjects } from "@/db/subjects/getAllSubjects";
+import { getAllUsers } from "@/db/users/getAllUsers";
+import MainLayout from "../../layout";
+import CreateUser from "./CreateUser";
+import AllUsers from "./AllUsers";
+import { getSubjectStudents } from "@/db/subjects/getSubjectStudents";
 
 export default async function Page() {
-  const allSubjects = await getAllSubjects()
-  const allUsers = await getAllUsers()
+  const [allSubjects, allUsers] = await Promise.allSettled([
+    getAllSubjects(),
+    getAllUsers(),
+  ]);
   const subjectsWithStudents = await Promise.all(
     allSubjects.map(async (subject) => {
-      const subjectStudents = await getSubjectStudents(subject.id)
+      const subjectStudents = await getSubjectStudents(subject.id);
 
       return {
         ...subject,
-        students: subjectStudents.map(s => s.id),
-      }
+        students: subjectStudents.map((s) => s.id),
+      };
     })
-  )
+  );
 
   return (
     <div>
@@ -31,5 +33,5 @@ export default async function Page() {
         <AllUsers allUsers={allUsers} allSubjects={subjectsWithStudents} />
       </div>
     </div>
-  )
+  );
 }
