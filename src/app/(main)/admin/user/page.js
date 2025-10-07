@@ -6,10 +6,8 @@ import AllUsers from "./AllUsers";
 import { getSubjectStudents } from "@/db/subjects/getSubjectStudents";
 
 export default async function Page() {
-  const [allSubjects, allUsers] = await Promise.allSettled([
-    getAllSubjects(),
-    getAllUsers(),
-  ]);
+  const allSubjects = await getAllSubjects()
+  const allUsers = await getAllUsers()
   const subjectsWithStudents = await Promise.all(
     allSubjects.map(async (subject) => {
       const subjectStudents = await getSubjectStudents(subject.id);

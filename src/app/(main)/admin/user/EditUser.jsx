@@ -4,6 +4,8 @@ import { useState, useActionState } from 'react'
 import Select from '@/components/Select'
 import toTitleCase from '@/utils/toTitleCase'
 import Icon from '@/components/Icon'
+import { checkSubjectChanges } from '@/utils/checkSubjectChanges'
+import { setStudentSubject } from '@/db/subjects/setStudentSubject'
 
 export default function EditUser({ user, allSubjects, setInspectingUser }) {
   const originalEnrolled = allSubjects.filter((subject) =>
@@ -25,20 +27,34 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
     (s) => s.teacher_id === null
   )
 
+  const originalName = user.name
+  const [updatedName, setUpdatedName] = useState(originalName)
+
   const isEdited =
-    user.role === 'student'
+    (user.role === 'student'
       ? originalEnrolled.map((s) => s.id).toString() !==
         enrolledSubjectIds.toString()
       : user.role === 'teacher'
       ? originalTaught.map((s) => s.id).toString() !==
         taughtSubjectIds.toString()
-      : false
+      : false) || originalName !== updatedName
   const [isPending, setIsPending] = useState(false)
 
   async function handleSubmit() {
     try {
       setIsPending(true)
-      // db function
+      const subjectChanges = checkSubjectChanges(
+        user,
+        originalEnrolled.map((s) => s.id),
+        enrolledSubjectIds,
+        originalTaught.map((s) => s.id),
+        taughtSubjectIds
+      )
+
+      if (user.role === "student") {
+
+        await setStudentSubject(user.id, subjectChanges)
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -47,6 +63,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
   }
 
   async function handleUndo() {
+    setUpdatedName(originalName)
     if (user.role === 'student') {
       setEnrolledSubjectIds(originalEnrolled.map((s) => s.id))
     } else if (user.role === 'teacher') {
@@ -60,18 +77,15 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
         onClick={() => setInspectingUser(null)}
         disabled={isPending || isEdited}
       >
-        {
-          isPending || isEdited ? (
-            <Icon className="hover:bg-white">
+        {isPending || isEdited ? (
+          <Icon className="hover:bg-white">
             <ArrowLeftIcon className="size-4 text-text-weak" />
           </Icon>
-          ) : (
-
+        ) : (
           <Icon tooltip="Back">
             <ArrowLeftIcon className="size-4 text-text-weak" />
           </Icon>
-          )
-        }
+        )}
       </button>
       <div className="p-4 pt-0 pl-0 w-72">
         <h2 className="text-lg font-bold mb-3">Edit User #{user.id}</h2>
@@ -92,7 +106,8 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
               placeholder="Name"
               id="name"
               name="name"
-              defaultValue={user.name}
+              value={updatedName}
+              onChange={(e) => setUpdatedName(e.target.value)}
             />
           </div>
 
