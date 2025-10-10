@@ -24,17 +24,17 @@ export async function setUsers(updatedUsers) {
       })
     );
 
-    revalidatePath("/admin/user")
+    revalidatePath("/admin/user");
 
     return {
       success: true,
     };
   } catch (err) {
-    console.error("Error creating user:", err);
+    console.error("Error updating user:", err);
 
     return {
       success: false,
-      message: `Failed to create user. Please check the developer console.`,
+      message: `Failed to update user. Please check the developer console.`,
     };
   }
 }
