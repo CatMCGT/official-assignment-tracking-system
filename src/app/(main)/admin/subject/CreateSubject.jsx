@@ -1,12 +1,16 @@
 import Radio from "@/components/Radio";
 import Select from "@/components/Select";
 import Form from "next/form";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { subjectShorthands } from "@/utils/getSubjectInfo";
+import { createSubject } from "@/db/subjects/createSubject";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 
 export default function CreateSubject({ allUsers, allSubjects }) {
   const [subjectType, setSubjectType] = useState("grade");
   const [subjectTeacherId, setSubjectTeacherId] = useState(null);
+  const [subjectStudentIds, setSubjectStudentIds] = useState([]);
   const [subjectShorthand, setSubjectShorthand] = useState(null);
 
   const allTeachers = allUsers?.filter((user) => user.role === "teacher");
@@ -21,9 +25,28 @@ export default function CreateSubject({ allUsers, allSubjects }) {
     }
   );
 
+  const additionalData = {
+    subjectType: subjectType,
+    subjectShorthand: subjectShorthand,
+    subjectTeacherId: subjectTeacherId,
+    subjectStudentIds: subjectStudentIds,
+  };
+
+  const [createSubjectState, createSubjectAction, isPending] = useActionState(
+    createSubject.bind(null, additionalData),
+    {
+      grade: "",
+      class: "",
+      block: "",
+    }
+  );
+
   return (
-    <Form className="border-1 border-stroke-weak rounded p-4 w-72">
-      <h2 className="text-lg font-bold mb-3">Create Subject</h2>
+    <Form
+      action={createSubjectAction}
+      className="border-1 border-stroke-weak rounded p-4 w-72 flex flex-col gap-3"
+    >
+      <h2 className="text-lg font-bold">Create Subject</h2>
 
       <Radio
         options={[
@@ -40,36 +63,57 @@ export default function CreateSubject({ allUsers, allSubjects }) {
         setSelected={setSubjectType}
       />
 
-      <div className="flex flex-row justify-between items-center mt-3">
-        <label htmlFor="grade">
-          Grade <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="number"
-          className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
-          min="1"
-          max="12"
-          id="grade"
-          required
-        />
-      </div>
+      {subjectType === "grade" && (
+        <div>
+          <div className="flex flex-row justify-between items-center mb-3">
+            <label htmlFor="grade">
+              Grade <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
+              min="1"
+              max="12"
+              id="grade"
+              required
+            />
+          </div>
 
-      <div className="flex flex-row justify-between items-center mt-3">
-        <label htmlFor="block">
-          Block <span className="text-red-500">*</span>
-        </label>
-        <input
-          type="number"
-          className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
-          min="1"
-          max="4"
-          id="block"
-          required
-        />
-      </div>
+          <div className="flex flex-row justify-between items-center">
+            <label htmlFor="block">
+              Block <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
+              min="1"
+              max="4"
+              id="block"
+              required
+            />
+          </div>
+        </div>
+      )}
+
+      {subjectType === "class" && (
+        <div className="flex flex-row justify-between items-center">
+          <label htmlFor="class">
+            Class <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            className="w-16 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
+            id="class"
+            maxLength="3"
+            required
+          />
+        </div>
+      )}
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="subjectName">Subject</label>
+        <label htmlFor="subjectName">
+          Subject <span className="text-red-500">*</span>
+        </label>
         <Select
           options={subjectShorthandOptions}
           selected={subjectShorthand}
@@ -80,7 +124,9 @@ export default function CreateSubject({ allUsers, allSubjects }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="subjects">Subject Teacher</label>
+        <label htmlFor="subjects">
+          Subject Teacher <span className="text-red-500">*</span>
+        </label>
         <Select
           options={allTeachers}
           selected={subjectTeacherId}
@@ -94,14 +140,34 @@ export default function CreateSubject({ allUsers, allSubjects }) {
       <div className="flex flex-col gap-1">
         <label htmlFor="subjects">Enrolled students</label>
         <Select
-          options={allTeachers}
-          selected={subjectTeacherId}
-          setSelected={setSubjectTeacherId}
-          placeholder="No subject teacher"
+          options={allStudents}
+          selected={subjectStudentIds}
+          setSelected={setSubjectStudentIds}
+          placeholder="No enrolled students"
           allowSearch
           showId
+          multiSelect
         />
       </div>
+
+      {createSubjectState?.message && (
+        <p
+          className={clsx(
+            "font-bold text-sm mt-0" && true,
+            createSubjectState?.success ? "text-green-400" : "text-red-400"
+          )}
+        >
+          {createSubjectState.message}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className="px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit mt-2 bg-text-weak"
+        disabled={isPending}
+      >
+        {isPending ? <ArrowPathIcon className="size-6 text-white" /> : "Create"}
+      </button>
     </Form>
   );
 }

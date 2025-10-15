@@ -97,11 +97,10 @@ export default function Select({
                         setSelected(option.id);
                       }
                     }
-                    setIsMenuOpened(false);
                   }}
                 >
                   <div className="flex flex-row gap-2 items-end">
-                    <p>{option.name}</p>
+                    <p className="truncate max-w-90">{option.name}</p>
                     {showId && (
                       <p className="text-sm text-text-weak">{option.id}</p>
                     )}
