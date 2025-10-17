@@ -1,7 +1,7 @@
 import Radio from "@/components/Radio";
 import Select from "@/components/Select";
 import Form from "next/form";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { subjectShorthands } from "@/utils/getSubjectInfo";
 import { createSubject } from "@/db/subjects/createSubject";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
@@ -10,6 +10,7 @@ import clsx from "clsx";
 export default function CreateSubject({ allUsers, allSubjects }) {
   const [subjectType, setSubjectType] = useState("grade");
   const [subjectTeacherId, setSubjectTeacherId] = useState(null);
+  const [subjectMonitorId, setSubjectMonitorId] = useState(null);
   const [subjectStudentIds, setSubjectStudentIds] = useState([]);
   const [subjectShorthand, setSubjectShorthand] = useState(null);
 
@@ -29,8 +30,20 @@ export default function CreateSubject({ allUsers, allSubjects }) {
     subjectType: subjectType,
     subjectShorthand: subjectShorthand,
     subjectTeacherId: subjectTeacherId,
-    subjectStudentIds: subjectStudentIds,
+    subjectMonitorId: subjectMonitorId,
+    subjectStudentIds: subjectStudentIds.filter(
+      (id) => id !== null && id !== undefined
+    ),
   };
+
+  useEffect(() => {
+    if (
+      !subjectStudentIds.includes(subjectMonitorId) &&
+      subjectMonitorId !== null
+    ) {
+      setSubjectStudentIds((prev) => [...prev, subjectMonitorId]);
+    }
+  }, [subjectMonitorId]);
 
   const [createSubjectState, createSubjectAction, isPending] = useActionState(
     createSubject.bind(null, additionalData),
@@ -75,6 +88,7 @@ export default function CreateSubject({ allUsers, allSubjects }) {
               min="1"
               max="12"
               id="grade"
+              name="grade"
               required
             />
           </div>
@@ -89,6 +103,7 @@ export default function CreateSubject({ allUsers, allSubjects }) {
               min="1"
               max="4"
               id="block"
+              name="block"
               required
             />
           </div>
@@ -104,6 +119,7 @@ export default function CreateSubject({ allUsers, allSubjects }) {
             type="text"
             className="w-16 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
             id="class"
+            name="class"
             maxLength="3"
             required
           />
@@ -138,7 +154,19 @@ export default function CreateSubject({ allUsers, allSubjects }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="subjects">Enrolled students</label>
+        <label htmlFor="subjects">Subject Monitor</label>
+        <Select
+          options={allStudents}
+          selected={subjectMonitorId}
+          setSelected={setSubjectMonitorId}
+          placeholder="No subject monitor"
+          allowSearch
+          showId
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="subjects">Enrolled Students</label>
         <Select
           options={allStudents}
           selected={subjectStudentIds}
