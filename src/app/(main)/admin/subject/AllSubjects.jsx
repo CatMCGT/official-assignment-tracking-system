@@ -1,20 +1,26 @@
-"use client";
+'use client'
 
-import Icon from "@/components/Icon";
+import Icon from '@/components/Icon'
 import {
+  ArrowPathIcon,
   ChartBarIcon,
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import { useState } from "react";
+} from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import { useState } from 'react'
+import BulkActions from './BulkActions'
+import formatDate from '@/utils/formatDate'
 
 export default function AllSubjects({ allSubjects, allUsers }) {
-  const [search, setSearch] = useState("");
-  const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
+  const [search, setSearch] = useState('')
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([])
+  const [updatedSubjects, setUpdatedSubjects] = useState(allSubjects)
+  const [isEdited, setIsEdited] = useState(false)
+  const [isPendingSave, setIsPendingSave] = useState(false)
 
   const filteredSubjects = search
-    ? allSubjects?.filter((subject) => {
+    ? updatedSubjects?.filter((subject) => {
         return (
           subject.name?.toLowerCase().includes(search.toLowerCase()) ||
           subject.grade?.toLowerCase().includes(search.toLowerCase()) ||
@@ -25,16 +31,37 @@ export default function AllSubjects({ allSubjects, allUsers }) {
           subject.teacher_name?.toLowerCase().includes(search.toLowerCase()) ||
           subject.monitor_id?.toLowerCase().includes(search.toLowerCase()) ||
           subject.monitor_name?.toLowerCase().includes(search.toLowerCase())
-        );
+        )
       })
-    : allSubjects;
+    : updatedSubjects
+
+  function isSubjectEdited(subject) {
+    const originalSubject = allSubjects.find((s) => s.id === subject.id)
+    return originalSubject.deactivated_date !== subject.deactivated_date
+  }
+
+  async function handleSubmit() {
+    try {
+      setIsPendingSave(true)
+      // db function goes here
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsPendingSave(false)
+    }
+  }
+
+  async function handleUndo() {
+    setUpdatedSubjects(allSubjects)
+    setIsEdited(false)
+  }
 
   return (
     <div className="flex flex-col gap-2 w-4xl">
       <div className="flex flex-row gap-3 items-center">
         <h2 className="font-semibold text-xl">All Subjects</h2>
         <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
-          {allSubjects?.length}
+          {updatedSubjects?.length}
         </div>
       </div>
 
@@ -71,6 +98,31 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                 </Icon>
               </button>
             </div>
+
+            {isEdited && !isPendingSave && (
+              <button
+                className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
+                onClick={handleUndo}
+              >
+                Undo
+              </button>
+            )}
+
+            <button
+              type="submit"
+              className={clsx(
+                'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
+                isEdited ? 'bg-text-weak' : 'bg-text-weakest'
+              )}
+              disabled={isPendingSave || !isEdited}
+              onClick={handleSubmit}
+            >
+              {isPendingSave ? (
+                <ArrowPathIcon className="size-6 text-white" />
+              ) : (
+                'Save'
+              )}
+            </button>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -79,7 +131,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
               <input
                 type="checkbox"
                 className="border-1 border-text-weak accent-text-weak"
-                checked={selectedSubjectIds.length === allSubjects?.length}
+                checked={selectedSubjectIds.length === updatedSubjects?.length}
                 onChange={(e) =>
                   setSelectedSubjectIds(
                     e.target.checked ? filteredSubjects.map((u) => u.id) : []
@@ -93,7 +145,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
             <p>Name</p>
             <p>Subject Teacher</p>
             <p>Subject Monitor</p>
-            <p>Enrolled Students</p>
+            <p># of Enrolled Students</p>
           </div>
           <div className="flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
             {filteredSubjects?.map((subject) => {
@@ -101,10 +153,10 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                 <div
                   key={subject.id}
                   className={clsx(
-                    "grid grid-cols-[1fr_2fr_3fr_5fr_5fr_3fr] items-center border-1 rounded px-3 py-2",
+                    'grid grid-cols-[1fr_2fr_3fr_5fr_5fr_3fr] items-center border-1 rounded px-3 py-2',
                     false
-                      ? "border-green-500 bg-green-50 border-dashed"
-                      : "border-stroke-weak"
+                      ? 'border-green-500 bg-green-50 border-dashed'
+                      : 'border-stroke-weak'
                   )}
                 >
                   <input
@@ -115,14 +167,27 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                       if (selectedSubjectIds.includes(subject.id)) {
                         setSelectedSubjectIds((prev) =>
                           prev.filter((id) => id !== subject.id)
-                        );
+                        )
                       } else {
-                        setSelectedSubjectIds((prev) => [...prev, subject.id]);
+                        setSelectedSubjectIds((prev) => [...prev, subject.id])
                       }
                     }}
                   />
 
-                  <p>{subject.id}</p>
+                  <div className="flex flex-row gap-1 items-center">
+                    <p>{subject.id}</p>
+                    {subject.deactivated_date !== null && (
+                      <div className="w-fit">
+                        <Icon
+                          tooltip={formatDate(subject.deactivated_date)}
+                          className="hover:bg-white"
+                        >
+                          <span className="text-red-500">(deactivated)</span>
+                        </Icon>
+                      </div>
+                    )}
+                  </div>
+
                   <p>{subject.name}</p>
                   <div className="w-fit">
                     <Icon tooltip={`#${subject.teacher_id}`}>
@@ -134,12 +199,23 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                       {subject.monitor_name}
                     </Icon>
                   </div>
+                  <p>{subject?.students.length}</p>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
+
+        {selectedSubjectIds.length > 0 && (
+          <BulkActions
+            selectedSubjectIds={selectedSubjectIds}
+            setSelectedSubjectIds={setSelectedSubjectIds}
+            updatedSubjects={updatedSubjects}
+            setUpdatedSubjects={setUpdatedSubjects}
+            setIsEdited={setIsEdited}
+          />
+        )}
       </div>
     </div>
-  );
+  )
 }

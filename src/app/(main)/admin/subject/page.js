@@ -8,6 +8,8 @@ import AllSubjects from "./AllSubjects";
 
 export default function Page() {
   const { allUsers, allSubjects } = useContext(AdminContext);
+  console.log(allSubjects)
+  
   return (
     <div>
       <MainLayout.Header>Subject Management</MainLayout.Header>
