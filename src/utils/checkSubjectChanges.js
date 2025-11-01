@@ -32,3 +32,21 @@ export function checkSubjectChanges(
 
   return changes
 }
+
+export function checkSubjectStudentChanges(
+  originalEnrolledIds,
+  enrolledSubjectIds
+) {
+  const changes = {
+    newlyEnrolled: [],
+    removedEnrolled: [],
+  }
+
+  changes.newlyEnrolled = enrolledSubjectIds.filter(
+    (id) => !originalEnrolledIds.includes(id)
+  )
+
+  changes.removedEnrolled = originalEnrolledIds.filter(
+    (id) => !enrolledSubjectIds.includes(id)
+  )
+}

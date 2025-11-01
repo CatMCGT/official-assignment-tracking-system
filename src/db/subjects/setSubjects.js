@@ -14,7 +14,7 @@ export async function setSubjects(updatedSubjects) {
     const userRole = user.role
 
     if (userRole !== 'admin')
-      throw new Error('User not authorised to create user.')
+      throw new Error('User not authorised to update user.')
 
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
     const results = await Promise.all(

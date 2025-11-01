@@ -3,6 +3,7 @@
 import Icon from '@/components/Icon'
 import {
   ArrowPathIcon,
+  ArrowRightIcon,
   ChartBarIcon,
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
@@ -12,6 +13,7 @@ import { useState } from 'react'
 import BulkActions from './BulkActions'
 import formatDate from '@/utils/formatDate'
 import { setSubjects } from '@/db/subjects/setSubjects'
+import EditSubject from './EditSubject'
 
 export default function AllSubjects({ allSubjects, allUsers }) {
   const [search, setSearch] = useState('')
@@ -132,7 +134,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-[1fr_3fr_3fr_5fr_5fr_3fr] items-center px-3 py-2 text-sm text-text-weak">
+            <div className="grid grid-cols-[1fr_4fr_2fr_5fr_5fr_3fr_1fr] items-center px-3 py-2 text-sm text-text-weak">
               {!search ? (
                 <input
                   type="checkbox"
@@ -161,7 +163,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                   <div
                     key={subject.id}
                     className={clsx(
-                      'grid grid-cols-[1fr_3fr_3fr_5fr_5fr_3fr] items-center border-1 rounded px-3 py-2',
+                      'grid grid-cols-[1fr_4fr_2fr_5fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2',
                       false
                         ? 'border-green-500 bg-green-50 border-dashed'
                         : 'border-stroke-weak'
@@ -208,7 +210,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                       </Icon>
                     </div>
                     <p>{subject?.students.length}</p>
-                    <button onClick={() => setInspectingSubject(user)}>
+                    <button onClick={() => setInspectingSubject(subject)}>
                       <Icon tooltip="See details">
                         <ArrowRightIcon className="size-4 text-text-weak" />
                       </Icon>
@@ -230,7 +232,11 @@ export default function AllSubjects({ allSubjects, allUsers }) {
           )}
         </div>
       ) : (
-        <div></div>
+        <EditSubject
+          subject={inspectingSubject}
+          allUsers={allUsers}
+          setInspectingSubject={setInspectingSubject}
+        />
       )}
     </div>
   )
