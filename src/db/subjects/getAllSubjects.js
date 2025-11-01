@@ -29,6 +29,7 @@ export async function getAllSubjects() {
         t.name AS teacher_name,
         m.id AS monitor_id,
         m.name AS monitor_name,
+        deactivated_date,
         COALESCE(
           JSON_AGG(
             JSON_BUILD_OBJECT('id', st.id, 'name', st.name)

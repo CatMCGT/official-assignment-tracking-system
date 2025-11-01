@@ -11,6 +11,7 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import BulkActions from './BulkActions'
 import formatDate from '@/utils/formatDate'
+import { setSubjects } from '@/db/subjects/setSubjects'
 
 export default function AllSubjects({ allSubjects, allUsers }) {
   const [search, setSearch] = useState('')
@@ -18,6 +19,8 @@ export default function AllSubjects({ allSubjects, allUsers }) {
   const [updatedSubjects, setUpdatedSubjects] = useState(allSubjects)
   const [isEdited, setIsEdited] = useState(false)
   const [isPendingSave, setIsPendingSave] = useState(false)
+
+  const [inspectingSubject, setInspectingSubject] = useState(null)
 
   const filteredSubjects = search
     ? updatedSubjects?.filter((subject) => {
@@ -43,7 +46,10 @@ export default function AllSubjects({ allSubjects, allUsers }) {
   async function handleSubmit() {
     try {
       setIsPendingSave(true)
-      // db function goes here
+      await setSubjects(
+        updatedSubjects.filter((subject) => isSubjectEdited(subject))
+      )
+      setIsEdited(false)
     } catch (err) {
       console.error(err)
     } finally {
@@ -64,158 +70,168 @@ export default function AllSubjects({ allSubjects, allUsers }) {
           {updatedSubjects?.length}
         </div>
       </div>
-
-      <div>
-        <div className="flex flex-row justify-between items-center mb-2">
-          <div></div>
-          <div className="flex flex-row items-center gap-2">
-            <div className="relative">
-              <input
-                type="text"
-                className="border-1 border-stroke-weak rounded focus:outline-text-weaker focus:outline-1 h-8 pl-2 pr-8"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <div className="absolute right-0 top-0">
-                <Icon tooltip="Search">
-                  <MagnifyingGlassIcon className="text-text-weak size-5" />
-                </Icon>
-              </div>
-            </div>
-
-            <div className="relative">
-              <button type="button">
-                <Icon tooltip="Statistics" border>
-                  <ChartBarIcon className="text-text-weak size-5" />
-                </Icon>
-              </button>
-            </div>
-
-            <div className="relative">
-              <button type="button">
-                <Icon tooltip="More actions">
-                  <EllipsisVerticalIcon className="text-text-weak size-5" />
-                </Icon>
-              </button>
-            </div>
-
-            {isEdited && !isPendingSave && (
-              <button
-                className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
-                onClick={handleUndo}
-              >
-                Undo
-              </button>
-            )}
-
-            <button
-              type="submit"
-              className={clsx(
-                'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
-                isEdited ? 'bg-text-weak' : 'bg-text-weakest'
-              )}
-              disabled={isPendingSave || !isEdited}
-              onClick={handleSubmit}
-            >
-              {isPendingSave ? (
-                <ArrowPathIcon className="size-6 text-white" />
-              ) : (
-                'Save'
-              )}
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-[1fr_2fr_3fr_5fr_5fr_3fr] items-center px-3 py-2 text-sm text-text-weak">
-            {!search ? (
-              <input
-                type="checkbox"
-                className="border-1 border-text-weak accent-text-weak"
-                checked={selectedSubjectIds.length === updatedSubjects?.length}
-                onChange={(e) =>
-                  setSelectedSubjectIds(
-                    e.target.checked ? filteredSubjects.map((u) => u.id) : []
-                  )
-                }
-              />
-            ) : (
-              <div></div>
-            )}
-            <p>ID</p>
-            <p>Name</p>
-            <p>Subject Teacher</p>
-            <p>Subject Monitor</p>
-            <p># of Enrolled Students</p>
-          </div>
-          <div className="flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
-            {filteredSubjects?.map((subject) => {
-              return (
-                <div
-                  key={subject.id}
-                  className={clsx(
-                    'grid grid-cols-[1fr_2fr_3fr_5fr_5fr_3fr] items-center border-1 rounded px-3 py-2',
-                    false
-                      ? 'border-green-500 bg-green-50 border-dashed'
-                      : 'border-stroke-weak'
-                  )}
-                >
-                  <input
-                    type="checkbox"
-                    className="border-1 border-text-weak accent-text-weak cursor-pointer"
-                    checked={selectedSubjectIds.includes(subject.id)}
-                    onChange={() => {
-                      if (selectedSubjectIds.includes(subject.id)) {
-                        setSelectedSubjectIds((prev) =>
-                          prev.filter((id) => id !== subject.id)
-                        )
-                      } else {
-                        setSelectedSubjectIds((prev) => [...prev, subject.id])
-                      }
-                    }}
-                  />
-
-                  <div className="flex flex-row gap-1 items-center">
-                    <p>{subject.id}</p>
-                    {subject.deactivated_date !== null && (
-                      <div className="w-fit">
-                        <Icon
-                          tooltip={formatDate(subject.deactivated_date)}
-                          className="hover:bg-white"
-                        >
-                          <span className="text-red-500">(deactivated)</span>
-                        </Icon>
-                      </div>
-                    )}
-                  </div>
-
-                  <p>{subject.name}</p>
-                  <div className="w-fit">
-                    <Icon tooltip={`#${subject.teacher_id}`}>
-                      {subject.teacher_name}
-                    </Icon>
-                  </div>
-                  <div className="w-fit">
-                    <Icon tooltip={`#${subject.monitor_id}`}>
-                      {subject.monitor_name}
-                    </Icon>
-                  </div>
-                  <p>{subject?.students.length}</p>
+      {!inspectingSubject ? (
+        <div>
+          <div className="flex flex-row justify-between items-center mb-2">
+            <div></div>
+            <div className="flex flex-row items-center gap-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  className="border-1 border-stroke-weak rounded focus:outline-text-weaker focus:outline-1 h-8 pl-2 pr-8"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <div className="absolute right-0 top-0">
+                  <Icon tooltip="Search">
+                    <MagnifyingGlassIcon className="text-text-weak size-5" />
+                  </Icon>
                 </div>
-              )
-            })}
-          </div>
-        </div>
+              </div>
 
-        {selectedSubjectIds.length > 0 && (
-          <BulkActions
-            selectedSubjectIds={selectedSubjectIds}
-            setSelectedSubjectIds={setSelectedSubjectIds}
-            updatedSubjects={updatedSubjects}
-            setUpdatedSubjects={setUpdatedSubjects}
-            setIsEdited={setIsEdited}
-          />
-        )}
-      </div>
+              <div className="relative">
+                <button type="button">
+                  <Icon tooltip="Statistics" border>
+                    <ChartBarIcon className="text-text-weak size-5" />
+                  </Icon>
+                </button>
+              </div>
+
+              <div className="relative">
+                <button type="button">
+                  <Icon tooltip="More actions">
+                    <EllipsisVerticalIcon className="text-text-weak size-5" />
+                  </Icon>
+                </button>
+              </div>
+
+              {isEdited && !isPendingSave && (
+                <button
+                  className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
+                  onClick={handleUndo}
+                >
+                  Undo
+                </button>
+              )}
+
+              <button
+                type="submit"
+                className={clsx(
+                  'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
+                  isEdited ? 'bg-text-weak' : 'bg-text-weakest'
+                )}
+                disabled={isPendingSave || !isEdited}
+                onClick={handleSubmit}
+              >
+                {isPendingSave ? (
+                  <ArrowPathIcon className="size-6 text-white" />
+                ) : (
+                  'Save'
+                )}
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-[1fr_3fr_3fr_5fr_5fr_3fr] items-center px-3 py-2 text-sm text-text-weak">
+              {!search ? (
+                <input
+                  type="checkbox"
+                  className="border-1 border-text-weak accent-text-weak"
+                  checked={
+                    selectedSubjectIds.length === updatedSubjects?.length
+                  }
+                  onChange={(e) =>
+                    setSelectedSubjectIds(
+                      e.target.checked ? filteredSubjects.map((u) => u.id) : []
+                    )
+                  }
+                />
+              ) : (
+                <div></div>
+              )}
+              <p>ID</p>
+              <p>Name</p>
+              <p>Subject Teacher</p>
+              <p>Subject Monitor</p>
+              <p># of Enrolled Students</p>
+            </div>
+            <div className="flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
+              {filteredSubjects?.map((subject) => {
+                return (
+                  <div
+                    key={subject.id}
+                    className={clsx(
+                      'grid grid-cols-[1fr_3fr_3fr_5fr_5fr_3fr] items-center border-1 rounded px-3 py-2',
+                      false
+                        ? 'border-green-500 bg-green-50 border-dashed'
+                        : 'border-stroke-weak'
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      className="border-1 border-text-weak accent-text-weak cursor-pointer"
+                      checked={selectedSubjectIds.includes(subject.id)}
+                      onChange={() => {
+                        if (selectedSubjectIds.includes(subject.id)) {
+                          setSelectedSubjectIds((prev) =>
+                            prev.filter((id) => id !== subject.id)
+                          )
+                        } else {
+                          setSelectedSubjectIds((prev) => [...prev, subject.id])
+                        }
+                      }}
+                    />
+
+                    <div className="flex flex-col items-start">
+                      <p>{subject.id}</p>
+                      {subject.deactivated_date !== null && (
+                        <div className="w-fit">
+                          <Icon
+                            tooltip={formatDate(subject.deactivated_date)}
+                            className="hover:bg-white"
+                          >
+                            <span className="text-red-500">(deactivated)</span>
+                          </Icon>
+                        </div>
+                      )}
+                    </div>
+
+                    <p>{subject.name}</p>
+                    <div className="w-fit">
+                      <Icon tooltip={`#${subject.teacher_id}`}>
+                        {subject.teacher_name}
+                      </Icon>
+                    </div>
+                    <div className="w-fit">
+                      <Icon tooltip={`#${subject.monitor_id}`}>
+                        {subject.monitor_name}
+                      </Icon>
+                    </div>
+                    <p>{subject?.students.length}</p>
+                    <button onClick={() => setInspectingSubject(user)}>
+                      <Icon tooltip="See details">
+                        <ArrowRightIcon className="size-4 text-text-weak" />
+                      </Icon>
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {selectedSubjectIds.length > 0 && (
+            <BulkActions
+              selectedSubjectIds={selectedSubjectIds}
+              setSelectedSubjectIds={setSelectedSubjectIds}
+              updatedSubjects={updatedSubjects}
+              setUpdatedSubjects={setUpdatedSubjects}
+              setIsEdited={setIsEdited}
+            />
+          )}
+        </div>
+      ) : (
+        <div></div>
+      )}
     </div>
   )
 }
