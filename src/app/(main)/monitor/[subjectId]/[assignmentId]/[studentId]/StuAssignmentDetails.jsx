@@ -40,7 +40,7 @@ export default function StuAssignmentDetails({
     try {
       setIsPendingSave(true)
       const newStudents = assignment.students.map((s) => {
-        if (s.id === student.id) {
+        if (s.id === student?.id) {
           return updatedStudent
         } else {
           return s
@@ -66,11 +66,11 @@ export default function StuAssignmentDetails({
         <div className="px-5 py-[5px] rounded-full bg-fill-weak w-fit flex flex-row gap-1 items-center">
           <ClockIcon className="size-4 text-text-weaker" />
           <p className="text-sm text-text-weak">
-            {formatDate(assignment.due_date)}
+            {formatDate(assignment?.due_date)}
           </p>
         </div>
       </div>
-      <h2 className="font-semibold text-2xl ">{assignment.assignment_title}</h2>
+      <h2 className="font-semibold text-2xl ">{assignment?.assignment_title}</h2>
 
       <Properties>
         <Properties.Property name="Inspecting Student">
@@ -78,8 +78,8 @@ export default function StuAssignmentDetails({
         </Properties.Property>
 
         <p>
-          {student.name}{' '}
-          <span className="text-text-weaker">(#{student.id})</span>
+          {student?.name}{' '}
+          <span className="text-text-weaker">(#{student?.id})</span>
         </p>
 
         <Properties.Property name="Collected Date">
@@ -93,7 +93,7 @@ export default function StuAssignmentDetails({
             new Date(
               updatedStudent?.collected_date === null
                 ? ''
-                : updatedStudent.collected_date
+                : updatedStudent?.collected_date
             ).toLocaleDateString('en-CA') + 'T00:00'
           }
           onChange={(e) =>
@@ -109,8 +109,8 @@ export default function StuAssignmentDetails({
         </Properties.Property>
         <Select
           options={
-            updatedStudent.collected_date > assignment.due_date ||
-            (new Date() > assignment.due_date && !updatedStudent.collected_date)
+            updatedStudent?.collected_date > assignment?.due_date ||
+            (new Date() > assignment?.due_date && !updatedStudent?.collected_date)
               ? [
                   { id: null, name: 'Not submitted 📄' },
                   { id: 'late', name: 'Late Submission 🛑' },
@@ -122,7 +122,7 @@ export default function StuAssignmentDetails({
                   { id: 'absent', name: 'Absent 😷' },
                 ]
           }
-          selected={[updatedStudent.status]}
+          selected={[updatedStudent?.status]}
           setSelected={(newStatus) =>
             setUpdatedStudent((prev) => ({
               ...prev,
@@ -136,7 +136,7 @@ export default function StuAssignmentDetails({
       </Properties>
 
       <hr className="text-stroke-weak mt-2 mb-2"></hr>
-      {assignment.grade !== null && (
+      {assignment?.grade !== null && (
         <div className="flex flex-row justify-between items-center">
           <h3 className="font-semibold text-lg">Grade</h3>
           <div>
@@ -144,8 +144,8 @@ export default function StuAssignmentDetails({
               type="number"
               className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
               min="0"
-              max={assignment.assignment_grade}
-              value={updatedStudent.grade != null ? updatedStudent.grade : ''}
+              max={assignment?.assignment_grade}
+              value={updatedStudent?.grade != null ? updatedStudent?.grade : ''}
               onChange={(e) => {
                 setUpdatedStudent((prev) => ({
                   ...prev,
@@ -153,7 +153,7 @@ export default function StuAssignmentDetails({
                 }))
               }}
             />{' '}
-            / {assignment.assignment_grade}
+            / {assignment?.assignment_grade}
           </div>
         </div>
       )}
@@ -164,7 +164,7 @@ export default function StuAssignmentDetails({
       <textarea
         className="border-1 border-stroke-weak h-48 focus:outline-1 outline-text-weakest p-4 rounded resize-none"
         placeholder="Enter feedback..."
-        value={updatedStudent.feedback != null ? updatedStudent.feedback : ''}
+        value={updatedStudent?.feedback != null ? updatedStudent?.feedback : ''}
         onChange={(e) =>
           setUpdatedStudent((prev) => {
             return {

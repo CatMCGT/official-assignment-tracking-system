@@ -1,39 +1,37 @@
-import Link from "next/link";
+import Link from 'next/link'
 import {
   AcademicCapIcon,
   BookOpenIcon,
   CheckCircleIcon,
   ClockIcon,
   PencilSquareIcon,
-} from "@heroicons/react/24/outline";
-import MainLayout from "../../layout";
-import formatDate from "@/utils/formatDate";
-import getSubjectInfo from "@/utils/getSubjectInfo";
-import { getMonitoredAssignments } from "@/db/assignments/getMonitoredAssignments";
-import ArchivedAssignments from "@/components/ArchivedAssignments";
-import Properties from "@/components/Properties";
-import { getSubjectStudents } from "@/db/subjects/getSubjectStudents";
-import Icon from "@/components/Icon";
-import SubjectMonitorProperty from "./SubjectMonitor";
-import { getSubjectAdmin } from "@/db/subjects/getSubjectAdmin";
-import { Suspense } from "react";
-import Loading from "./loading";
+} from '@heroicons/react/24/outline'
+import MainLayout from '../../layout'
+import formatDate from '@/utils/formatDate'
+import getSubjectInfo from '@/utils/getSubjectInfo'
+import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
+import ArchivedAssignments from '@/components/ArchivedAssignments'
+import Properties from '@/components/Properties'
+import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
+import Icon from '@/components/Icon'
+import SubjectMonitorProperty from './SubjectMonitor'
+import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
+import { Suspense } from 'react'
+import Loading from './loading'
 
 export default async function Page({ params }) {
-  const { subjectId } = await params;
-  const subjectInfo = getSubjectInfo(subjectId);
-  const [subjectAssignments, subjectAdmin, subjectStudents] = await Promise.all(
-    getMonitoredAssignments(subjectId),
-    getSubjectAdmin(subjectId),
-    getSubjectStudents(subjectId)
-  );
+  const { subjectId } = await params
+  const subjectInfo = getSubjectInfo(subjectId)
+  const subjectAssignments = await getMonitoredAssignments(subjectId)
+  const subjectAdmin = await getSubjectAdmin(subjectId)
+  const subjectStudents = await getSubjectStudents(subjectId)
 
   const inProgress = subjectAssignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
-  );
+  )
   const archived = subjectAssignments?.filter(
     (a) => new Date(a.due_date) < new Date()
-  );
+  )
 
   //return <Loading />
 
@@ -43,7 +41,7 @@ export default async function Page({ params }) {
         <div className="flex flex-row gap-3 mb-2">
           {subjectInfo.grade
             ? `Grade ${subjectInfo.grade}`
-            : `Class ${subjectInfo.class}`}{" "}
+            : `Class ${subjectInfo.class}`}{' '}
           {subjectInfo.name} {subjectInfo.block && `Block ${subjectInfo.block}`}
           <div className="px-3 py-2 rounded-full bg-fill-weak w-fit flex justify-center items-center text-xs text-text-weak tracking-wide">
             #{subjectId}
@@ -139,11 +137,11 @@ export default async function Page({ params }) {
                 {inProgress.map((a) => {
                   const submittedCount = a.students.filter(
                     (student) => student.collected_date !== null
-                  ).length;
+                  ).length
                   const stats = {
                     submitted: submittedCount,
                     not_submitted: a.students.length - submittedCount,
-                  };
+                  }
 
                   return (
                     <Link
@@ -169,14 +167,14 @@ export default async function Page({ params }) {
                           <div className="flex flex-row gap-1 items-center">
                             <CheckCircleIcon className="size-4 text-text-weaker" />
                             <p className="text-sm text-text-weak">
-                              {stats.submitted} Submitted, {stats.not_submitted}{" "}
+                              {stats.submitted} Submitted, {stats.not_submitted}{' '}
                               Left
                             </p>
                           </div>
                         </div>
                       </div>
                     </Link>
-                  );
+                  )
                 })}
               </div>
             ) : (
@@ -196,5 +194,5 @@ export default async function Page({ params }) {
         </div>
       </MainLayout.Body>
     </Suspense>
-  );
+  )
 }

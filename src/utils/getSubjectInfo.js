@@ -24,6 +24,16 @@ export const subjectShorthands = {
 export default function getSubjectInfo(subjectId) {
   // Examples of subject ids include: "2425-g11-bio-1", "2526-11b-chi", "2526-g7-chi-t"
 
+  if (subjectId === '' || subjectId === undefined) {
+    return {
+      year: null,
+      grade: null,
+      name: null,
+      block: null,
+      class: null,
+    }
+  }
+
   const subjectIdArr = subjectId.split('-')
   const subjectName = subjectShorthands[subjectIdArr[2]] || 'Unknown'
 
