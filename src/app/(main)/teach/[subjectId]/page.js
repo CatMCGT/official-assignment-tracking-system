@@ -23,8 +23,7 @@ export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
   const subjectAssignments = await getMonitoredAssignments(subjectId)
-  const subjectAdmin = await getSubjectAdmin(subjectId)
-  const subjectStudents = await getSubjectStudents(subjectId)
+  const subjectStudents = subjectAssignments.students
 
   const inProgress = subjectAssignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
@@ -65,8 +64,8 @@ export default async function Page({ params }) {
             subjectId={subjectId}
             subjectStudents={subjectStudents}
             monitor={{
-              id: subjectAdmin.monitor_id,
-              name: subjectAdmin.monitor_name,
+              id: assignment.monitor_id,
+              name: assignment.monitor_name,
             }}
           />
 

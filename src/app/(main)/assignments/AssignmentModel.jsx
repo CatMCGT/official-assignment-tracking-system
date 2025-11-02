@@ -15,19 +15,6 @@ import { useEffect, useState } from 'react'
 import Skeleton from '@/components/Skeleton'
 
 export default function AssignmentModel({ assignment, onClose }) {
-  const [subjectAdmin, setSubjectAdmin] = useState({})
-
-  useEffect(() => {
-    async function fetchSubjectAdmin() {
-      try {
-        const res = await getSubjectAdmin(assignment.subjectId)
-        setSubjectAdmin(res)
-      } catch (error) {
-        console.error('Failed to fetch subject admin:', error)
-      }
-    }
-    fetchSubjectAdmin()
-  }, [assignment.subjectId])
 
   return (
     <div className="border-l-1 border-l-stroke-weak bg-white z-10 absolute right-0 h-screen top-0 px-11 py-15">
@@ -49,20 +36,20 @@ export default function AssignmentModel({ assignment, onClose }) {
             {assignment?.assignment_title}
           </h2>
 
-          {subjectAdmin?.teacher_id?.length > 0 ? (
+          {assignment?.teacher_id?.length > 0 ? (
             <Properties>
               <Properties.Property name="Teacher">
                 <AcademicCapIcon className="size-5 text-text-weak" />
               </Properties.Property>
               <Properties.Property.Value>
-                {subjectAdmin?.teacher_name}
+                {assignment?.teacher_name}
               </Properties.Property.Value>
 
               <Properties.Property name="Subject Monitor">
                 <PencilSquareIcon className="size-5 text-text-weak" />
               </Properties.Property>
               <Properties.Property.Value>
-                {subjectAdmin?.monitor_name}
+                {assignment?.monitor_name}
               </Properties.Property.Value>
             </Properties>
           ) : (
