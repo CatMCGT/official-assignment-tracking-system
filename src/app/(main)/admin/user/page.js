@@ -5,8 +5,8 @@ import CreateUser from "./CreateUser";
 import AllUsers from "./AllUsers";
 
 export default async function Page() {
-  const allSubjects = await getAllSubjects();
-  const allUsers = await getAllUsers();
+  const allSubjects = await getAllSubjects()
+  const allUsers = await getAllUsers()
 
   return (
     <div>
@@ -17,7 +17,7 @@ export default async function Page() {
           <CreateUser allSubjects={allSubjects} />
         </div>
 
-        <AllUsers allUsers={allUsers} />
+        <AllUsers allUsers={allUsers} allSubjects={allSubjects} />
       </div>
     </div>
   );

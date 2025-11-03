@@ -12,23 +12,22 @@ import getSubjectInfo from '@/utils/getSubjectInfo'
 import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
 import ArchivedAssignments from '@/components/ArchivedAssignments'
 import Properties from '@/components/Properties'
-import { getSubjectStudents } from '@/db/subjects/getSubjectStudents'
 import Icon from '@/components/Icon'
 import SubjectMonitorProperty from './SubjectMonitor'
-import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
 import { Suspense } from 'react'
 import Loading from './loading'
+import { getTaughtSubjects } from '@/db/subjects/getTaughtSubjects'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
-  const subjectAssignments = await getMonitoredAssignments(subjectId)
-  const subjectAdmin = await getSubjectAdmin(subjectId)
-  const subjectStudents = await getSubjectStudents(subjectId)
-  const inProgress = subjectAssignments?.filter(
+  const subject = (await getTaughtSubjects(subjectId))[0]
+  const assignments = await getMonitoredAssignments(subjectId)
+
+  const inProgress = assignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
   )
-  const archived = subjectAssignments?.filter(
+  const archived = assignments?.filter(
     (a) => new Date(a.due_date) < new Date()
   )
 
@@ -54,7 +53,7 @@ export default async function Page({ params }) {
             <AcademicCapIcon className="size-5 text-text-weak" />
           </Properties.Property>
           <Properties.Property.Value>
-            {subjectAssignments[0].teacher_name}
+            {subject?.teacher_name}
           </Properties.Property.Value>
 
           <Properties.Property name="Subject Monitor">
@@ -62,10 +61,10 @@ export default async function Page({ params }) {
           </Properties.Property>
           <SubjectMonitorProperty
             subjectId={subjectId}
-            subjectStudents={subjectStudents}
+            subjectStudents={subject?.students}
             monitor={{
-              id: subjectAdmin.monitor_id,
-              name: subjectAdmin.monitor_name,
+              id: subject?.monitor_id,
+              name: subject?.monitor_name,
             }}
           />
 
@@ -73,7 +72,7 @@ export default async function Page({ params }) {
             <HashtagIcon className="size-5 text-text-weak" />
           </Properties.Property>
           <Properties.Property.Value>
-            {subjectStudents.length}
+            {subject?.students.length}
           </Properties.Property.Value> */}
         </Properties>
 
@@ -83,7 +82,7 @@ export default async function Page({ params }) {
           <div className="flex flex-row gap-3 items-center mb-2">
             <h2 className="font-semibold text-xl">All Students</h2>
             <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
-              {subjectStudents.length}
+              {subject?.students?.length}
             </div>
           </div>
 
@@ -93,7 +92,7 @@ export default async function Page({ params }) {
             <p>On-time Submission</p>
           </div>
           <div className="w-2xl flex flex-col gap-2 max-h-72 overflow-scroll">
-            {subjectStudents?.map((student) => (
+            {subject?.students?.map((student) => (
               <div
                 key={student.id}
                 className="grid grid-cols-[200px_300px_auto] items-center border-1 border-stroke-weak rounded px-3 py-2"

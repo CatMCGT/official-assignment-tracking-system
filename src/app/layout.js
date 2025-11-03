@@ -1,6 +1,7 @@
 import { Lato } from 'next/font/google'
 import './globals.css'
 import { VercelToolbar } from '@vercel/toolbar/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const lato = Lato({
   weight: ['400', '700'],
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
       <body className={`${lato.className} antialiased h-screen`}>
         {children}
         {shouldInjectToolbar && <VercelToolbar />}
+        <SpeedInsights />
       </body>
     </html>
   )

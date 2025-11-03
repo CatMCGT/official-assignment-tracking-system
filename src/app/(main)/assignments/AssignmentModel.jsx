@@ -11,23 +11,10 @@ import {
 import formatDate from '@/utils/formatDate'
 import Properties from '@/components/Properties'
 import { getSubjectAdmin } from '@/db/subjects/getSubjectAdmin'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import Skeleton from '@/components/Skeleton'
 
 export default function AssignmentModel({ assignment, onClose }) {
-  const [subjectAdmin, setSubjectAdmin] = useState({})
-
-  useEffect(() => {
-    async function fetchSubjectAdmin() {
-      try {
-        const res = await getSubjectAdmin(assignment.subjectId)
-        setSubjectAdmin(res)
-      } catch (error) {
-        console.error('Failed to fetch subject admin:', error)
-      }
-    }
-    fetchSubjectAdmin()
-  }, [assignment.subjectId])
 
   return (
     <div className="border-l-1 border-l-stroke-weak bg-white z-10 absolute right-0 h-screen top-0 px-11 py-15">
@@ -49,20 +36,20 @@ export default function AssignmentModel({ assignment, onClose }) {
             {assignment?.assignment_title}
           </h2>
 
-          {subjectAdmin?.teacher_id?.length > 0 ? (
+          {assignment?.teacher_id?.length > 0 ? (
             <Properties>
               <Properties.Property name="Teacher">
                 <AcademicCapIcon className="size-5 text-text-weak" />
               </Properties.Property>
               <Properties.Property.Value>
-                {subjectAdmin?.teacher_name}
+                {assignment?.teacher_name}
               </Properties.Property.Value>
 
               <Properties.Property name="Subject Monitor">
                 <PencilSquareIcon className="size-5 text-text-weak" />
               </Properties.Property>
               <Properties.Property.Value>
-                {subjectAdmin?.monitor_name}
+                {assignment?.monitor_name}
               </Properties.Property.Value>
             </Properties>
           ) : (
@@ -80,29 +67,6 @@ export default function AssignmentModel({ assignment, onClose }) {
           )}
 
           <hr className="text-stroke-weak mt-2 mb-2"></hr>
-
-          {/* <div className="flex flex-row gap-2 items-center">
-            <p className="text-text-weak">Actions:</p>
-            {assignment?.status === 'todo' ? (
-              <button
-                type="button"
-                className="flex flex-row gap-2 border-1 border-stroke-weak px-3 py-2 rounded-lg text-sm w-fit hover:bg-fill-weak cursor-pointer transition-colors"
-                onClick={handleSetComplete}
-              >
-                Mark as complete
-                <CheckIcon className="size-5 text-green-500" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="flex flex-row gap-2 border-1 border-stroke-weak px-3 py-2 rounded-lg text-sm w-fit hover:bg-fill-weak cursor-pointer transition-colors"
-                onClick={handleSetTodo}
-              >
-                Mark as todo
-                <ClockIcon className="size-5 text-text-weakest" />
-              </button>
-            )}
-          </div> */}
         </div>
 
         <button type="button" onClick={onClose}>
@@ -114,6 +78,29 @@ export default function AssignmentModel({ assignment, onClose }) {
 
       <h3 className="font-semibold text-lg mb-2">Description</h3>
       <p className="text-text-weak">{assignment?.assignment_description}</p>
+
+      {assignment.grade !== null && assignment.feedback !== null && (
+        <div className="border-1 border-stroke-weak px-5 py-4 mx-[-12px] mt-16 rounded">
+          {assignment.grade !== null && (
+            <div className="flex flex-row justify-between items-center">
+              <h3 className="font-semibold text-lg">Grade</h3>
+              <p>
+                {assignment.grade !== '' ? assignment.grade : '-'} /{' '}
+                {assignment.assignment_grade}
+              </p>
+            </div>
+          )}
+
+          {assignment.feedback !== null && (
+            <>
+              <h3 className="font-semibold text-lg mt-4 mb-2">
+                Feedback from teacher
+              </h3>
+              <p className="text-text-weak">"{assignment?.feedback}"</p>
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }

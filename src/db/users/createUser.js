@@ -5,6 +5,7 @@ import { verifySession } from "@/actions/userSession";
 import bcrypt from "bcrypt";
 import { getUser } from "./getUser";
 import { revalidatePath } from "next/cache";
+import { setSubjectTeacher } from "../subjects/setSubjectTeacher";
 
 export async function createUser(additionalData, prevState, formData) {
   const pool = new Pool({ connectionString: process.env.STORE_DATABASE_URL });
@@ -30,32 +31,16 @@ export async function createUser(additionalData, prevState, formData) {
 
     await client.query("BEGIN");
     await client.query(
-      "INSERT INTO users (id, name, password, role, reg_date) VALUES ($1, $2, $3, $4, $5)",
+      "INSERT INTO users (id, name, password, role, reg_date, deactivated_date) VALUES ($1, $2, $3, $4, $5, null)",
       [id, name, hashedPassword, role, new Date().toISOString()]
     );
 
     if (enrolledSubjectIds && enrolledSubjectIds.length > 0) {
-      await Promise.all(
-        enrolledSubjectIds.map(async (subjectId) => {
-          await client.query(
-            "INSERT INTO student_subject (student_id, subject_id) VALUES ($1, $2)",
-            [id, subjectId]
-          );
-
-          await client.query("COMMIT");
-        })
-      );
+      await setStudentSubject(id, { newlyEnrolled: enrolledSubjectIds });
+      await client.query("COMMIT");
     } else if (taughtSubjectIds && taughtSubjectIds.length > 0) {
-      await Promise.all(
-        taughtSubjectIds.map(async (subjectId) => {
-          await client.query(
-            "UPDATE subjects SET teacher_id = $1 WHERE id = $2",
-            [id, subjectId]
-          );
-
-          await client.query("COMMIT");
-        })
-      );
+      await setSubjectTeacher(id, { newlyTaught: taughtSubjectIds });
+      await client.query("COMMIT");
     } else {
       await client.query("COMMIT");
     }

@@ -1,61 +1,56 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import formatDate from '@/utils/formatDate'
-import toTitleCase from '@/utils/toTitleCase'
+import Icon from '@/components/Icon'
 import {
-  MagnifyingGlassIcon,
-  ChartBarIcon,
-  EllipsisVerticalIcon,
-  ArrowUpRightIcon,
   ArrowPathIcon,
   ArrowRightIcon,
-  ArrowLeftIcon,
+  ChartBarIcon,
+  EllipsisVerticalIcon,
+  MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
-import Icon from '@/components/Icon'
-import BulkActions from './BulkActions'
 import clsx from 'clsx'
-import Link from 'next/link'
-import { setUsers } from '@/db/users/setUsers'
-import EditUser from './EditUser'
+import { useState } from 'react'
+import BulkActions from './BulkActions'
+import formatDate from '@/utils/formatDate'
+import { setSubjects } from '@/db/subjects/setSubjects'
+import EditSubject from './EditSubject'
 
-export default function AllUsers({ allUsers, allSubjects }) {
-  const [updatedUsers, setUpdatedUsers] = useState(allUsers)
-  const [selectedUserIds, setSelectedUserIds] = useState([])
+export default function AllSubjects({ allSubjects, allUsers }) {
   const [search, setSearch] = useState('')
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([])
+  const [updatedSubjects, setUpdatedSubjects] = useState(allSubjects)
   const [isEdited, setIsEdited] = useState(false)
   const [isPendingSave, setIsPendingSave] = useState(false)
 
-  const [inspectingUser, setInspectingUser] = useState(null)
+  const [inspectingSubject, setInspectingSubject] = useState(null)
 
-  const filteredUsers = search
-    ? updatedUsers.filter((user) => {
+  const filteredSubjects = search
+    ? updatedSubjects?.filter((subject) => {
         return (
-          user.name.toLowerCase().includes(search.toLowerCase()) ||
-          user.id.toLowerCase().includes(search.toLowerCase()) ||
-          formatDate(user.reg_date)
-            .toLowerCase()
-            .includes(search.toLowerCase()) ||
-          user.role.toLowerCase().includes(search.toLowerCase())
+          subject.name?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.grade?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.class?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.block?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.id?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.teacher_id?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.teacher_name?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.monitor_id?.toLowerCase().includes(search.toLowerCase()) ||
+          subject.monitor_name?.toLowerCase().includes(search.toLowerCase())
         )
       })
-    : updatedUsers
+    : updatedSubjects
 
-  function isUserEdited(user) {
-    const originalUser = allUsers.find((u) => u.id === user.id)
-    return (
-      originalUser.id !== user.id ||
-      originalUser.name !== user.name ||
-      originalUser.password !== user.password ||
-      originalUser.role !== user.role ||
-      originalUser.deactivated_date !== user.deactivated_date
-    )
+  function isSubjectEdited(subject) {
+    const originalSubject = allSubjects.find((s) => s.id === subject.id)
+    return originalSubject.deactivated_date !== subject.deactivated_date
   }
 
   async function handleSubmit() {
     try {
       setIsPendingSave(true)
-      await setUsers(updatedUsers.filter((user) => isUserEdited(user)))
+      await setSubjects(
+        updatedSubjects.filter((subject) => isSubjectEdited(subject))
+      )
       setIsEdited(false)
     } catch (err) {
       console.error(err)
@@ -65,23 +60,22 @@ export default function AllUsers({ allUsers, allSubjects }) {
   }
 
   async function handleUndo() {
-    setUpdatedUsers(allUsers)
+    setUpdatedSubjects(allSubjects)
     setIsEdited(false)
   }
 
   return (
     <div className="flex flex-col gap-2 w-4xl">
       <div className="flex flex-row gap-3 items-center">
-        <h2 className="font-semibold text-xl">All Users</h2>
+        <h2 className="font-semibold text-xl">All Subjects</h2>
         <div className="w-6 h-6 text-sm text-text-weak bg-fill-weak rounded flex justify-center items-center">
-          {updatedUsers.length}
+          {updatedSubjects?.length}
         </div>
       </div>
-      {!inspectingUser ? (
+      {!inspectingSubject ? (
         <div>
           <div className="flex flex-row justify-between items-center mb-2">
-            <div>{/* Radio goes here */}</div>
-
+            <div></div>
             <div className="flex flex-row items-center gap-2">
               <div className="relative">
                 <input
@@ -140,35 +134,37 @@ export default function AllUsers({ allUsers, allSubjects }) {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center px-3 py-2 text-sm text-text-weak">
+            <div className="grid grid-cols-[1fr_4fr_2fr_5fr_5fr_3fr_1fr] items-center px-3 py-2 text-sm text-text-weak">
               {!search ? (
                 <input
                   type="checkbox"
                   className="border-1 border-text-weak accent-text-weak"
-                  checked={selectedUserIds.length === updatedUsers.length}
+                  checked={
+                    selectedSubjectIds.length === updatedSubjects?.length
+                  }
                   onChange={(e) =>
-                    setSelectedUserIds(
-                      e.target.checked ? filteredUsers.map((u) => u.id) : []
+                    setSelectedSubjectIds(
+                      e.target.checked ? filteredSubjects.map((u) => u.id) : []
                     )
                   }
                 />
               ) : (
                 <div></div>
               )}
-              <p>Name</p>
               <p>ID</p>
-              <p>Password</p>
-              <p>Registration Date</p>
-              <p>Role</p>
+              <p>Name</p>
+              <p>Subject Teacher</p>
+              <p>Subject Monitor</p>
+              <p># of Enrolled Students</p>
             </div>
             <div className="flex flex-col gap-2 h-[340px] overflow-y-auto overflow-x-hidden">
-              {filteredUsers.map((user) => {
+              {filteredSubjects?.map((subject) => {
                 return (
                   <div
-                    key={user.id}
+                    key={subject.id}
                     className={clsx(
-                      'grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2',
-                      isUserEdited(user)
+                      'grid grid-cols-[1fr_4fr_2fr_5fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2',
+                      false
                         ? 'border-green-500 bg-green-50 border-dashed'
                         : 'border-stroke-weak'
                     )}
@@ -176,23 +172,24 @@ export default function AllUsers({ allUsers, allSubjects }) {
                     <input
                       type="checkbox"
                       className="border-1 border-text-weak accent-text-weak cursor-pointer"
-                      checked={selectedUserIds.includes(user.id)}
+                      checked={selectedSubjectIds.includes(subject.id)}
                       onChange={() => {
-                        if (selectedUserIds.includes(user.id)) {
-                          setSelectedUserIds((prev) =>
-                            prev.filter((id) => id !== user.id)
+                        if (selectedSubjectIds.includes(subject.id)) {
+                          setSelectedSubjectIds((prev) =>
+                            prev.filter((id) => id !== subject.id)
                           )
                         } else {
-                          setSelectedUserIds((prev) => [...prev, user.id])
+                          setSelectedSubjectIds((prev) => [...prev, subject.id])
                         }
                       }}
                     />
-                    <div className="flex flex-row gap-1 items-center">
-                      <p>{user.name}</p>
-                      {user.deactivated_date !== null && (
+
+                    <div className="flex flex-col items-start">
+                      <p>{subject.id}</p>
+                      {subject.deactivated_date !== null && (
                         <div className="w-fit">
                           <Icon
-                            tooltip={formatDate(user.deactivated_date)}
+                            tooltip={formatDate(subject.deactivated_date)}
                             className="hover:bg-white"
                           >
                             <span className="text-red-500">(deactivated)</span>
@@ -200,25 +197,20 @@ export default function AllUsers({ allUsers, allSubjects }) {
                         </div>
                       )}
                     </div>
-                    <p className="text-text-weak text-sm">#{user.id}</p>
-                    {true ? (
-                      <p className="text-text-weaker text-sm">
-                        {' '}
-                        &#8226; &#8226; &#8226; &#8226;
-                      </p>
-                    ) : (
-                      <p>{user.password}</p>
-                    )}
-                    <p className="text-sm">{formatDate(user.reg_date)}</p>
-                    <p
-                      className={clsx(
-                        'text-sm',
-                        isUserEdited(user) && 'font-bold text-green-700'
-                      )}
-                    >
-                      {toTitleCase(user.role)}
-                    </p>
-                    <button onClick={() => setInspectingUser(user)}>
+
+                    <p>{subject.name}</p>
+                    <div className="w-fit">
+                      <Icon tooltip={`#${subject.teacher_id}`}>
+                        {subject.teacher_name}
+                      </Icon>
+                    </div>
+                    <div className="w-fit">
+                      <Icon tooltip={`#${subject.monitor_id}`}>
+                        {subject.monitor_name}
+                      </Icon>
+                    </div>
+                    <p>{subject?.students.length}</p>
+                    <button onClick={() => setInspectingSubject(subject)}>
                       <Icon tooltip="See details">
                         <ArrowRightIcon className="size-4 text-text-weak" />
                       </Icon>
@@ -228,21 +220,22 @@ export default function AllUsers({ allUsers, allSubjects }) {
               })}
             </div>
           </div>
-          {selectedUserIds.length > 0 && (
+
+          {selectedSubjectIds.length > 0 && (
             <BulkActions
-              selectedUserIds={selectedUserIds}
-              setSelectedUserIds={setSelectedUserIds}
-              updatedUsers={updatedUsers}
-              setUpdatedUsers={setUpdatedUsers}
+              selectedSubjectIds={selectedSubjectIds}
+              setSelectedSubjectIds={setSelectedSubjectIds}
+              updatedSubjects={updatedSubjects}
+              setUpdatedSubjects={setUpdatedSubjects}
               setIsEdited={setIsEdited}
             />
           )}
         </div>
       ) : (
-        <EditUser
-          allSubjects={allSubjects}
-          user={inspectingUser}
-          setInspectingUser={setInspectingUser}
+        <EditSubject
+          subject={inspectingSubject}
+          allUsers={allUsers}
+          setInspectingSubject={setInspectingSubject}
         />
       )}
     </div>
