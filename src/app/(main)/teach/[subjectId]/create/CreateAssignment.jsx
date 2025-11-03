@@ -16,17 +16,12 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useCallback, useState, Suspense } from 'react'
 import Loading from './loading'
 
-export default function CreateAssignment({
-  user,
-  subjectId,
-  subjectStudents,
-  subjectStudentIds,
-  subjectInfo,
-  subjectAdmin,
-}) {
+export default function CreateAssignment({ subject, subjectInfo }) {
   const router = useRouter()
-  const [assignedStudentIds, setAssignedStudentIds] =
-    useState(subjectStudentIds)
+
+  const [assignedStudentIds, setAssignedStudentIds] = useState(
+    subject.students.map((s) => s.id)
+  )
   const [assignment, setAssignment] = useState({
     title: '',
     description: '',
@@ -52,12 +47,12 @@ export default function CreateAssignment({
   const handleCreateAssignment = useCallback(async () => {
     setIsPending(true)
     const res = await createAssignment(
-      subjectId,
+      subject.id,
       assignment,
       assignedStudentIds
     )
     const assignmentId = res?.assignmentId
-    router.push(`/monitor/${subjectId}/${assignmentId}`)
+    router.push(`/monitor/${subject.id}/${assignmentId}`)
   }, [isFilledIn])
 
   return (
@@ -92,21 +87,23 @@ export default function CreateAssignment({
             <Properties.Property name="Teacher">
               <AcademicCapIcon className="size-5 text-text-weak" />
             </Properties.Property>
-            <Properties.Property.Value>{user?.name}</Properties.Property.Value>
+            <Properties.Property.Value>
+              {subject.teacher_name}
+            </Properties.Property.Value>
 
             <Properties.Property name="Student Monitor">
               <PencilSquareIcon className="size-5 text-text-weak" />
             </Properties.Property>
             <Properties.Property.Value>
-              {subjectAdmin?.monitor_name}
+              {subject.monitor_name}
             </Properties.Property.Value>
 
             <Properties.Property name="Assigned to">
               <BookOpenIcon className="size-5 text-text-weak" />
             </Properties.Property>
             <AssignedStudents
-              subjectStudents={subjectStudents}
-              subjectStudentIds={subjectStudents?.map((s) => s.id)}
+              subjectStudents={subject.students}
+              subjectStudentIds={subject.students?.map((s) => s.id)}
               assignedStudentIds={assignedStudentIds}
               setAssignedStudentIds={setAssignedStudentIds}
             />

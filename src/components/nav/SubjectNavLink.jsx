@@ -11,8 +11,8 @@ export default function SubjectNavLink({ subject, action }) {
   if (!action in ['monitor', 'teacher']) return
 
   const pathname = usePathname()
-  const subjectInfo = getSubjectInfo(subject.subject_id)
-  const subjectPathname = `/${action}/${subject.subject_id}`
+  const subjectInfo = getSubjectInfo(subject.id)
+  const subjectPathname = `/${action}/${subject.id}`
 
   return (
     <Link

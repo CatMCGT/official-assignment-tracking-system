@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import { XCircleIcon } from "@heroicons/react/20/solid";
+import { useState } from 'react'
+import { CheckIcon } from '@heroicons/react/24/outline'
+import { XCircleIcon } from '@heroicons/react/20/solid'
 
 export default function AssignedStudents({
   subjectStudents,
@@ -10,8 +10,8 @@ export default function AssignedStudents({
   assignedStudentIds,
   setAssignedStudentIds,
 }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [search, setSearch] = useState("");
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [search, setSearch] = useState('')
 
   return (
     <div className="relative">
@@ -20,10 +20,12 @@ export default function AssignedStudents({
           className="border-1 border-stroke-weak rounded p-2 cursor-pointer transition-colors w-full text-left"
           onClick={() => setIsMenuOpened((prev) => !prev)}
         >
-          {assignedStudentIds.length == subjectStudentIds.length ? (
-            "All students enrolled"
+          {subjectStudentIds.length === 0 ? (
+            'No student'
+          ) : assignedStudentIds.length == subjectStudentIds.length ? (
+            'All students enrolled'
           ) : assignedStudentIds.length === 0 ? (
-            "No students"
+            'No students'
           ) : (
             <div>
               {subjectStudents
@@ -37,10 +39,10 @@ export default function AssignedStudents({
                     <button
                       className="cursor-pointer"
                       onClick={(e) => {
-                        e.stopPropagation();
+                        e.stopPropagation()
                         setAssignedStudentIds((prev) =>
                           prev.filter((id) => id !== s.id)
-                        );
+                        )
                       }}
                     >
                       <XCircleIcon className="size-4 text-text-weaker" />
@@ -77,11 +79,11 @@ export default function AssignedStudents({
                   onClick={() => {
                     setAssignedStudentIds((prev) => {
                       if (prev.includes(option.id)) {
-                        return prev.filter((id) => id !== option.id);
+                        return prev.filter((id) => id !== option.id)
                       } else {
-                        return [...prev, option.id];
+                        return [...prev, option.id]
                       }
-                    });
+                    })
                   }}
                 >
                   {option.name}
@@ -94,5 +96,5 @@ export default function AssignedStudents({
         </div>
       )}
     </div>
-  );
+  )
 }

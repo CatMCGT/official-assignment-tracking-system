@@ -16,8 +16,6 @@ export async function setSubjectTeacher(teacherId, subjectChanges) {
     if (userRole !== "admin")
       throw new Error("User not authorised to set student subjects.");
 
-    console.log(subjectChanges);
-
     const sql = neon(`${process.env.STORE_DATABASE_URL}`);
     const result = await Promise.all(
       subjectChanges.newlyTaught.map(async (subjectId) => {

@@ -64,8 +64,8 @@ export default function EditSubject({
           </Icon>
         )}
       </button>
-      <div className="p-4 pt-0 pl-0 w-72">
-        <h2 className="text-lg font-bold mb-3">Edit Subject #{subject.id}</h2>
+      <div className="p-4 pt-0 pl-0 w-72 flex flex-col gap-4">
+        <h2 className="text-lg font-bold">Edit Subject #{subject.id}</h2>
 
         <div className="flex flex-col gap-1">
           <label htmlFor="subjects">

@@ -27,7 +27,7 @@ export default async function Navbar() {
             </p>
             <div className="flex flex-col gap-2 mt-3">
               {taughtSubjects.map((subject) => (
-                <Fragment key={subject.subject_id}>
+                <Fragment key={subject.id}>
                   <SubjectNavLink subject={subject} action="teach" />
                 </Fragment>
               ))}
@@ -42,7 +42,7 @@ export default async function Navbar() {
             </p>
             <div className="flex flex-col gap-2 mt-3">
               {monitoredSubjects.map((subject) => (
-                <Fragment key={subject.subject_id}>
+                <Fragment key={subject.id}>
                   <SubjectNavLink subject={subject} action="monitor" />
                 </Fragment>
               ))}
