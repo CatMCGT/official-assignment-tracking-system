@@ -44,7 +44,7 @@ export async function getAllSubjects() {
         LEFT JOIN students st ON ss.student_id = st.id
       GROUP BY
         s.id, t.id, t.name, m.id, m.name, deactivated_date
-    `
+    `;
 
     const subjects = await Promise.all(
       response.map(async (subject) => {
