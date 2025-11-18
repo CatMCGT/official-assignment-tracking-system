@@ -2,8 +2,7 @@
 
 import Icon from '@/components/Icon'
 import Select from '@/components/Select'
-import { setStudentSubject } from '@/db/subjects/setStudentSubject'
-import { checkSubjectStudentChanges } from '@/utils/checkSubjectChanges'
+import { updateSubjectStudents } from '@/db/subjects/setSubject'
 import { ArrowLeftIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useState } from 'react'
@@ -20,7 +19,8 @@ export default function EditSubject({
   const [subjectMonitorId, setSubjectMonitorId] = useState(subject.monitor_id)
 
   const originalEnrolledIds = subject.students.map((s) => s.id)
-  const [subjectStudentIds, setSubjectStudentIds] = useState(originalEnrolledIds)
+  const [subjectStudentIds, setSubjectStudentIds] =
+    useState(originalEnrolledIds)
 
   const isEdited =
     subjectTeacherId !== subject.teacher_id ||
@@ -31,9 +31,25 @@ export default function EditSubject({
   async function handleSubmit() {
     try {
       setIsPending(true)
-      const studentChanges = checkSubjectStudentChanges(originalEnrolledIds, subjectStudentIds)
-      if (studentChanges.newlyEnrolled.length > 0 && studentChanges.removedEnrolled.length > 0) {
-        // db function
+      const newlyEnrolled = subjectStudentIds
+        .filter((id) => !originalEnrolledIds.includes(id))
+        .map((item) => {
+          return {
+            subjectId: subject.id,
+            studentId: item.id,
+          }
+        })
+      const removedEnrolled = originalEnrolledIds
+        .filter((id) => !subjectStudentIds.includes(id))
+        .map((item) => {
+          return {
+            subjectId: subject.id,
+            studentId: item.id,
+          }
+        })
+
+      if (newlyEnrolled.length > 0 && removedEnrolled.length > 0) {
+        await updateSubjectStudents(newlyEnrolled, removedEnrolled)
       }
     } catch (err) {
       console.error(err)

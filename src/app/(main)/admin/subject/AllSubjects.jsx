@@ -12,8 +12,8 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import BulkActions from './BulkActions'
 import formatDate from '@/utils/formatDate'
-import { setSubjects } from '@/db/subjects/setSubjects'
 import EditSubject from './EditSubject'
+import { updateSubjects } from '@/db/subjects/setSubject'
 
 export default function AllSubjects({ allSubjects, allUsers }) {
   const [search, setSearch] = useState('')
@@ -48,7 +48,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
   async function handleSubmit() {
     try {
       setIsPendingSave(true)
-      await setSubjects(
+      await updateSubjects(
         updatedSubjects.filter((subject) => isSubjectEdited(subject))
       )
       setIsEdited(false)

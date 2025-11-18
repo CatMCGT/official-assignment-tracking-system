@@ -4,6 +4,7 @@ import { useContext } from "react";
 import MainLayout from "../../layout";
 import CreateSubject from "./CreateSubject";
 import AllSubjects from "./AllSubjects";
+import { AdminContext } from "@/hooks/useAdmin";
 
 export default function Page() {
   const { allUsers, allSubjects } = useContext(AdminContext);
