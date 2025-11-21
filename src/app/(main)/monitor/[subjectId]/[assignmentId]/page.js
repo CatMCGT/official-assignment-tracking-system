@@ -7,6 +7,14 @@ import { Suspense } from 'react'
 import Loading from './loading'
 import { getUser } from '@/db/users/getUser'
 
+export async function generateMetadata({ params }) {
+  const { subjectId, assignmentId } = await params
+
+  return {
+    title: `${subjectId} · Assignment #${assignmentId}`,
+  }
+}
+
 export default async function Page({ params }) {
   const { subjectId, assignmentId } = await params
   const subjectInfo = getSubjectInfo(subjectId)

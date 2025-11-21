@@ -19,6 +19,14 @@ import Loading from './loading'
 import { getTaughtSubjects } from '@/db/subjects/getTaughtSubjects'
 import { getOnTimeSubmitPercentages } from '@/db/assignments/assignmentStatistics'
 
+export async function generateMetadata({ params }) {
+  const { subjectId } = await params
+
+  return {
+    title: `${subjectId}`,
+  }
+}
+
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
@@ -95,10 +103,9 @@ export default async function Page({ params }) {
                 <p className="text-lg">{student.name}</p>
                 <p className="text-text-weak">#{student.id}</p>
                 <p>
-                  {
-                    onTimeSubmitPercentages?.filter((s) => s.student_id === student.id)[0]
-                      ?.on_time_submit_percentage || "0"
-                  }
+                  {onTimeSubmitPercentages?.filter(
+                    (s) => s.student_id === student.id
+                  )[0]?.on_time_submit_percentage || '0'}
                   %
                 </p>
               </div>

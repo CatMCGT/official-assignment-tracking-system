@@ -14,11 +14,36 @@ import ArchivedAssignments from '../../../../components/ArchivedAssignments'
 import Properties from '../../../../components/Properties'
 import { Suspense } from 'react'
 import Loading from './loading'
+import { getMonitoredSubjects } from '@/db/subjects/getMonitoredSubjects'
+
+export async function generateMetadata({ params }) {
+  const { subjectId } = await params
+
+  return {
+    title: `${subjectId}`,
+  }
+}
+
 
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
   const subjectAssignments = await getMonitoredAssignments(subjectId)
+
+  let subjectAdmin = {}
+  if (subjectAssignments.length > 0) {
+    subjectAdmin = {
+      teacher_id: subjectAssignments.teacher_id,
+      teacher_name: subjectAssignments.teacher_name,
+      monitor_id: subjectAssignments.monitor_id,
+      monitor_name: subjectAssignments.monitor_name,
+    }
+  } else {
+    subjectAdmin = (await getMonitoredSubjects()).filter(
+      (subject) => subject.id === subjectId
+    )[0]
+  }
+
   const inProgress = subjectAssignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
   )
@@ -46,14 +71,14 @@ export default async function Page({ params }) {
             <AcademicCapIcon className="size-5 text-text-weak" />
           </Properties.Property>
           <Properties.Property.Value>
-            {subjectAssignments[0].teacher_name}
+            {subjectAdmin.teacher_name}
           </Properties.Property.Value>
 
           <Properties.Property name="Student Monitor">
             <PencilSquareIcon className="size-5 text-text-weak" />
           </Properties.Property>
           <Properties.Property.Value>
-            {subjectAssignments[0].monitor_name}
+            {subjectAdmin.monitor_name}
           </Properties.Property.Value>
 
           <Properties.Property name="Number of Students">

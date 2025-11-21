@@ -9,7 +9,10 @@ const lato = Lato({
 })
 
 export const metadata = {
-  title: 'Assignment Tracking System',
+  title: {
+    template: '%s | Assignment Tracking System',
+    default: 'Assignment Tracking System'
+  },
   description: 'Created for ABC College',
 }
 
