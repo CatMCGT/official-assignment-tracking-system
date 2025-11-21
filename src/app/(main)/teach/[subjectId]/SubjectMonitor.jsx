@@ -37,7 +37,7 @@ export default function SubjectMonitorProperty({ subject }) {
           className="border-1 border-stroke-weak rounded py-1 px-2 hover:bg-fill-weak cursor-pointer transition-colors w-full text-left"
           onClick={() => setIsMenuOpened((prev) => !prev)}
         >
-          {subjectMonitorState.name}
+          {subjectMonitorState.name || "No subject monitor"}
         </button>
 
         {subjectMonitorState.id !== subject.monitor_id && (

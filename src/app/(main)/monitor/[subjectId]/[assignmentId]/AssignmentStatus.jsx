@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Radio from "@/components/Radio";
-import Icon from "@/components/Icon";
+import { useEffect, useState } from 'react'
+import Radio from '@/components/Radio'
+import Icon from '@/components/Icon'
 import {
   ChartBarIcon,
   EllipsisVerticalIcon,
@@ -11,87 +11,90 @@ import {
   CheckCircleIcon,
   CheckIcon,
   ArrowUpRightIcon,
-} from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import formatDate from "@/utils/formatDate";
-import { setCollectedAssignments } from "@/db/assignments/setCollectedAssignments.js";
-import Select from "@/components/Select";
-import Link from "next/link";
+  ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import formatDate from '@/utils/formatDate'
+import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignments.js'
+import Select from '@/components/Select'
+import Link from 'next/link'
 
 export default function AssignmentStatus({ assignment, students, userRole }) {
-  const [updatedStudents, setUpdatedStudents] = useState(students);
-  const studentIds = students.map((s) => s.id);
-  const [selectedStudents, setSelectedStudents] = useState([]);
-  const [isEdited, setIsEdited] = useState(false);
-  const [isPendingSave, setIsPendingSave] = useState(false);
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [isStatsOpened, setIsStatsOpened] = useState(false);
+  const [updatedStudents, setUpdatedStudents] = useState(students)
+  const studentIds = students.map((s) => s.id)
+  const [selectedStudents, setSelectedStudents] = useState([])
+  const [isEdited, setIsEdited] = useState(false)
+  const [isPendingSave, setIsPendingSave] = useState(false)
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [isStatsOpened, setIsStatsOpened] = useState(false)
 
   const stats = {
     submitted: updatedStudents?.filter(
       (student) => student.collected_date !== null
     ).length,
-  };
+    late: updatedStudents?.filter(s => s.status === "late").length
+  }
 
   useEffect(() => {
     if (
       updatedStudents.length > 0 &&
       JSON.stringify(updatedStudents) != JSON.stringify(students)
     ) {
-      setIsEdited(true);
+      setIsEdited(true)
     } else {
-      setIsEdited(false);
+      setIsEdited(false)
     }
-  }, [updatedStudents]);
+  }, [updatedStudents])
 
   useEffect(() => {
-    setUpdatedStudents(students);
-    setIsPendingSave(false);
-  }, [students]);
+    setUpdatedStudents(students)
+    setIsPendingSave(false)
+  }, [students])
 
-  const [selectedView, setSelectedView] = useState("all");
+  const [selectedView, setSelectedView] = useState('all')
   const viewOptions = [
-    { id: "all", name: "All" },
-    { id: "late", name: "Late" },
-    { id: "submitted", name: "On-time" },
-    { id: "absent", name: "Absent" },
-  ];
+    { id: 'all', name: 'All' },
+    { id: 'late', name: 'Late' },
+    { id: 'submitted', name: 'On-time' },
+    { id: 'absent', name: 'Absent' },
+  ]
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('')
 
   async function handleSubmit() {
     try {
-      setIsPendingSave(true);
+      setIsPendingSave(true)
       await setCollectedAssignments(
         assignment.subject_id,
         assignment.assignment_id,
         updatedStudents
-      );
+      )
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
   function markAllSubmitted() {
-    setIsMenuOpened(false);
+    setIsMenuOpened(false)
     setUpdatedStudents((prev) => {
       const updated = prev.map((student) => {
         if (student.collected_date === null) {
           return {
             ...student,
+            status: new Date() > assignment.due_date ? 'late' : 'submitted',
             collected_date: new Date(),
-          };
+          }
         }
 
-        return student;
-      });
-      return updated;
-    });
+        return student
+      })
+      return updated
+    })
   }
 
   function closeMenus() {
-    setIsMenuOpened(false);
-    setIsStatsOpened(false);
+    setIsMenuOpened(false)
+    setIsStatsOpened(false)
   }
 
   return (
@@ -122,11 +125,11 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation();
-                setIsStatsOpened((prev) => !prev);
+                e.stopPropagation()
+                setIsStatsOpened((prev) => !prev)
               }}
             >
-              <Icon tooltip={isStatsOpened ? null : "Statistics"} border>
+              <Icon tooltip={isStatsOpened ? null : 'Statistics'} border>
                 <ChartBarIcon className="text-text-weak size-5" />
               </Icon>
             </button>
@@ -136,12 +139,20 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                 className="border-1 border-stroke-weak bg-white py-1.5 px-2 rounded absolute right-[-4px] top-10 w-44 z-10"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex flex-row items-center justify-between rounded py-1 px-2 transition-colors">
+                <div className="flex flex-row items-center justify-between rounded py-1 px-2">
                   <div className="flex flex-row gap-1 items-center">
                     <CheckIcon className="size-4 text-text-weak" />
                     <p className="text-nowrap text-text-weak">Submitted</p>
                   </div>
                   <p className="text-nowrap">{stats.submitted}</p>
+                </div>
+
+                <div className="flex flex-row items-center justify-between rounded py-1 px-2">
+                  <div className="flex flex-row gap-1 items-center">
+                    <ExclamationTriangleIcon className="size-4 text-text-weak" />
+                    <p className="text-nowrap text-text-weak">Late</p>
+                  </div>
+                  <p className="text-nowrap">{stats.late}</p>
                 </div>
               </div>
             )}
@@ -151,11 +162,11 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation();
-                setIsMenuOpened((prev) => !prev);
+                e.stopPropagation()
+                setIsMenuOpened((prev) => !prev)
               }}
             >
-              <Icon tooltip={isMenuOpened ? null : "More actions"}>
+              <Icon tooltip={isMenuOpened ? null : 'More actions'}>
                 <EllipsisVerticalIcon className="text-text-weak size-5" />
               </Icon>
             </button>
@@ -181,7 +192,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             <button
               className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
               onClick={() => {
-                setUpdatedStudents(students);
+                setUpdatedStudents(students)
               }}
             >
               Undo
@@ -191,8 +202,8 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
           <button
             type="submit"
             className={clsx(
-              "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
-              isEdited ? "bg-text-weak" : "bg-text-weakest"
+              'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
+              isEdited ? 'bg-text-weak' : 'bg-text-weakest'
             )}
             disabled={isPendingSave || !isEdited}
             onClick={handleSubmit}
@@ -200,7 +211,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             {isPendingSave ? (
               <ArrowPathIcon className="size-6 text-white" />
             ) : (
-              "Save"
+              'Save'
             )}
           </button>
         </div>
@@ -214,9 +225,9 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             checked={selectedStudents.length === studentIds.length}
             onChange={(e) => {
               if (e.target.checked) {
-                setSelectedStudents(studentIds);
+                setSelectedStudents(studentIds)
               } else {
-                setSelectedStudents([]);
+                setSelectedStudents([])
               }
             }}
           />
@@ -224,36 +235,36 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
           <p>ID</p>
           <p>Collected date</p>
           <p>Status</p>
-          {userRole === "teacher" && <p>Grade</p>}
+          {userRole === 'teacher' && <p>Grade</p>}
         </div>
         <div className="flex flex-col gap-2 h-[400px] w-fit overflow-y-auto overflow-x-hidden">
           {updatedStudents
             ?.filter((student) => {
-              if (selectedView === "all") return true;
-              if (selectedView === "late") {
-                return student.collected_date > assignment.due_date;
+              if (selectedView === 'all') return true
+              if (selectedView === 'late') {
+                return student.status === 'late'
               }
-              if (selectedView === "submitted") {
-                return (
-                  student.collected_date &&
-                  student.collected_date < assignment.due_date
-                );
+              if (selectedView === 'submitted') {
+                return student.status === 'submitted'
+              }
+              if (selectedView === 'absent') {
+                return student.status === 'absent'
               }
             })
             .map((student) => {
-              const late = student.collected_date > assignment.due_date;
+              const late = student.collected_date > assignment.due_date
 
               return (
                 <div
                   key={student.id}
                   className={clsx(
-                    "grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center border-1 rounded px-3 py-2",
-                    student.collected_date && "border-dashed",
+                    'grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center border-1 rounded px-3 py-2',
+                    student.collected_date && 'border-dashed',
                     late
-                      ? "border-red-500 bg-red-50"
+                      ? 'border-red-500 bg-red-50'
                       : student.collected_date
-                      ? "border-green-500 bg-green-50"
-                      : "border-stroke-weak"
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-stroke-weak'
                   )}
                   hidden={
                     search.length > 0 &&
@@ -273,9 +284,9 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                       if (selectedStudents.includes(student.id)) {
                         setSelectedStudents((prev) =>
                           prev.filter((id) => id !== student.id)
-                        );
+                        )
                       } else {
-                        setSelectedStudents((prev) => [...prev, student.id]);
+                        setSelectedStudents((prev) => [...prev, student.id])
                       }
                     }}
                   />
@@ -284,7 +295,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                   <p className="text-sm">
                     {student.collected_date
                       ? formatDate(student.collected_date)
-                      : "-"}
+                      : '-'}
                   </p>
 
                   <div className="bg-white w-60">
@@ -294,14 +305,14 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                         (new Date() > assignment.due_date &&
                           !student.collected_date)
                           ? [
-                              { id: null, name: "Not submitted 📄" },
-                              { id: "late", name: "Late Submission 🛑" },
-                              { id: "absent", name: "Absent 😷" },
+                              { id: null, name: 'Not submitted 📄' },
+                              { id: 'late', name: 'Late Submission 🛑' },
+                              { id: 'absent', name: 'Absent 😷' },
                             ]
                           : [
-                              { id: null, name: "Not submitted 📄" },
-                              { id: "submitted", name: "Submitted ✅" },
-                              { id: "absent", name: "Absent 😷" },
+                              { id: null, name: 'Not submitted 📄' },
+                              { id: 'submitted', name: 'Submitted ✅' },
+                              { id: 'absent', name: 'Absent 😷' },
                             ]
                       }
                       selected={[student.status]}
@@ -313,8 +324,8 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                                   ...s,
                                   status: newStatus,
                                   collected_date: [
-                                    "submitted",
-                                    "late",
+                                    'submitted',
+                                    'late',
                                   ].includes(newStatus)
                                     ? new Date()
                                     : null,
@@ -326,7 +337,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                     />
                   </div>
 
-                  {userRole === "teacher" && (
+                  {userRole === 'teacher' && (
                     <>
                       <div>
                         <input
@@ -334,7 +345,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                           className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
                           min="0"
                           max={assignment.assignment_grade}
-                          value={student.grade != null ? student.grade : ""}
+                          value={student.grade != null ? student.grade : ''}
                           onChange={(e) => {
                             setUpdatedStudents((prev) => {
                               return prev.map((s) => {
@@ -342,14 +353,14 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                                   return {
                                     ...s,
                                     grade: e.target.value,
-                                  };
+                                  }
                                 } else {
-                                  return s;
+                                  return s
                                 }
-                              });
-                            });
+                              })
+                            })
                           }}
-                        />{" "}
+                        />{' '}
                         / {assignment.assignment_grade}
                       </div>
                       <Link
@@ -362,10 +373,10 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                     </>
                   )}
                 </div>
-              );
+              )
             })}
         </div>
       </div>
     </div>
-  );
+  )
 }
