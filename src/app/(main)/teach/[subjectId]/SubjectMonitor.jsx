@@ -1,33 +1,33 @@
 'use client'
 
 import Icon from '@/components/Icon'
-import { setSubjectMonitor } from '@/db/subjects/setSubjectMonitor'
+import { updateSubjects } from '@/db/subjects/setSubject'
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function SubjectMonitorProperty({
-  subjectId,
-  monitor,
-  subjectStudents,
-}) {
+export default function SubjectMonitorProperty({ subject }) {
   const [isMenuOpened, setIsMenuOpened] = useState(false)
   const [search, setSearch] = useState('')
   const [subjectMonitorState, setSubjectMonitorState] = useState({
-    id: monitor.id,
-    name: monitor.name,
+    id: subject.monitor_id,
+    name: subject.monitor_name,
   })
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
 
-  function handleSubmit() {
+  async function handleSubmit() {
     setIsMenuOpened(false)
     setIsPending(true)
-    setSubjectMonitor(subjectId, subjectMonitorState.id).then(() => {
-      setIsPending(false)
-      router.refresh
-    })
+    await updateSubjects([
+      {
+        ...subject,
+        monitor_id: subjectMonitorState.id,
+      },
+    ])
+    setIsPending(false)
+    router.refresh
   }
 
   return (
@@ -37,10 +37,10 @@ export default function SubjectMonitorProperty({
           className="border-1 border-stroke-weak rounded py-1 px-2 hover:bg-fill-weak cursor-pointer transition-colors w-full text-left"
           onClick={() => setIsMenuOpened((prev) => !prev)}
         >
-          {subjectMonitorState.name}
+          {subjectMonitorState.name || "No subject monitor"}
         </button>
 
-        {subjectMonitorState.id !== monitor.id && (
+        {subjectMonitorState.id !== subject.monitor_id && (
           <>
             <button
               type="button"
@@ -57,8 +57,8 @@ export default function SubjectMonitorProperty({
               className="disabled:cursor-not-allowed"
               onClick={() =>
                 setSubjectMonitorState({
-                  id: monitor.id,
-                  name: monitor.name,
+                  id: subject.monitor_id,
+                  name: subject.monitor_name,
                 })
               }
               disabled={isPending}
@@ -82,7 +82,7 @@ export default function SubjectMonitorProperty({
             autoFocus
           ></input>
           <div className="max-h-32 overflow-scroll flex flex-col gap-1">
-            {subjectStudents
+            {subject.students
               ?.filter(
                 (student) =>
                   student.name.toLowerCase().includes(search.toLowerCase()) ||

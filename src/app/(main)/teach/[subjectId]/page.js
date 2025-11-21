@@ -17,19 +17,21 @@ import SubjectMonitorProperty from './SubjectMonitor'
 import { Suspense } from 'react'
 import Loading from './loading'
 import { getTaughtSubjects } from '@/db/subjects/getTaughtSubjects'
+import { getOnTimeSubmitPercentages } from '@/db/assignments/assignmentStatistics'
 
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
   const subject = (await getTaughtSubjects(subjectId))[0]
   const assignments = await getMonitoredAssignments(subjectId)
+  const onTimeSubmitPercentages = await getOnTimeSubmitPercentages(subjectId)
+
+  console.log(onTimeSubmitPercentages)
 
   const inProgress = assignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
   )
-  const archived = assignments?.filter(
-    (a) => new Date(a.due_date) < new Date()
-  )
+  const archived = assignments?.filter((a) => new Date(a.due_date) < new Date())
 
   //return <Loading />
 
@@ -59,14 +61,7 @@ export default async function Page({ params }) {
           <Properties.Property name="Subject Monitor">
             <PencilSquareIcon className="size-5 text-text-weak" />
           </Properties.Property>
-          <SubjectMonitorProperty
-            subjectId={subjectId}
-            subjectStudents={subject?.students}
-            monitor={{
-              id: subject?.monitor_id,
-              name: subject?.monitor_name,
-            }}
-          />
+          <SubjectMonitorProperty subject={subject} />
 
           {/* <Properties.Property name="Number of Students">
             <HashtagIcon className="size-5 text-text-weak" />
@@ -99,7 +94,13 @@ export default async function Page({ params }) {
               >
                 <p className="text-lg">{student.name}</p>
                 <p className="text-text-weak">#{student.id}</p>
-                <p>-%</p>
+                <p>
+                  {
+                    onTimeSubmitPercentages?.filter((s) => s.student_id === student.id)[0]
+                      ?.on_time_submit_percentage || "0"
+                  }
+                  %
+                </p>
               </div>
             ))}
           </div>

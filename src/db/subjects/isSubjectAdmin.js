@@ -1,7 +1,6 @@
 "use server"
 
 import {neon} from "@neondatabase/serverless"
-import { verifySession } from "@/actions/userSession"
 
 export async function isSubjectAdmin(subjectId, userId) {
   const sql = neon(`${process.env.STORE_DATABASE_URL}`)
