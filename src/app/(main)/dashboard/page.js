@@ -1,7 +1,7 @@
 import { getUser } from '@/db/users/getUser'
 import MainLayout from '../layout'
 import { getOnTimeSubmitPercentages } from '@/db/assignments/assignmentStatistics'
-import AOTSChart from './Charts'
+import AOTSChart from './Charts.jsx'
 import Icon from '@/components/Icon'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
 

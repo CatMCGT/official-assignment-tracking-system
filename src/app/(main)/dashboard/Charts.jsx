@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts'
 
-export default function AOTSChart({ user, onTimeSubmitPercentages }) {
+export default function AOTSChart({ onTimeSubmitPercentages }) {
   const data = onTimeSubmitPercentages
 
   return (
@@ -18,7 +18,7 @@ export default function AOTSChart({ user, onTimeSubmitPercentages }) {
       }}
     >
       <XAxis dataKey="subject_id" label={{value: 'Subject ID', dy: 30}} />
-      <YAxis width="auto" label={{value: 'Average On-time Submission Percentages (%)', position: 'insideLeft', dx:1, dy: 150, angle: -90}}/>
+      <YAxis width="auto" unit='%' label={{value: 'Average On-time Submission Percentages', position: 'insideLeft', dx:1, dy: 150, angle: -90}}/>
       <Tooltip cursor={{fill: '#F5F5F5'}} />
       <Bar dataKey="average_on_time_submit" fill="#88847C" maxBarSize={100} radius={[4,4,0,0]}/>
     </BarChart>

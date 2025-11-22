@@ -9,15 +9,14 @@ import {
   MagnifyingGlassIcon,
   ArrowPathIcon,
   CheckCircleIcon,
-  CheckIcon,
   ArrowUpRightIcon,
-  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import formatDate from '@/utils/formatDate'
 import { setCollectedAssignments } from '@/db/assignments/setCollectedAssignments.js'
 import Select from '@/components/Select'
 import Link from 'next/link'
+import Statistics from './Statistics'
 
 export default function AssignmentStatus({ assignment, students, userRole }) {
   const [updatedStudents, setUpdatedStudents] = useState(students)
@@ -27,13 +26,6 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
   const [isPendingSave, setIsPendingSave] = useState(false)
   const [isMenuOpened, setIsMenuOpened] = useState(false)
   const [isStatsOpened, setIsStatsOpened] = useState(false)
-
-  const stats = {
-    submitted: updatedStudents?.filter(
-      (student) => student.collected_date !== null
-    ).length,
-    late: updatedStudents?.filter(s => s.status === "late").length
-  }
 
   useEffect(() => {
     if (
@@ -134,28 +126,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
               </Icon>
             </button>
 
-            {isStatsOpened && (
-              <div
-                className="border-1 border-stroke-weak bg-white py-1.5 px-2 rounded absolute right-[-4px] top-10 w-44 z-10"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex flex-row items-center justify-between rounded py-1 px-2">
-                  <div className="flex flex-row gap-1 items-center">
-                    <CheckIcon className="size-4 text-text-weak" />
-                    <p className="text-nowrap text-text-weak">Submitted</p>
-                  </div>
-                  <p className="text-nowrap">{stats.submitted}</p>
-                </div>
-
-                <div className="flex flex-row items-center justify-between rounded py-1 px-2">
-                  <div className="flex flex-row gap-1 items-center">
-                    <ExclamationTriangleIcon className="size-4 text-text-weak" />
-                    <p className="text-nowrap text-text-weak">Late</p>
-                  </div>
-                  <p className="text-nowrap">{stats.late}</p>
-                </div>
-              </div>
-            )}
+            {isStatsOpened && <Statistics updatedStudents={updatedStudents} />}
           </div>
 
           <div className="relative">

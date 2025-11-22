@@ -6,6 +6,7 @@ import AssignmentStatus from './AssignmentStatus'
 import { Suspense } from 'react'
 import Loading from './loading'
 import { getUser } from '@/db/users/getUser'
+import Charts from './Charts'
 
 export async function generateMetadata({ params }) {
   const { subjectId, assignmentId } = await params
@@ -49,6 +50,8 @@ export default async function Page({ params }) {
 
           <hr className="text-stroke-weak mt-2 mb-5"></hr>
         </div>
+
+        <Charts assignment={assignment}/>
 
         <AssignmentStatus
           assignment={assignment}
