@@ -19,7 +19,7 @@ export async function createAssignment(
     const assignedDate = new Date()
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
     const response =
-      await sql`INSERT INTO assignments (title, description, subject_id, assigned_date, due_date) VALUES (${assignment.title}, ${assignment.description}, ${subjectId}, ${assignedDate}, ${assignment.dueDate}) RETURNING id;`
+      await sql`INSERT INTO assignments (title, description, subject_id, assigned_date, due_date, grade) VALUES (${assignment.title}, ${assignment.description}, ${subjectId}, ${assignedDate}, ${assignment.dueDate}, ${assignment.grade}) RETURNING id;`
 
     const aid = response[0].id
 
