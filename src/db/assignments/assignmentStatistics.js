@@ -29,7 +29,7 @@ export async function getOnTimeSubmitPercentages(subjectId) {
           JOIN students st ON st.id = sa.student_id
           JOIN assignments a ON sa.assignment_id = a.id
           JOIN subjects s ON a.subject_id = s.id
-          JOIN (
+          CROSS JOIN (
             SELECT
               count(*) as total_assignments
             FROM

@@ -3,17 +3,11 @@ import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 export default function Statistics({ updatedStudents }) {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
 
-  const studentGradeArr = updatedStudents
-    ?.filter((s) => s.collected_date)
-    .map((student) => student.grade)
-
   const stats = {
     submitted: updatedStudents?.filter(
       (student) => student.collected_date !== null
     ).length,
     late: updatedStudents?.filter((s) => s.status === 'late').length,
-    averageGrade:
-      studentGradeArr.reduce((a, b) => a + b) / studentGradeArr.length,
   }
 
   return (
@@ -38,13 +32,6 @@ export default function Statistics({ updatedStudents }) {
       </div>
 
       <hr className='mx-1 text-stroke-weak'></hr>
-
-      <div className="flex flex-row items-center justify-between rounded py-1 px-2">
-        <div className="flex flex-row gap-1 items-center">
-          <p className="text-nowrap text-text-weak">Average grade</p>
-        </div>
-        <p className="text-nowrap">{stats.averageGrade}</p>
-      </div>
     </div>
   )
 }

@@ -34,8 +34,6 @@ export default async function Page({ params }) {
   const assignments = await getMonitoredAssignments(subjectId)
   const onTimeSubmitPercentages = await getOnTimeSubmitPercentages(subjectId)
 
-  console.log(onTimeSubmitPercentages)
-
   const inProgress = assignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
   )

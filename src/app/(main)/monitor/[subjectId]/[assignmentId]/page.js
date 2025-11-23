@@ -51,7 +51,11 @@ export default async function Page({ params }) {
           <hr className="text-stroke-weak mt-2 mb-5"></hr>
         </div>
 
-        <Charts assignment={assignment}/>
+        {user.role === 'teacher' && (
+          <div className='mb-4'>
+            <Charts assignment={assignment} />
+          </div>
+        )}
 
         <AssignmentStatus
           assignment={assignment}
