@@ -3,6 +3,7 @@ import { getAllUsers } from "@/db/users/getAllUsers";
 import MainLayout from "../../layout";
 import CreateUser from "./CreateUser";
 import AllUsers from "./AllUsers";
+import BulkCreateUsers from "./BulkCreateUsers";
 
 export default async function Page() {
   const allSubjects = await getAllSubjects()
@@ -13,8 +14,9 @@ export default async function Page() {
       <MainLayout.Header>User Management</MainLayout.Header>
 
       <div className="flex flex-row gap-10">
-        <div>
+        <div className="flex flex-col gap-4">
           <CreateUser allSubjects={allSubjects} />
+          <BulkCreateUsers />
         </div>
 
         <AllUsers allUsers={allUsers} allSubjects={allSubjects} />

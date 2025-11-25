@@ -1,5 +1,5 @@
 'use client'
-import { BookOpenIcon, UserIcon, ChartPieIcon } from '@heroicons/react/20/solid'
+import { BookOpenIcon, UserIcon, ChartPieIcon, ChartBarIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'

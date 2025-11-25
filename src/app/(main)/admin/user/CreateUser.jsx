@@ -141,7 +141,7 @@ export default function CreateUser({ allSubjects }) {
           <p
             className={clsx(
               "font-bold text-sm mt-0" && true,
-              createUserState?.success ? "text-green-400" : "text-red-400"
+              createUserState?.success ? "text-green-500" : "text-red-400"
             )}
           >
             {createUserState.message}
