@@ -3,16 +3,22 @@
 import Form from 'next/form'
 import Icon from '../Icon'
 import { XMarkIcon } from '@heroicons/react/20/solid'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { createFeedback } from '@/db/others/createFeedback'
 import clsx from 'clsx'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { verifySession } from '@/actions/userSession'
 
 export default function Feedback() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [randomNum, setRandomNum] = useState(undefined)
+  const [isOpen, setIsOpen] = useState(false)
+  const [session, setSession] = useState({
+    userId: '',
+  })
 
   const additionalData = {
     time: new Date(),
+    userId: session.userId,
   }
 
   const [feedbackState, feedbackAction, isPending] = useActionState(
@@ -23,12 +29,37 @@ export default function Feedback() {
     }
   )
 
+  useEffect(() => {
+    setRandomNum(Math.random())
+
+    if (isOpen) {
+      async function getSession() {
+        const session = await verifySession()
+        setSession(session)
+      }
+
+      getSession()
+    }
+  }, [])
+
+  useEffect(() => {
+    setIsOpen(randomNum < 0.2)
+  }, [randomNum])
+
+  useEffect(() => {
+    if (feedbackState.success) {
+      setTimeout(() => {
+        setIsOpen(false)
+      }, 2000)
+    }
+  }, [feedbackState.success])
+
   return (
     <div>
       {isOpen && (
         <Form
           action={feedbackAction}
-          className="border-1 rounded h-16 overflow-hidden hover:h-60 border-gray-300 mb-4 p-2 transition-all cursor-pointer"
+          className="border-1 rounded h-16 overflow-hidden hover:h-56 border-gray-300 mb-4 p-2 transition-all cursor-pointer"
         >
           <div className="flex flex-row justify-between">
             <p className="font-bold">Any feedback?</p>
@@ -57,8 +88,8 @@ export default function Feedback() {
           {feedbackState?.message && (
             <p
               className={clsx(
-                'font-bold text-sm mt-0' && true,
-                feedbackState?.success ? 'text-green-400' : 'text-red-400'
+                'font-bold text-sm mt-2' && true,
+                feedbackState?.success ? 'text-green-500' : 'text-red-400'
               )}
             >
               {feedbackState.message}
