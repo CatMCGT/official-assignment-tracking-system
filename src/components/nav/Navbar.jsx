@@ -16,10 +16,17 @@ export default async function Navbar() {
   const taughtSubjects = await getTaughtSubjects()
   const monitoredSubjects = await getMonitoredSubjects()
 
-  const activatedSubjects = taughtSubjects.filter(
+  const activatedTaughtSubjects = taughtSubjects.filter(
     (s) => s.deactivated_date === null
   )
-  const deactivatedSubjects = taughtSubjects.filter(
+  const deactivatedTaughtSubjects = taughtSubjects.filter(
+    (s) => s.deactivated_date !== null
+  )
+
+  const activatedMonitoredSubjects = monitoredSubjects.filter(
+    (s) => s.deactivated_date === null
+  )
+  const deactivatedMonitoredSubjects = monitoredSubjects.filter(
     (s) => s.deactivated_date !== null
   )
 
@@ -31,14 +38,14 @@ export default async function Navbar() {
 
           <NavLinks user={user} />
 
-          {role === 'teacher' && activatedSubjects.length > 0 && (
+          {role === 'teacher' && activatedTaughtSubjects.length > 0 && (
             <div>
               <div>
                 <p className="text-sm text-text-weak tracking-wide">
                   Taught Subjects
                 </p>
                 <div className="flex flex-col gap-2 mt-3">
-                  {activatedSubjects.map((subject) => (
+                  {activatedTaughtSubjects.map((subject) => (
                     <Fragment key={subject.id}>
                       <SubjectNavLink subject={subject} action="teach" />
                     </Fragment>
@@ -46,9 +53,9 @@ export default async function Navbar() {
                 </div>
               </div>
 
-              {deactivatedSubjects.length > 0 && (
+              {deactivatedTaughtSubjects.length > 0 && (
                 <Link
-                  href="/teach/deactivated"
+                  href="/deactivated"
                   className="nav-tab mt-10 hover:mt-9"
                 >
                   <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
@@ -60,18 +67,30 @@ export default async function Navbar() {
             </div>
           )}
 
-          {role === 'student' && monitoredSubjects.length > 0 && (
+          {role === 'student' && activatedMonitoredSubjects.length > 0 && (
             <div>
               <p className="text-sm text-text-weak tracking-wide">
                 Monitored Subjects
               </p>
               <div className="flex flex-col gap-2 mt-3">
-                {monitoredSubjects.map((subject) => (
+                {activatedMonitoredSubjects.map((subject) => (
                   <Fragment key={subject.id}>
                     <SubjectNavLink subject={subject} action="monitor" />
                   </Fragment>
                 ))}
               </div>
+
+              {deactivatedMonitoredSubjects.length > 0 && (
+                <Link
+                  href="/deactivated"
+                  className="nav-tab mt-10 hover:mt-9"
+                >
+                  <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
+                  <p className="font-bold mr-1 ml-3 text-text-weak">
+                    Deactivated Subjects
+                  </p>
+                </Link>
+              )}
             </div>
           )}
         </div>

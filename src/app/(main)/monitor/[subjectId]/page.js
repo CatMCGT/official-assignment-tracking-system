@@ -24,13 +24,13 @@ export async function generateMetadata({ params }) {
   }
 }
 
-
 export default async function Page({ params }) {
   const { subjectId } = await params
   const subjectInfo = getSubjectInfo(subjectId)
   const subjectAssignments = await getMonitoredAssignments(subjectId)
 
   let subjectAdmin = {}
+  let numOfStudents = 0
   if (subjectAssignments.length > 0) {
     subjectAdmin = {
       teacher_id: subjectAssignments.teacher_id,
@@ -38,10 +38,13 @@ export default async function Page({ params }) {
       monitor_id: subjectAssignments.monitor_id,
       monitor_name: subjectAssignments.monitor_name,
     }
+    numOfStudents = subjectAssignments.number_of_students
   } else {
-    subjectAdmin = (await getMonitoredSubjects()).filter(
+    const details = (await getMonitoredSubjects()).filter(
       (subject) => subject.id === subjectId
-    )[0]
+    )
+    subjectAdmin = details[0]
+    numOfStudents = details[0].number_of_students
   }
 
   const inProgress = subjectAssignments?.filter(
@@ -85,7 +88,7 @@ export default async function Page({ params }) {
             <HashtagIcon className="size-5 text-text-weak" />
           </Properties.Property>
           <Properties.Property.Value>
-            {subjectAssignments.length}
+            {numOfStudents}
           </Properties.Property.Value>
         </Properties>
 

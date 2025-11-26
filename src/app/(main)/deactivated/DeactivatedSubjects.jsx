@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 export default function DeactivatedSubjects({
   deactivatedSubjects,
+  action
 }) {
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-[1200px]">
@@ -12,7 +13,7 @@ export default function DeactivatedSubjects({
 
         return (
           <Link
-            href={`/teach/${subject.id}`}
+            href={`/${action}/${subject.id}`}
             key={subject.id}
             className="border-1 rounded border-stroke-weak px-4 py-4 w-fit"
           >

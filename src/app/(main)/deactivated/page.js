@@ -16,7 +16,7 @@ export default async function Page() {
       <div>
         <MainLayout.Header>Deactivated Subjects</MainLayout.Header>
 
-        <DeactivatedSubjects deactivatedSubjects={deactivatedSubjects} />
+        <DeactivatedSubjects deactivatedSubjects={deactivatedSubjects} action="teach"/>
       </div>
     )
   } else if (user.role === 'student') {
@@ -30,7 +30,7 @@ export default async function Page() {
       <div>
         <MainLayout.Header>Deactivated Subjects</MainLayout.Header>
 
-        <DeactivatedSubjects deactivatedSubjects={deactivatedSubjects} />
+        <DeactivatedSubjects deactivatedSubjects={deactivatedSubjects} action="monitor"/>
       </div>
     )
   }

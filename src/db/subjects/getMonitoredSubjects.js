@@ -14,11 +14,16 @@ export async function getMonitoredSubjects() {
       s.teacher_id as teacher_id,
       t.name as teacher_name,
       s.monitor_id as monitor_id,
-      m.name as monitor_name
+      m.name as monitor_name,
+      count(*) as number_of_students,
+      s.deactivated_date
     FROM subjects s
     JOIN teachers t ON s.teacher_id = t.id
-    JOIN students m ON s.monitor_id = m.id
-    WHERE monitor_id = ${session.userId}`
+    LEFT JOIN students m ON s.monitor_id = m.id
+    LEFT JOIN student_subject ss ON ss.subject_id = s.id
+    WHERE monitor_id = ${session.userId}
+    GROUP BY s.id, s.teacher_id, t.name, s.monitor_id, m.name, s.deactivated_date
+    `
 
   return response
 }

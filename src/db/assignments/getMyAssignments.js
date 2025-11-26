@@ -25,7 +25,7 @@ export async function getMyAssignments() {
       t.id as teacher_id,
       t.name as teacher_name,
       m.id as monitor_id,
-      t.name as monitor_name
+      m.name as monitor_name
     FROM
       assignments a,
       student_assignment s,

@@ -27,6 +27,7 @@ export async function getMonitoredAssignments(subjectId) {
         t.name AS teacher_name,
         m.id AS monitor_id,
         m.name AS monitor_name,
+        count(*) as number_of_students,
         COALESCE(
           JSON_AGG(
             JSON_BUILD_OBJECT(
@@ -45,6 +46,7 @@ export async function getMonitoredAssignments(subjectId) {
       LEFT JOIN teachers t ON t.id = s.teacher_id
       LEFT JOIN students m ON m.id = s.monitor_id
       LEFT JOIN student_assignment sa ON sa.assignment_id = a.id
+      LEFT JOIN student_subject ss ON ss.subject_id = s.id
       LEFT JOIN students st ON st.id = sa.student_id
       WHERE s.id = ${subjectId}
       GROUP BY
