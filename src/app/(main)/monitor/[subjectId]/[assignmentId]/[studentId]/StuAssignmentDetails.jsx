@@ -70,7 +70,9 @@ export default function StuAssignmentDetails({
           </p>
         </div>
       </div>
-      <h2 className="font-semibold text-2xl ">{assignment?.assignment_title}</h2>
+      <h2 className="font-semibold text-2xl ">
+        {assignment?.assignment_title}
+      </h2>
 
       <Properties>
         <Properties.Property name="Inspecting Student">
@@ -108,20 +110,11 @@ export default function StuAssignmentDetails({
           <UserCircleIcon className="size-5 text-text-weak" />
         </Properties.Property>
         <Select
-          options={
-            updatedStudent?.collected_date > assignment?.due_date ||
-            (new Date() > assignment?.due_date && !updatedStudent?.collected_date)
-              ? [
-                  { id: null, name: 'Not submitted 📄' },
-                  { id: 'late', name: 'Late Submission 🛑' },
-                  { id: 'absent', name: 'Absent 😷' },
-                ]
-              : [
-                  { id: null, name: 'Not submitted 📄' },
-                  { id: 'submitted', name: 'Submitted ✅' },
-                  { id: 'absent', name: 'Absent 😷' },
-                ]
-          }
+          options={[
+            { id: null, name: 'Not submitted 📄' },
+            { id: 'submitted', name: 'Submitted ✅' },
+            { id: 'absent', name: 'Absent 😷' },
+          ]}
           selected={[updatedStudent?.status]}
           setSelected={(newStatus) =>
             setUpdatedStudent((prev) => ({

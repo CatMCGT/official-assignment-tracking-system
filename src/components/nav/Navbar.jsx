@@ -6,16 +6,22 @@ import NavLinks from './NavLinks'
 import { getMonitoredSubjects } from '@/db/subjects/getMonitoredSubjects'
 import SubjectNavLink from './SubjectNavLink'
 import { getTaughtSubjects } from '@/db/subjects/getTaughtSubjects'
-import Icon from '../Icon'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import Form from 'next/form'
 import Feedback from './Feedback'
+import Link from 'next/link'
+import { ArchiveBoxArrowDownIcon } from '@heroicons/react/20/solid'
 
 export default async function Navbar() {
   const user = await getUser()
   const role = user.role
   const taughtSubjects = await getTaughtSubjects()
   const monitoredSubjects = await getMonitoredSubjects()
+
+  const activatedSubjects = taughtSubjects.filter(
+    (s) => s.deactivated_date === null
+  )
+  const deactivatedSubjects = taughtSubjects.filter(
+    (s) => s.deactivated_date !== null
+  )
 
   return (
     <div className="h-full fixed z-20">
@@ -25,18 +31,32 @@ export default async function Navbar() {
 
           <NavLinks user={user} />
 
-          {role === 'teacher' && taughtSubjects.length > 0 && (
+          {role === 'teacher' && activatedSubjects.length > 0 && (
             <div>
-              <p className="text-sm text-text-weak tracking-wide">
-                Taught Subjects
-              </p>
-              <div className="flex flex-col gap-2 mt-3">
-                {taughtSubjects.map((subject) => (
-                  <Fragment key={subject.id}>
-                    <SubjectNavLink subject={subject} action="teach" />
-                  </Fragment>
-                ))}
+              <div>
+                <p className="text-sm text-text-weak tracking-wide">
+                  Taught Subjects
+                </p>
+                <div className="flex flex-col gap-2 mt-3">
+                  {activatedSubjects.map((subject) => (
+                    <Fragment key={subject.id}>
+                      <SubjectNavLink subject={subject} action="teach" />
+                    </Fragment>
+                  ))}
+                </div>
               </div>
+
+              {deactivatedSubjects.length > 0 && (
+                <Link
+                  href="/teach/deactivated"
+                  className="nav-tab mt-10 hover:mt-9"
+                >
+                  <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
+                  <p className="font-bold mr-1 ml-3 text-text-weak">
+                    Deactivated Subjects
+                  </p>
+                </Link>
+              )}
             </div>
           )}
 

@@ -77,7 +77,7 @@ export default function NavLinks({ user }) {
         </div>
        )}
 
-      {user?.role === 'teacher' && (
+      {/* {user?.role === 'teacher' && (
         <>
           <Link href="/dashboard" className={clsx(
                 'nav-tab',
@@ -94,7 +94,7 @@ export default function NavLinks({ user }) {
             </p>
           </Link>
         </>
-      )}
+      )} */}
     </>
   )
 }

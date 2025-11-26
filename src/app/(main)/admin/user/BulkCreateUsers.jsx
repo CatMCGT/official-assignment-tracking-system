@@ -58,7 +58,7 @@ export default function BulkCreateUsers() {
         {usersArr.length > 0 ? (
           <label
             htmlFor="csvFileInput"
-            className="border-1 border-stroke-weak rounded p-4 flex flex-col gap-4 justify-center items-center cursor-pointer"
+            className="border-1 border-stroke-weak rounded p-4 flex flex-col gap-4 justify-center items-center cursor-pointer text-center"
           >
             <img src="/create_csv_2.svg"></img>
             <p>You've uploaded an item.</p>
@@ -67,7 +67,7 @@ export default function BulkCreateUsers() {
         ) : (
           <label
             htmlFor="csvFileInput"
-            className="border-1 border-stroke-weak rounded p-4 flex flex-col gap-4 justify-center items-center cursor-pointer"
+            className="border-1 border-stroke-weak rounded p-4 flex flex-col gap-4 justify-center items-center cursor-pointer text-center"
           >
             <img src="/create_csv_1.svg"></img>
             <p>Upload a csv to bulk-create users</p>

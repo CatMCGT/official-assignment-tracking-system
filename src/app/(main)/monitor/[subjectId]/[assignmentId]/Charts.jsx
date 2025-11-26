@@ -26,8 +26,6 @@ export default function Charts({ assignment }) {
   studentGrade.forEach((student) => {
     const gradePercentage = Math.round(student.grade / maxGrade) * 100
 
-    console.log(gradePercentage)
-
     const range = ranges.find(
       (r) => gradePercentage >= r.min && gradePercentage <= r.max
     )

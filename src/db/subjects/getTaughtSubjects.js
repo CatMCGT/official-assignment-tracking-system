@@ -18,7 +18,7 @@ export async function getTaughtSubjects(subjectId = '') {
         t.name AS teacher_name,
         m.id AS monitor_id,
         m.name AS monitor_name,
-        deactivated_date,
+        s.deactivated_date,
         COALESCE(
           JSON_AGG(
             JSON_BUILD_OBJECT('id', st.id, 'name', st.name)
@@ -34,7 +34,7 @@ export async function getTaughtSubjects(subjectId = '') {
       WHERE
         s.teacher_id = ${session.userId}
       GROUP BY
-        s.id, t.id, t.name, m.id, m.name, deactivated_date
+        s.id, t.id, t.name, m.id, m.name, s.deactivated_date
     `
       return subjects
     } else {
@@ -45,7 +45,7 @@ export async function getTaughtSubjects(subjectId = '') {
         t.name AS teacher_name,
         m.id AS monitor_id,
         m.name AS monitor_name,
-        deactivated_date,
+        s.deactivated_date,
         COALESCE(
           JSON_AGG(
             JSON_BUILD_OBJECT('id', st.id, 'name', st.name)
@@ -62,7 +62,7 @@ export async function getTaughtSubjects(subjectId = '') {
         s.teacher_id = ${session.userId} AND
         s.id = ${subjectId}
       GROUP BY
-        s.id, t.id, t.name, m.id, m.name, deactivated_date
+        s.id, t.id, t.name, m.id, m.name, s.deactivated_date
     `
       return subjects
     }

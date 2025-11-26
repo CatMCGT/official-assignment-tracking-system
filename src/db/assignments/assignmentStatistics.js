@@ -39,7 +39,9 @@ export async function getOnTimeSubmitPercentages(subjectId) {
           ) ta
         WHERE
           a.subject_id = ${subjectId} AND
-          sa.collected_date <= a.due_date
+          sa.collected_date <= a.due_date AND
+          s.deactivated_date is null AND
+          st.deactivated_date is null
         GROUP BY
           a.subject_id,
           sa.student_id,
@@ -54,73 +56,87 @@ export async function getOnTimeSubmitPercentages(subjectId) {
 
       // https://www.postgresql.org/docs/current/queries-with.html
 
-      const sql = neon(`${process.env.STORE_DATABASE_URL}`)
-      const response = await sql`
-        WITH subject_stats AS (
-          SELECT 
-            a.subject_id,
-            COUNT(*) AS total_assignments
-          FROM assignments a
-          JOIN subjects s ON a.subject_id = s.id
-          WHERE s.teacher_id = ${session.userId}
-          GROUP BY a.subject_id
-        ),
+      // const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+      // const response = await sql`
+      //   WITH subject_stats AS (
+      //     SELECT 
+      //       a.subject_id,
+      //       COUNT(*) AS total_assignments
+      //     FROM assignments a
+      //     JOIN subjects s ON a.subject_id = s.id
+      //     WHERE
+      //       s.teacher_id = ${session.userId} AND
+      //       a.due_date <= NOW()
+      //     GROUP BY a.subject_id
+      //   ),
 
-        students_in_subject AS (
-          SELECT DISTINCT
-            a.subject_id,
-            sa.student_id
-          FROM assignments a
-          JOIN student_assignment sa ON sa.assignment_id = a.id
-          JOIN subjects s ON a.subject_id = s.id
-          WHERE s.teacher_id = ${session.userId}
-        ),
+      //   active_students_in_subject AS (
+      //     SELECT DISTINCT
+      //       a.subject_id,
+      //       sa.student_id
+      //     FROM assignments a
+      //     JOIN student_assignment sa ON sa.assignment_id = a.id
+      //     JOIN students st ON sa.student_id = st.id
+      //     JOIN subjects s ON a.subject_id = s.id
+      //     WHERE
+      //       s.teacher_id = ${session.userId} AND
+      //       st.deactivated_date is null AND
+      //       a.due_date <= NOW()
+      //   ),
 
-        on_time_counts AS (
-          SELECT 
-            a.subject_id,
-            sa.student_id,
-            COUNT(*) AS on_time_count
-          FROM assignments a
-          JOIN student_assignment sa 
-            ON sa.assignment_id = a.id
-          AND sa.status = 'submitted'
-          AND sa.collected_date <= a.due_date
-          JOIN subjects s ON a.subject_id = s.id
-          WHERE s.teacher_id = ${session.userId}
-          GROUP BY a.subject_id, sa.student_id
-        )
+      //   on_time_counts AS (
+      //     SELECT 
+      //       a.subject_id,
+      //       sa.student_id,
+      //       COUNT(*) AS on_time_count
+      //     FROM assignments a
+      //     JOIN student_assignment sa ON sa.assignment_id = a.id 
+      //     JOIN subjects s ON a.subject_id = s.id
+      //     WHERE 
+      //       s.teacher_id = ${session.userId} AND
+      //       sa.collected_date <= a.due_date AND
+      //       sa.collected_date is not null AND
+      //       a.due_date <= NOW()
+      //     GROUP BY a.subject_id, sa.student_id
+      //   ),
 
-        SELECT
-          ss.subject_id,
-          ROUND(
-            COALESCE(AVG(otc.on_time_count::FLOAT / ss.total_assignments), 0) * 100
-          ) AS average_on_time_submit,
+      //   student_percentages AS (
+      //     SELECT
+      //       sis.subject_id,
+      //       sis.student_id,
+      //       st.name,
+      //       ss.total_assignments,
+      //       COALESCE(otc.on_time_count, 0) AS on_time_count,
+      //       ROUND(COALESCE(otc.on_time_count, 0) / ss.total_assignments ) * 100) AS on_time_percentages
+      //     FROM subject_stats ss
+      //     JOIN active_students_in_subject sis ON sis.subject_id = ss.subject_id
+      //     JOIN students st ON st.id = sis.student_id
+      //     LEFT JOIN on_time_counts otc
+      //       ON otc.subject_id = ss.subject_id
+      //       AND otc.student_id = sis.student_id
+      //   )
 
-          COALESCE(
-            JSON_AGG(
-              JSON_BUILD_OBJECT(
-                'id', st.id,
-                'name', st.name,
-                'on_time_submit_percentage',
-                  ROUND(COALESCE(otc.on_time_count, 0)::FLOAT / ss.total_assignments * 100)
-              )
-              ORDER BY st.name
-            ),
-            '[]'::json
-          ) AS students
+      //   SELECT
+      //     sp.subject_id,
+      //     ROUND(AVG(sp.on_time_percentage)) AS average_on_time_submit,
 
-        FROM subject_stats ss
-        JOIN students_in_subject sis ON sis.subject_id = ss.subject_id
-        JOIN students st ON st.id = sis.student_id
-        LEFT JOIN on_time_counts otc 
-          ON otc.subject_id = ss.subject_id 
-        AND otc.student_id = st.id
+      //     COALESCE(
+      //       JSON_AGG(
+      //         JSON_BUILD_OBJECT(
+      //           'id', sp.student_id,
+      //           'name', sp.name,
+      //           'on_time_submit_percentage', sp.on_time_percentages
+      //         ) ORDER BY st.name
+      //       ),
+      //       '[]'::json
+      //     ) AS students
 
-        GROUP BY ss.subject_id, ss.total_assignments;
-      `
+      //   FROM student_percentages sp
+      //   GROUP BY sp.subject_id
+      //   ORDER BY sp.subject_id
+      // `
 
-      return response
+      // return response
     }
   } catch (err) {
     console.error('Error getting assignment statistics:', err)

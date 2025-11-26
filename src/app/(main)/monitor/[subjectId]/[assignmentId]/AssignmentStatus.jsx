@@ -73,7 +73,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
         if (student.collected_date === null) {
           return {
             ...student,
-            status: new Date() > assignment.due_date ? 'late' : 'submitted',
+            status: 'submitted',
             collected_date: new Date(),
           }
         }
@@ -126,7 +126,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
               </Icon>
             </button>
 
-            {isStatsOpened && <Statistics updatedStudents={updatedStudents} />}
+            {isStatsOpened && <Statistics updatedStudents={updatedStudents} assignment={assignment}/>}
           </div>
 
           <div className="relative">
@@ -213,7 +213,10 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             ?.filter((student) => {
               if (selectedView === 'all') return true
               if (selectedView === 'late') {
-                return student.status === 'late'
+                return (
+                  new Date(student.collected_date) >
+                  new Date(assignment.due_date)
+                )
               }
               if (selectedView === 'submitted') {
                 return student.status === 'submitted'
@@ -223,7 +226,8 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
               }
             })
             .map((student) => {
-              const late = student.collected_date > assignment.due_date
+              const late =
+                new Date(student.collected_date) > new Date(assignment.due_date)
 
               return (
                 <div
@@ -271,21 +275,11 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
 
                   <div className="bg-white w-60">
                     <Select
-                      options={
-                        late ||
-                        (new Date() > assignment.due_date &&
-                          !student.collected_date)
-                          ? [
-                              { id: null, name: 'Not submitted 📄' },
-                              { id: 'late', name: 'Late Submission 🛑' },
-                              { id: 'absent', name: 'Absent 😷' },
-                            ]
-                          : [
-                              { id: null, name: 'Not submitted 📄' },
-                              { id: 'submitted', name: 'Submitted ✅' },
-                              { id: 'absent', name: 'Absent 😷' },
-                            ]
-                      }
+                      options={[
+                        { id: null, name: 'Not submitted 📄' },
+                        { id: 'submitted', name: 'Submitted ✅' },
+                        { id: 'absent', name: 'Absent 😷' },
+                      ]}
                       selected={[student.status]}
                       setSelected={(newStatus) =>
                         setUpdatedStudents((prev) =>

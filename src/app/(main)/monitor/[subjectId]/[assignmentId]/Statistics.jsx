@@ -1,13 +1,15 @@
 import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
-export default function Statistics({ updatedStudents }) {
+export default function Statistics({ updatedStudents, assignment }) {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
 
   const stats = {
     submitted: updatedStudents?.filter(
       (student) => student.collected_date !== null
     ).length,
-    late: updatedStudents?.filter((s) => s.status === 'late').length,
+    late: updatedStudents?.filter(
+      (s) => new Date(s.collected_date) > new Date(assignment.due_date)
+    ).length,
   }
 
   return (
@@ -31,7 +33,7 @@ export default function Statistics({ updatedStudents }) {
         <p className="text-nowrap">{stats.late}</p>
       </div>
 
-      <hr className='mx-1 text-stroke-weak'></hr>
+      <hr className="mx-1 text-stroke-weak"></hr>
     </div>
   )
 }

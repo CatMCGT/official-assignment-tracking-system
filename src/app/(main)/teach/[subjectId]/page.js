@@ -87,7 +87,7 @@ export default async function Page({ params }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_300px_auto] items-center px-3 py-2 text-sm text-text-weak">
+          <div className="grid grid-cols-[200px_300px_auto] items-center px-3 py-2 text-sm text-text-weak max-h-[500px]">
             <p>Name</p>
             <p>ID</p>
             <p>On-time Submission</p>

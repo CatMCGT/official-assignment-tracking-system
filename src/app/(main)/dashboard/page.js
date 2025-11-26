@@ -10,12 +10,13 @@ export const metadata = {
 }
 
 export default async function Page() {
-  const user = await getUser()
-  const onTimeSubmitPercentages = await getOnTimeSubmitPercentages()
+  // const user = await getUser()
+  // const onTimeSubmitPercentages = await getOnTimeSubmitPercentages()
 
   return (
     <div>
-      <MainLayout.Header>
+      Page empty.
+      {/* <MainLayout.Header>
         <div>{user?.name}'s Dashboard</div>
       </MainLayout.Header>
 
@@ -39,7 +40,7 @@ export default async function Page() {
             </div>
           </div>
         </div>
-      </MainLayout.Body>
+      </MainLayout.Body> */}
     </div>
   )
 }

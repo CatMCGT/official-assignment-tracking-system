@@ -38,8 +38,6 @@ export async function createSubject(additionalData, prevState, formData) {
             .toString()
             .substring(2)}`
 
-    console.log(schoolYear)
-
     if (subjectType === 'grade') {
       const grade = formData.get('grade')
       const block = formData.get('block')
