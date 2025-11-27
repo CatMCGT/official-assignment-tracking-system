@@ -29,7 +29,7 @@ export async function getAllSubjects() {
         t.name AS teacher_name,
         m.id AS monitor_id,
         m.name AS monitor_name,
-        deactivated_date,
+        s.deactivated_date,
         COALESCE(
           JSON_AGG(
             JSON_BUILD_OBJECT('id', st.id, 'name', st.name)
@@ -43,7 +43,7 @@ export async function getAllSubjects() {
         LEFT JOIN student_subject ss ON ss.subject_id = s.id
         LEFT JOIN students st ON ss.student_id = st.id
       GROUP BY
-        s.id, t.id, t.name, m.id, m.name, deactivated_date
+        s.id, t.id, t.name, m.id, m.name, s.deactivated_date
     `;
 
     const subjects = await Promise.all(

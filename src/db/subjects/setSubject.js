@@ -1,14 +1,14 @@
-'use server'
+"use server";
 
-import { neon } from '@neondatabase/serverless'
-import { revalidatePath } from 'next/cache'
-import { requireAdmin } from '@/actions/requireAdmin'
+import { neon } from "@neondatabase/serverless";
+import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/actions/requireAdmin";
 
-const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+const sql = neon(`${process.env.STORE_DATABASE_URL}`);
 
 export async function updateSubjects(updatedSubjectsObj) {
   try {
-    await requireAdmin()
+    await requireAdmin();
 
     await Promise.all(
       updatedSubjectsObj.map(async (subject) => {
@@ -21,18 +21,18 @@ export async function updateSubjects(updatedSubjectsObj) {
                 deactivated_date = ${subject.deactivated_date}
             WHERE
                 id = ${subject.id}
-        `
+        `;
       })
-    )
+    );
 
-    revalidatePath('/admin/subject')
+    revalidatePath("/admin/subject");
   } catch (err) {
-    console.error('Error updating subject:', err)
+    console.error("Error updating subject:", err);
 
     return {
       success: false,
       message: `Failed to update subject. Please check the developer console.`,
-    }
+    };
   }
 }
 
@@ -41,24 +41,24 @@ export async function updateSubjectStudents(
   removedEnrolled = []
 ) {
   try {
-    await requireAdmin()
+    await requireAdmin();
 
-    const conn = neon(`${process.env.STORE_DATABASE_URL}`)
+    const sql = neon(`${process.env.STORE_DATABASE_URL}`);
 
-    await conn.begin(async (sql) => {
-      for (const item of newlyEnrolled) {
-        const { subjectId, studentId } = item
+    await Promise.all(
+      newlyEnrolled.map(async (item) => {
+        const { subjectId, studentId } = item;
 
         await sql`
             INSERT INTO
                 student_subject (student_id, subject_id)
             VALUES
                 (${studentId}, ${subjectId});
-        `
-      }
+        `;
+      }),
 
-      for (const item of removedEnrolled) {
-        const { subjectId, studentId } = item
+      removedEnrolled.map(async (item) => {
+        const { subjectId, studentId } = item;
 
         await sql`
             DELETE FROM
@@ -66,7 +66,7 @@ export async function updateSubjectStudents(
             WHERE
                 student_id = ${studentId} AND
                 subject_id = ${subjectId};
-        `
+        `;
 
         await sql`
             UPDATE
@@ -76,18 +76,18 @@ export async function updateSubjectStudents(
             WHERE
                 id = ${subjectId} AND
                 monitor_id = ${studentId}
-        `
-      }
-    })
+        `;
+      })
+    );
 
-    revalidatePath('/admin/user')
+    revalidatePath("/admin/user");
   } catch (err) {
-    console.error('Error updating subject students:', err)
+    console.error("Error updating subject students:", err);
 
     return {
       success: false,
       message: `Failed to update subject students. Please check the developer console.`,
-    }
+    };
   }
 }
 
@@ -96,7 +96,7 @@ export async function updateSubjectTeachers(
   removedTaught = []
 ) {
   try {
-    await requireAdmin()
+    await requireAdmin();
 
     await Promise.all(
       newlyTaught.map(async ({ subjectId, teacherId }) => {
@@ -107,7 +107,7 @@ export async function updateSubjectTeachers(
               teacher_id = ${teacherId}
             WHERE
               id = ${subjectId};
-        `
+        `;
       }),
       removedTaught.map(async ({ subjectId, teacherId }) => {
         await sql`
@@ -118,17 +118,17 @@ export async function updateSubjectTeachers(
             WHERE
               id = ${subjectId} AND
               teacher_id = ${teacherId};
-        `
+        `;
       })
-    )
+    );
 
-    revalidatePath('/admin/user')
+    revalidatePath("/admin/user");
   } catch (err) {
-    console.error('Error updating subject teachers:', err)
+    console.error("Error updating subject teachers:", err);
 
     return {
       success: false,
       message: `Failed to update subject teachers. Please check the developer console.`,
-    }
+    };
   }
 }

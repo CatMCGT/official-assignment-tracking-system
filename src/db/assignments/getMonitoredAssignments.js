@@ -1,19 +1,19 @@
-'use server'
+"use server";
 
-import { neon } from '@neondatabase/serverless'
-import { verifySession } from '@/actions/userSession'
-import { isSubjectAdmin } from '../subjects/isSubjectAdmin'
+import { neon } from "@neondatabase/serverless";
+import { verifySession } from "@/actions/userSession";
+import { isSubjectAdmin } from "../subjects/isSubjectAdmin";
 
 export async function getMonitoredAssignments(subjectId) {
   try {
-    const session = await verifySession()
-    if (!session) return null
+    const session = await verifySession();
+    if (!session) return null;
 
-    const isAdminOfSubject = await isSubjectAdmin(subjectId, session.userId)
+    const isAdminOfSubject = await isSubjectAdmin(subjectId, session.userId);
     if (!isAdminOfSubject)
-      throw new Error('User is not authorised to get monitored assignments.')
+      throw new Error("User is not authorised to get monitored assignments.");
 
-    const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+    const sql = neon(`${process.env.STORE_DATABASE_URL}`);
     const assignments = await sql`
       SELECT
         s.id AS subject_id,
@@ -46,7 +46,6 @@ export async function getMonitoredAssignments(subjectId) {
       LEFT JOIN teachers t ON t.id = s.teacher_id
       LEFT JOIN students m ON m.id = s.monitor_id
       LEFT JOIN student_assignment sa ON sa.assignment_id = a.id
-      LEFT JOIN student_subject ss ON ss.subject_id = s.id
       LEFT JOIN students st ON st.id = sa.student_id
       WHERE s.id = ${subjectId}
       GROUP BY
@@ -54,10 +53,10 @@ export async function getMonitoredAssignments(subjectId) {
         a.assigned_date, a.due_date, a.grade,
         t.id, t.name, m.id, m.name
       ORDER BY a.due_date DESC
-    `
+    `;
 
-    return assignments
+    return assignments;
   } catch (err) {
-    console.error('Error getting monitored assignments:', err)
+    console.error("Error getting monitored assignments:", err);
   }
 }

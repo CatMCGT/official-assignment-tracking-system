@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import Icon from '@/components/Icon'
+import Icon from "@/components/Icon";
 import {
   ArrowPathIcon,
   ArrowRightIcon,
   ChartBarIcon,
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
-} from '@heroicons/react/24/outline'
-import clsx from 'clsx'
-import { useState } from 'react'
-import BulkActions from './BulkActions'
-import formatDate from '@/utils/formatDate'
-import EditSubject from './EditSubject'
-import { updateSubjects } from '@/db/subjects/setSubject'
+} from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { useState } from "react";
+import BulkActions from "./BulkActions";
+import formatDate from "@/utils/formatDate";
+import EditSubject from "./EditSubject";
+import { updateSubjects } from "@/db/subjects/setSubject";
 
 export default function AllSubjects({ allSubjects, allUsers }) {
-  const [search, setSearch] = useState('')
-  const [selectedSubjectIds, setSelectedSubjectIds] = useState([])
-  const [updatedSubjects, setUpdatedSubjects] = useState(allSubjects)
-  const [isEdited, setIsEdited] = useState(false)
-  const [isPendingSave, setIsPendingSave] = useState(false)
+  const [search, setSearch] = useState("");
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
+  const [updatedSubjects, setUpdatedSubjects] = useState(allSubjects);
+  const [isEdited, setIsEdited] = useState(false);
+  const [isPendingSave, setIsPendingSave] = useState(false);
 
-  const [inspectingSubject, setInspectingSubject] = useState(null)
+  const [inspectingSubject, setInspectingSubject] = useState(null);
 
   const filteredSubjects = search
     ? updatedSubjects?.filter((subject) => {
@@ -36,32 +36,32 @@ export default function AllSubjects({ allSubjects, allUsers }) {
           subject.teacher_name?.toLowerCase().includes(search.toLowerCase()) ||
           subject.monitor_id?.toLowerCase().includes(search.toLowerCase()) ||
           subject.monitor_name?.toLowerCase().includes(search.toLowerCase())
-        )
+        );
       })
-    : updatedSubjects
+    : updatedSubjects;
 
   function isSubjectEdited(subject) {
-    const originalSubject = allSubjects.find((s) => s.id === subject.id)
-    return originalSubject.deactivated_date !== subject.deactivated_date
+    const originalSubject = allSubjects.find((s) => s.id === subject.id);
+    return originalSubject.deactivated_date !== subject.deactivated_date;
   }
 
   async function handleSubmit() {
     try {
-      setIsPendingSave(true)
+      setIsPendingSave(true);
       await updateSubjects(
         updatedSubjects.filter((subject) => isSubjectEdited(subject))
-      )
-      setIsEdited(false)
+      );
+      setIsEdited(false);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setIsPendingSave(false)
+      setIsPendingSave(false);
     }
   }
 
   async function handleUndo() {
-    setUpdatedSubjects(allSubjects)
-    setIsEdited(false)
+    setUpdatedSubjects(allSubjects);
+    setIsEdited(false);
   }
 
   return (
@@ -91,22 +91,6 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                 </div>
               </div>
 
-              <div className="relative">
-                <button type="button">
-                  <Icon tooltip="Statistics" border>
-                    <ChartBarIcon className="text-text-weak size-5" />
-                  </Icon>
-                </button>
-              </div>
-
-              <div className="relative">
-                <button type="button">
-                  <Icon tooltip="More actions">
-                    <EllipsisVerticalIcon className="text-text-weak size-5" />
-                  </Icon>
-                </button>
-              </div>
-
               {isEdited && !isPendingSave && (
                 <button
                   className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
@@ -119,8 +103,8 @@ export default function AllSubjects({ allSubjects, allUsers }) {
               <button
                 type="submit"
                 className={clsx(
-                  'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
-                  isEdited ? 'bg-text-weak' : 'bg-text-weakest'
+                  "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
+                  isEdited ? "bg-text-weak" : "bg-text-weakest"
                 )}
                 disabled={isPendingSave || !isEdited}
                 onClick={handleSubmit}
@@ -128,7 +112,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                 {isPendingSave ? (
                   <ArrowPathIcon className="size-6 text-white" />
                 ) : (
-                  'Save'
+                  "Save"
                 )}
               </button>
             </div>
@@ -163,10 +147,10 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                   <div
                     key={subject.id}
                     className={clsx(
-                      'grid grid-cols-[1fr_4fr_2fr_5fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2',
-                      false
-                        ? 'border-green-500 bg-green-50 border-dashed'
-                        : 'border-stroke-weak'
+                      "grid grid-cols-[1fr_4fr_2fr_5fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2",
+                      isSubjectEdited(subject)
+                        ? "border-neutral-500 bg-neutral-50 border-dashed"
+                        : "border-stroke-weak"
                     )}
                   >
                     <input
@@ -177,9 +161,12 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                         if (selectedSubjectIds.includes(subject.id)) {
                           setSelectedSubjectIds((prev) =>
                             prev.filter((id) => id !== subject.id)
-                          )
+                          );
                         } else {
-                          setSelectedSubjectIds((prev) => [...prev, subject.id])
+                          setSelectedSubjectIds((prev) => [
+                            ...prev,
+                            subject.id,
+                          ]);
                         }
                       }}
                     />
@@ -216,7 +203,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                       </Icon>
                     </button>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -239,5 +226,5 @@ export default function AllSubjects({ allSubjects, allUsers }) {
         />
       )}
     </div>
-  )
+  );
 }

@@ -1,13 +1,12 @@
-'use client'
+import MainLayout from "../../layout";
+import CreateSubject from "./CreateSubject";
+import AllSubjects from "./AllSubjects";
+import { getAllSubjects } from "@/db/subjects/getAllSubjects";
+import { getAllUsers } from "@/db/users/getAllUsers";
 
-import { useContext } from 'react'
-import MainLayout from '../../layout'
-import CreateSubject from './CreateSubject'
-import AllSubjects from './AllSubjects'
-import { AdminContext } from '@/hooks/useAdmin'
-
-export default function Page() {
-  const { allUsers, allSubjects } = useContext(AdminContext)
+export default async function Page() {
+  const allSubjects = await getAllSubjects();
+  const allUsers = await getAllUsers();
 
   return (
     <div>
@@ -21,5 +20,5 @@ export default function Page() {
         <AllSubjects allUsers={allUsers} allSubjects={allSubjects} />
       </div>
     </div>
-  )
+  );
 }

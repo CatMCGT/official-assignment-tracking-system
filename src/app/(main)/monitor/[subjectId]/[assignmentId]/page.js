@@ -1,29 +1,29 @@
-import { ClockIcon } from '@heroicons/react/24/outline'
-import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
-import getSubjectInfo from '@/utils/getSubjectInfo'
-import formatDate from '@/utils/formatDate'
-import AssignmentStatus from './AssignmentStatus'
-import { Suspense } from 'react'
-import Loading from './loading'
-import { getUser } from '@/db/users/getUser'
-import Charts from './Charts'
+import { ClockIcon } from "@heroicons/react/24/outline";
+import { getMonitoredAssignments } from "@/db/assignments/getMonitoredAssignments";
+import getSubjectInfo from "@/utils/getSubjectInfo";
+import formatDate from "@/utils/formatDate";
+import AssignmentStatus from "./AssignmentStatus";
+import { Suspense } from "react";
+import Loading from "./loading";
+import { getUser } from "@/db/users/getUser";
+import Charts from "./Charts";
 
 export async function generateMetadata({ params }) {
-  const { subjectId, assignmentId } = await params
+  const { subjectId, assignmentId } = await params;
 
   return {
     title: `${subjectId} · Assignment #${assignmentId}`,
-  }
+  };
 }
 
 export default async function Page({ params }) {
-  const { subjectId, assignmentId } = await params
-  const subjectInfo = getSubjectInfo(subjectId)
-  const subjectAssignments = await getMonitoredAssignments(subjectId)
+  const { subjectId, assignmentId } = await params;
+  const subjectInfo = getSubjectInfo(subjectId);
+  const subjectAssignments = await getMonitoredAssignments(subjectId);
   const assignment = subjectAssignments?.filter(
     (a) => a.assignment_id == assignmentId
-  )[0]
-  const user = await getUser()
+  )[0];
+  const user = await getUser();
 
   return (
     <Suspense fallback={<Loading />}>
@@ -51,8 +51,8 @@ export default async function Page({ params }) {
           <hr className="text-stroke-weak mt-2 mb-5"></hr>
         </div>
 
-        {user.role === 'teacher' && (
-          <div className='mb-4'>
+        {user.role === "teacher" && (
+          <div className="mb-4">
             <Charts assignment={assignment} />
           </div>
         )}
@@ -64,5 +64,5 @@ export default async function Page({ params }) {
         />
       </div>
     </Suspense>
-  )
+  );
 }

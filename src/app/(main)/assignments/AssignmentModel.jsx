@@ -1,20 +1,19 @@
-'use client'
+"use client";
 
-import Icon from '@/components/Icon'
+import Icon from "@/components/Icon";
 import {
   XMarkIcon,
   ClockIcon,
   AcademicCapIcon,
   PencilSquareIcon,
-} from '@heroicons/react/24/outline'
+} from "@heroicons/react/24/outline";
 
-import formatDate from '@/utils/formatDate'
-import Properties from '@/components/Properties'
-import { useEffect, useState } from 'react'
-import Skeleton from '@/components/Skeleton'
+import formatDate from "@/utils/formatDate";
+import Properties from "@/components/Properties";
+import { useEffect, useState } from "react";
+import Skeleton from "@/components/Skeleton";
 
 export default function AssignmentModel({ assignment, onClose }) {
-
   return (
     <div className="border-l-1 border-l-stroke-weak bg-white z-10 absolute right-0 h-screen top-0 px-11 py-15">
       <div className="flex flex-row justify-between items-start gap-2 mb-4">
@@ -78,13 +77,13 @@ export default function AssignmentModel({ assignment, onClose }) {
       <h3 className="font-semibold text-lg mb-2">Description</h3>
       <p className="text-text-weak">{assignment?.assignment_description}</p>
 
-      {assignment.grade !== null && assignment.feedback !== null && (
+      {(assignment.grade !== null || assignment.feedback !== null) && (
         <div className="border-1 border-stroke-weak px-5 py-4 mx-[-12px] mt-16 rounded">
           {assignment.grade !== null && (
             <div className="flex flex-row justify-between items-center">
               <h3 className="font-semibold text-lg">Grade</h3>
               <p>
-                {assignment.grade !== '' ? assignment.grade : '-'} /{' '}
+                {assignment.grade !== "" ? assignment.grade : "-"} /{" "}
                 {assignment.assignment_grade}
               </p>
             </div>
@@ -101,5 +100,5 @@ export default function AssignmentModel({ assignment, onClose }) {
         </div>
       )}
     </div>
-  )
+  );
 }

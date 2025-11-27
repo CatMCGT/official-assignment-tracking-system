@@ -1,3 +1,5 @@
+"use client";
+
 import Radio from "@/components/Radio";
 import Select from "@/components/Select";
 import Form from "next/form";

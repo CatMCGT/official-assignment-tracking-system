@@ -1,49 +1,57 @@
-import { ArrowLeftIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
-import { useState, useActionState } from 'react'
-import Select from '@/components/Select'
-import toTitleCase from '@/utils/toTitleCase'
-import Icon from '@/components/Icon'
-import { setUsers } from '@/db/users/setUsers'
-import { useRouter } from 'next/navigation'
+import { ArrowLeftIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { useState, useActionState } from "react";
+import Select from "@/components/Select";
+import toTitleCase from "@/utils/toTitleCase";
+import Icon from "@/components/Icon";
+import { setUsers } from "@/db/users/setUsers";
+import { useRouter } from "next/navigation";
 import {
   updateSubjectStudents,
   updateSubjectTeachers,
-} from '@/db/subjects/setSubject'
+} from "@/db/subjects/setSubject";
 
 export default function EditUser({ user, allSubjects, setInspectingUser }) {
-  const router = useRouter()
+  const router = useRouter();
   const originalEnrolledIds = allSubjects
-    .filter((subject) => subject.students.includes(user.id))
-    .map((s) => s.id)
+    .filter((subject) => subject.students.map((s) => s.id).includes(user.id))
+    .map((s) => s.id);
+
+  console.log("allsubjects", allSubjects);
+
+  console.log("original", originalEnrolledIds);
 
   const [enrolledSubjectIds, setEnrolledSubjectIds] =
-    useState(originalEnrolledIds)
+    useState(originalEnrolledIds);
+
+  console.log(enrolledSubjectIds);
 
   const originalTaught = allSubjects.filter(
     (subject) => subject.teacher_id === user.id
-  )
-  const originalTaughtIds = originalTaught.map((s) => s.id)
-  const [taughtSubjectIds, setTaughtSubjectIds] = useState(originalTaughtIds)
+  );
+  const originalTaughtIds = originalTaught.map((s) => s.id);
+  const [taughtSubjectIds, setTaughtSubjectIds] = useState(
+    allSubjects.filter((s) => originalTaughtIds.includes(s.id))
+  );
 
   const availableSubjectsToTeach = allSubjects.filter(
     (s) => s.teacher_id === null
-  )
+  );
 
-  const originalName = user.name
-  const [updatedName, setUpdatedName] = useState(originalName)
+  const originalName = user.name;
+  const [updatedName, setUpdatedName] = useState(originalName);
 
   const isEdited =
-    (user.role === 'student'
+    (user.role === "student"
       ? originalEnrolledIds.toString() !== enrolledSubjectIds.toString()
-      : user.role === 'teacher'
+      : user.role === "teacher"
       ? originalTaughtIds.toString() !== taughtSubjectIds.toString()
-      : false) || originalName !== updatedName
-  const [isPending, setIsPending] = useState(false)
+      : false) || originalName !== updatedName;
+  const [isPending, setIsPending] = useState(false);
 
   async function handleSubmit() {
     try {
-      setIsPending(true)
+      setIsPending(true);
 
       if (originalName !== updatedName) {
         await setUsers([
@@ -51,29 +59,32 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
             ...user,
             name: updatedName,
           },
-        ])
+        ]);
       }
 
-      if (user.role === 'student') {
+      console.log(
+        enrolledSubjectIds.filter((id) => !originalEnrolledIds.includes(id))
+      );
+      if (user.role === "student") {
         await updateSubjectStudents(
           enrolledSubjectIds
             .filter((id) => !originalEnrolledIds.includes(id))
-            .map((item) => {
+            .map((subjectId) => {
               return {
-                subjectId: item.id,
+                subjectId: subjectId,
                 studentId: user.id,
-              }
+              };
             }),
           originalEnrolledIds
             .filter((id) => !enrolledSubjectIds.includes(id))
-            .map((item) => {
+            .map((subjectId) => {
               return {
-                subjectId: item.id,
+                subjectId: subjectId,
                 studentId: user.id,
-              }
+              };
             })
-        )
-      } else if (user.role === 'teacher') {
+        );
+      } else if (user.role === "teacher") {
         await updateSubjectTeachers(
           taughtSubjectIds
             .filter((id) => !originalTaughtIds.includes(id))
@@ -81,7 +92,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
               return {
                 subjectId: item.id,
                 teacherId: user.id,
-              }
+              };
             }),
           originalTaughtIds.filter(
             (id) =>
@@ -89,26 +100,26 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
                 return {
                   subjectId: item.id,
                   teacherId: user.id,
-                }
+                };
               })
           )
-        )
+        );
       }
 
-      router.refresh()
+      router.refresh();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setIsPending(false)
+      setIsPending(false);
     }
   }
 
   async function handleUndo() {
-    setUpdatedName(originalName)
-    if (user.role === 'student') {
-      setEnrolledSubjectIds(originalEnrolledIds)
-    } else if (user.role === 'teacher') {
-      setTaughtSubjectIds(originalTaughtIds)
+    setUpdatedName(originalName);
+    if (user.role === "student") {
+      setEnrolledSubjectIds(originalEnrolledIds);
+    } else if (user.role === "teacher") {
+      setTaughtSubjectIds(originalTaughtIds);
     }
   }
 
@@ -167,7 +178,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
           />
         </div> */}
 
-          {user.role === 'student' && (
+          {user.role === "student" && (
             <div className="flex flex-col gap-1">
               <label htmlFor="subjects">Enrolled Subjects</label>
               <Select
@@ -182,7 +193,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
             </div>
           )}
 
-          {user.role === 'teacher' && (
+          {user.role === "teacher" && (
             <div className="flex flex-col gap-1">
               <label htmlFor="subjects">Taught Subjects</label>
               <Select
@@ -221,8 +232,8 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
             <button
               type="submit"
               className={clsx(
-                'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit',
-                isEdited ? 'bg-text-weak' : 'bg-text-weakest'
+                "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit",
+                isEdited ? "bg-text-weak" : "bg-text-weakest"
               )}
               disabled={isPending || !isEdited}
               onClick={handleSubmit}
@@ -230,12 +241,12 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
               {isPending ? (
                 <ArrowPathIcon className="size-6 text-white" />
               ) : (
-                'Save'
+                "Save"
               )}
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
