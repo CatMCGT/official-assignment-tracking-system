@@ -10,7 +10,6 @@ import {
 
 import formatDate from "@/utils/formatDate";
 import Properties from "@/components/Properties";
-import { useEffect, useState } from "react";
 import Skeleton from "@/components/Skeleton";
 
 export default function AssignmentModel({ assignment, onClose }) {
