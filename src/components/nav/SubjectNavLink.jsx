@@ -19,7 +19,10 @@ export default function SubjectNavLink({ subject, action }) {
       href={subjectPathname}
       className={clsx('nav-tab', pathname === subjectPathname ? 'active' : '')}
     >
-      <BookmarkIcon className="size-6 text-text-weaker" />
+      <BookmarkIcon
+        className="size-6 text-text-weaker"
+        style={{ color: subjectInfo.color }}
+      />
       <p
         className={clsx(
           'font-bold mr-1 ml-3',
@@ -28,7 +31,6 @@ export default function SubjectNavLink({ subject, action }) {
       >
         {subjectInfo.grade && `G${subjectInfo.grade}`}{' '}
         {subjectInfo.block && `(block ${subjectInfo.block})`}
-        
         {subjectInfo.class && subjectInfo.class.toUpperCase()}
         {' | '}
         {subjectInfo.name}

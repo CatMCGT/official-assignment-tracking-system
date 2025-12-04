@@ -155,7 +155,10 @@ export default async function Page({ params }) {
                       <div className="bg-white border-1 border-stroke-weak px-6 py-4 rounded cursor-pointer hover:border-text-weakest transition-colors">
                         <div className="flex flex-row gap-3">
                           <p className="font-bold">{a.assignment_title}</p>
-                          <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
+                          <div
+                            className="px-5 py-[5px] rounded-full w-fit flex justify-center items-center uppercase text-xs font-semibold"
+                            style={{ backgroundColor: a.subjectInfo.color }}
+                          >
                             {subjectInfo.name}
                           </div>
                         </div>
