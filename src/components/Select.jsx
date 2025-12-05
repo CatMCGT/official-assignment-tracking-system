@@ -58,7 +58,7 @@ export default function Select({
       </div>
 
       {isMenuOpened && (
-        <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-12 z-10 w-64">
+        <div className="border-1 border-stroke-weak bg-white py-2 px-2 rounded absolute left-0 top-12 z-10 w-full">
           {allowSearch && (
             <input
               type="text"
@@ -100,7 +100,7 @@ export default function Select({
                   }}
                 >
                   <div className="flex flex-row gap-2 items-end">
-                    <p className="truncate max-w-90">{option.name}</p>
+                    <p className="text-left">{option.name}</p>
                     {showId && (
                       <p className="text-sm text-text-weak">{option.id}</p>
                     )}
