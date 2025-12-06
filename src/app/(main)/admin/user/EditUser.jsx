@@ -17,14 +17,8 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
     .filter((subject) => subject.students.map((s) => s.id).includes(user.id))
     .map((s) => s.id);
 
-  console.log("allsubjects", allSubjects);
-
-  console.log("original", originalEnrolledIds);
-
   const [enrolledSubjectIds, setEnrolledSubjectIds] =
     useState(originalEnrolledIds);
-
-  console.log(enrolledSubjectIds);
 
   const originalTaught = allSubjects.filter(
     (subject) => subject.teacher_id === user.id
@@ -62,9 +56,6 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
         ]);
       }
 
-      console.log(
-        enrolledSubjectIds.filter((id) => !originalEnrolledIds.includes(id))
-      );
       if (user.role === "student") {
         await updateSubjectStudents(
           enrolledSubjectIds
