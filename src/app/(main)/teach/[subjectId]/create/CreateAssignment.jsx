@@ -60,7 +60,10 @@ export default function CreateAssignment({ subject, subjectInfo }) {
       <div className="flex flex-col gap-10 justify-between items-start">
         <div className="flex flex-col gap-4 w-2xl">
           <div className="flex flex-row gap-3 items-center">
-            <div className="px-5 py-[5px] rounded-full bg-[#FFCACF] w-fit flex justify-center items-center uppercase text-xs font-semibold">
+            <div
+              className="px-5 py-[5px] rounded-full w-fit flex justify-center items-center uppercase text-xs font-semibold"
+              style={{ backgroundColor: subjectInfo?.color }}
+            >
               {subjectInfo?.name}
             </div>
           </div>

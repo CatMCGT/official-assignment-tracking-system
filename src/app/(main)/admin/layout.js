@@ -8,5 +8,5 @@ export default async function Layout({ children }) {
     return <p>You do not have the rights to access this page.</p>
   }
 
-  return {children}
+  return <div>{children}</div>
 }

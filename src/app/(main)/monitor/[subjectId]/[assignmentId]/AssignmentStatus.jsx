@@ -47,7 +47,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
   const viewOptions = [
     { id: 'all', name: 'All' },
     { id: 'late', name: 'Late' },
-    { id: 'submitted', name: 'On-time' },
+    { id: 'submitted', name: 'Submitted' },
     { id: 'absent', name: 'Absent' },
   ]
 

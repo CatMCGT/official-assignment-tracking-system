@@ -1,3 +1,5 @@
+"use server"
+
 import { getAllSubjects } from "@/db/subjects/getAllSubjects";
 import { getAllUsers } from "@/db/users/getAllUsers";
 import MainLayout from "../../layout";

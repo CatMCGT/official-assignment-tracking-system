@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import formatDate from "@/utils/formatDate";
-import toTitleCase from "@/utils/toTitleCase";
+import { useState } from 'react'
+import formatDate from '@/utils/formatDate'
+import toTitleCase from '@/utils/toTitleCase'
 import {
   MagnifyingGlassIcon,
   ArrowPathIcon,
   ArrowRightIcon,
-} from "@heroicons/react/24/outline";
-import Icon from "@/components/Icon";
-import BulkActions from "./BulkActions";
-import clsx from "clsx";
-import { setUsers } from "@/db/users/setUsers";
-import EditUser from "./EditUser";
+} from '@heroicons/react/24/outline'
+import Icon from '@/components/Icon'
+import BulkActions from './BulkActions'
+import clsx from 'clsx'
+import { setUsers } from '@/db/users/setUsers'
+import EditUser from './EditUser'
 
 export default function AllUsers({ allUsers, allSubjects }) {
-  const [updatedUsers, setUpdatedUsers] = useState(allUsers);
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
-  const [search, setSearch] = useState("");
-  const [isEdited, setIsEdited] = useState(false);
-  const [isPendingSave, setIsPendingSave] = useState(false);
+  const [updatedUsers, setUpdatedUsers] = useState(allUsers)
+  const [selectedUserIds, setSelectedUserIds] = useState([])
+  const [search, setSearch] = useState('')
+  const [isEdited, setIsEdited] = useState(false)
+  const [isPendingSave, setIsPendingSave] = useState(false)
 
-  const [inspectingUser, setInspectingUser] = useState(null);
+  const [inspectingUser, setInspectingUser] = useState(null)
 
   const filteredUsers = search
     ? updatedUsers.filter((user) => {
@@ -32,36 +32,34 @@ export default function AllUsers({ allUsers, allSubjects }) {
             .toLowerCase()
             .includes(search.toLowerCase()) ||
           user.role.toLowerCase().includes(search.toLowerCase())
-        );
+        )
       })
-    : updatedUsers;
+    : updatedUsers
 
   function isUserEdited(user) {
-    const originalUser = allUsers.find((u) => u.id === user.id);
+    const originalUser = allUsers.find((u) => u.id === user.id)
     return (
-      originalUser.id !== user.id ||
       originalUser.name !== user.name ||
-      originalUser.password !== user.password ||
       originalUser.role !== user.role ||
       originalUser.deactivated_date !== user.deactivated_date
-    );
+    )
   }
 
   async function handleSubmit() {
     try {
-      setIsPendingSave(true);
-      await setUsers(updatedUsers.filter((user) => isUserEdited(user)));
-      setIsEdited(false);
+      setIsPendingSave(true)
+      await setUsers(updatedUsers.filter((user) => isUserEdited(user)))
+      setIsEdited(false)
     } catch (err) {
-      console.error(err);
+      console.error(err)
     } finally {
-      setIsPendingSave(false);
+      setIsPendingSave(false)
     }
   }
 
   async function handleUndo() {
-    setUpdatedUsers(allUsers);
-    setIsEdited(false);
+    setUpdatedUsers(allUsers)
+    setIsEdited(false)
   }
 
   return (
@@ -104,8 +102,8 @@ export default function AllUsers({ allUsers, allSubjects }) {
               <button
                 type="submit"
                 className={clsx(
-                  "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
-                  isEdited ? "bg-text-weak" : "bg-text-weakest"
+                  'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
+                  isEdited ? 'bg-text-weak' : 'bg-text-weakest'
                 )}
                 disabled={isPendingSave || !isEdited}
                 onClick={handleSubmit}
@@ -113,7 +111,7 @@ export default function AllUsers({ allUsers, allSubjects }) {
                 {isPendingSave ? (
                   <ArrowPathIcon className="size-6 text-white" />
                 ) : (
-                  "Save"
+                  'Save'
                 )}
               </button>
             </div>
@@ -146,10 +144,10 @@ export default function AllUsers({ allUsers, allSubjects }) {
                   <div
                     key={user.id}
                     className={clsx(
-                      "grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2",
+                      'grid grid-cols-[1fr_6fr_3fr_3fr_5fr_3fr_1fr] items-center border-1 rounded px-3 py-2',
                       isUserEdited(user)
-                        ? "border-neutral-500 bg-neutral-50 border-dashed"
-                        : "border-stroke-weak"
+                        ? 'border-neutral-500 bg-neutral-50 border-dashed'
+                        : 'border-stroke-weak'
                     )}
                   >
                     <input
@@ -160,9 +158,9 @@ export default function AllUsers({ allUsers, allSubjects }) {
                         if (selectedUserIds.includes(user.id)) {
                           setSelectedUserIds((prev) =>
                             prev.filter((id) => id !== user.id)
-                          );
+                          )
                         } else {
-                          setSelectedUserIds((prev) => [...prev, user.id]);
+                          setSelectedUserIds((prev) => [...prev, user.id])
                         }
                       }}
                     />
@@ -180,14 +178,10 @@ export default function AllUsers({ allUsers, allSubjects }) {
                       )}
                     </div>
                     <p className="text-text-weak text-sm">#{user.id}</p>
-                    {true ? (
-                      <p className="text-text-weaker text-sm">
-                        {" "}
-                        &#8226; &#8226; &#8226; &#8226;
-                      </p>
-                    ) : (
-                      <p>{user.password}</p>
-                    )}
+                    <p className="text-text-weaker text-sm">
+                      {' '}
+                      &#8226; &#8226; &#8226; &#8226;
+                    </p>
                     <p className="text-sm">{formatDate(user.reg_date)}</p>
                     <p className="text-sm">{toTitleCase(user.role)}</p>
                     <button onClick={() => setInspectingUser(user)}>
@@ -196,7 +190,7 @@ export default function AllUsers({ allUsers, allSubjects }) {
                       </Icon>
                     </button>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -218,5 +212,5 @@ export default function AllUsers({ allUsers, allSubjects }) {
         />
       )}
     </div>
-  );
+  )
 }

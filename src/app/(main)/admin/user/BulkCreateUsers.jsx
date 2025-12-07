@@ -10,26 +10,22 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 export default function BulkCreateUsers() {
   const [usersArr, setUsersCSV] = useState([])
   const [createUsersState, createUsersAction, isPending] = useActionState(
-    bulkCreateUsers.bind(null, usersArr)
+    bulkCreateUsers.bind(null, usersArr),
+    [usersArr]
   )
 
   function handleCSVChange(e) {
-    const files = Array.from(e.target.files)
-    const csvUrl = files.map((file) => URL.createObjectURL(file))[0]
-
-    fetch(csvUrl)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res)
-        }
-        return res.text()
-      })
-      .then((csvText) => {
-        setUsersCSV(Papa.parse(csvText, { header: true }).data)
-      })
-      .catch((error) => {
-        console.error('Error fetching CSV:', error)
-      })
+    const file = e.target.files[0]
+    if (!file) return
+    Papa.parse(file, {
+      header: true,
+      complete: (res) => {
+        setUsersCSV(res.data)
+      },
+      error: (err) => {
+        console.error(err)
+      },
+    })
   }
 
   useEffect(() => {
@@ -50,9 +46,8 @@ export default function BulkCreateUsers() {
           type="file"
           name="csvFileInput"
           accept=".csv"
-          onInput={handleCSVChange}
+          onChange={handleCSVChange}
           hidden
-          defaultValue=""
         />
 
         {usersArr.length > 0 ? (
