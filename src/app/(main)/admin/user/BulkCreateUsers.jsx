@@ -40,7 +40,14 @@ export default function BulkCreateUsers() {
         action={createUsersAction}
         className="border-1 border-stroke-weak rounded p-4"
       >
-        <h2 className="text-lg font-bold mb-3">Create Users by CSV</h2>
+        <div className="mb-3">
+          <h2 className="text-lg font-bold">Create Users by CSV</h2>
+          <p className="text-sm tracking-wide w-64 text-justify">
+            The first row in the CSV file serves as headers{' '}
+            <b>(id, name, password, role)</b>. Passwords are automatically
+            hashed on the server side. The delimiter is a comma <b>(,)</b>.
+          </p>
+        </div>
         <input
           id="csvFileInput"
           type="file"
