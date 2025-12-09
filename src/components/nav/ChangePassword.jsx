@@ -134,7 +134,7 @@ export default function ChangePassword({
                   {securityQuestion?.data.name}
                 </label>
                 <input
-                  type="text"
+                  type="password"
                   className="p-3 border-1 border-stroke-weak rounded-xs w-full placeholder:text-text-weaker text-text-strong focus:outline-1 focus:outline-gray-300"
                   placeholder="Security Question Answer"
                   id="securityAns"
@@ -186,7 +186,7 @@ export default function ChangePassword({
               </label>
               <p className="text-sm">Please keep your answer confidential.</p>
               <input
-                type="text"
+                type="password"
                 className="p-3 border-1 border-stroke-weak rounded-xs w-full placeholder:text-text-weaker text-text-strong focus:outline-1 focus:outline-gray-300"
                 placeholder="Security Question Answer"
                 id="securityAns"
@@ -198,7 +198,11 @@ export default function ChangePassword({
             <button
               type="submit"
               className="px-4 py-[4px] mt-4 text-white bg-text-weak rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit"
-              disabled={isPendingSet}
+              disabled={
+                isPendingSet ||
+                selectedSecurityQuestion === '' ||
+                selectedSecurityQuestion === null
+              }
             >
               {isPendingSet ? (
                 <ArrowPathIcon className="size-6 text-white" />

@@ -1,21 +1,21 @@
-"use server";
+'use server'
 
-import { verifySession } from "@/actions/userSession";
-import { getUser } from "../users/getUser";
-import { neon } from "@neondatabase/serverless";
+import { verifySession } from '@/actions/userSession'
+import { getUser } from '../users/getUser'
+import { neon } from '@neondatabase/serverless'
 
 export async function createSubject(additionalData, prevState, formData) {
-  const sql = neon(`${process.env.STORE_DATABASE_URL}`);
-
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Session not found.");
+    const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+    
+    const session = await verifySession()
+    if (!session) throw new Error('Session not found.')
 
-    const user = await getUser();
-    const userRole = user.role;
+    const user = await getUser()
+    const userRole = user.role
 
-    if (userRole !== "admin")
-      throw new Error("User not authorised to create subject.");
+    if (userRole !== 'admin')
+      throw new Error('User not authorised to create subject.')
 
     const {
       subjectType,
@@ -23,11 +23,11 @@ export async function createSubject(additionalData, prevState, formData) {
       subjectTeacherId,
       subjectMonitorId,
       subjectStudentIds,
-    } = additionalData;
+    } = additionalData
 
-    let subjectId = "";
-    const dateNow = new Date();
-    const twoDigitYear = dateNow.getFullYear();
+    let subjectId = ''
+    const dateNow = new Date()
+    const twoDigitYear = dateNow.getFullYear()
     const schoolYear =
       dateNow.getMonth() >= 8 && dateNow.getMonth() <= 12
         ? `${twoDigitYear.toString().substring(2)}${(twoDigitYear + 1)
@@ -35,22 +35,22 @@ export async function createSubject(additionalData, prevState, formData) {
             .substring(2)}`
         : `${(twoDigitYear - 1).toString().substring(2)}${twoDigitYear
             .toString()
-            .substring(2)}`;
+            .substring(2)}`
 
-    if (subjectType === "grade") {
-      const grade = formData.get("grade");
-      const block = formData.get("block");
+    if (subjectType === 'grade') {
+      const grade = formData.get('grade')
+      const block = formData.get('block')
 
-      subjectId = `${schoolYear}-g${grade}-${subjectShorthand}-${block}`;
-    } else if (subjectType === "class") {
-      const subjectClass = formData.get("class");
+      subjectId = `${schoolYear}-g${grade}-${subjectShorthand}-${block}`
+    } else if (subjectType === 'class') {
+      const subjectClass = formData.get('class')
 
-      subjectId = `${schoolYear}-${subjectClass.toLowerCase()}-${subjectShorthand}`;
+      subjectId = `${schoolYear}-${subjectClass.toLowerCase()}-${subjectShorthand}`
     }
 
     const sqlValues = subjectStudentIds.map((id) => {
-      return { student_id: id, subject_id: subjectId };
-    });
+      return { student_id: id, subject_id: subjectId }
+    })
 
     await sql.transaction([
       sql`INSERT INTO subjects (id, teacher_id, monitor_id) VALUES (${subjectId}, ${subjectTeacherId}, ${subjectMonitorId});`,
@@ -62,13 +62,13 @@ export async function createSubject(additionalData, prevState, formData) {
         (elem->>'student_id')::TEXT,
         (elem->>'subject_id')::TEXT
       FROM json_array_elements(${JSON.stringify(sqlValues)}::json) AS elem;`,
-    ]);
+    ])
   } catch (err) {
-    console.error("Error creating subject:", err);
+    console.error('Error creating subject:', err)
 
     return {
       success: false,
       message: `Failed to create user. Please check the developer console.`,
-    };
+    }
   }
 }

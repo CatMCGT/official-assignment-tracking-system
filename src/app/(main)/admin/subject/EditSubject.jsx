@@ -36,7 +36,7 @@ export default function EditSubject({
         .map((item) => {
           return {
             subjectId: subject.id,
-            studentId: item.id,
+            studentId: item,
           }
         })
       const removedEnrolled = originalEnrolledIds
@@ -44,13 +44,13 @@ export default function EditSubject({
         .map((item) => {
           return {
             subjectId: subject.id,
-            studentId: item.id,
+            studentId: item,
           }
         })
-
-      if (newlyEnrolled.length > 0 && removedEnrolled.length > 0) {
+      if (newlyEnrolled.length > 0 || removedEnrolled.length > 0) {
         await updateSubjectStudents(newlyEnrolled, removedEnrolled)
       }
+      setInspectingSubject(null)
     } catch (err) {
       console.error(err)
     } finally {

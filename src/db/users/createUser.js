@@ -1,6 +1,6 @@
 'use server'
 
-import { Pool } from '@neondatabase/serverless'
+import { neon } from '@neondatabase/serverless'
 import { verifySession } from '@/actions/userSession'
 import bcrypt from 'bcrypt'
 import { getUser } from './getUser'
@@ -11,9 +11,6 @@ import {
 } from '../subjects/setSubject'
 
 export async function createUser(additionalData, prevState, formData) {
-  const pool = new Pool({ connectionString: process.env.STORE_DATABASE_URL })
-  const client = await pool.connect()
-
   try {
     const session = await verifySession()
     if (!session) throw new Error('Session not found.')
@@ -32,12 +29,6 @@ export async function createUser(additionalData, prevState, formData) {
 
     const { enrolledSubjectIds, taughtSubjectIds, role } = additionalData
 
-    await client.query('BEGIN')
-    await client.query(
-      'INSERT INTO users (id, name, password, role, reg_date, deactivated_date) VALUES ($1, $2, $3, $4, $5, null)',
-      [userId, name, hashedPassword, role, new Date().toISOString()]
-    )
-
     if (enrolledSubjectIds && enrolledSubjectIds.length > 0) {
       await updateSubjectStudents(
         enrolledSubjectIds.map((item) => {
@@ -47,7 +38,6 @@ export async function createUser(additionalData, prevState, formData) {
           }
         })
       )
-      await client.query('COMMIT')
     } else if (taughtSubjectIds && taughtSubjectIds.length > 0) {
       await updateSubjectTeachers(
         taughtSubjectIds.map((item) => {
@@ -57,10 +47,10 @@ export async function createUser(additionalData, prevState, formData) {
           }
         })
       )
-      await client.query('COMMIT')
-    } else {
-      await client.query('COMMIT')
     }
+
+    const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+    await sql`INSERT INTO users (id, name, password, role, reg_date, deactivated_date) VALUES (${userId}, ${name}, ${hashedPassword}, ${role}, ${new Date().toISOString()}, null)`
 
     revalidatePath('/admin/user')
 
@@ -71,13 +61,9 @@ export async function createUser(additionalData, prevState, formData) {
   } catch (err) {
     console.error('Error creating user:', err)
 
-    await client.query('ROLLBACK')
-
     return {
       success: false,
       message: `Failed to create user. Please check the developer console.`,
     }
-  } finally {
-    client.release()
   }
 }

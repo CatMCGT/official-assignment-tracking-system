@@ -23,7 +23,7 @@ export default function CreateSubject({ allUsers, allSubjects }) {
     (shorthand) => {
       return {
         id: shorthand,
-        name: subjectShorthands[shorthand],
+        name: subjectShorthands[shorthand].name,
       };
     }
   );

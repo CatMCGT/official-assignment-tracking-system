@@ -76,6 +76,8 @@ export default function CreateUser({ allSubjects }) {
             id="id"
             name="id"
             required
+            minLength="9"
+            maxLength="9"
           />
         </div>
 

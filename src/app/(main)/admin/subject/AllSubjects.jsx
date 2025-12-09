@@ -72,6 +72,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
           {updatedSubjects?.length}
         </div>
       </div>
+      <p className="text-text-weak">Please refresh the page after saving your changes.</p>
       {!inspectingSubject ? (
         <div>
           <div className="flex flex-row justify-between items-center mb-2">
