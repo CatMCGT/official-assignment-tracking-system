@@ -1,14 +1,14 @@
-'use server'
+"use server";
 
-import { neon } from '@neondatabase/serverless'
-import { verifySession } from '@/actions/userSession'
-import getSubjectInfo from '@/utils/getSubjectInfo'
+import { neon } from "@neondatabase/serverless";
+import { verifySession } from "@/actions/userSession";
+import getSubjectInfo from "@/utils/getSubjectInfo";
 
 export async function getMyAssignments() {
-  const session = await verifySession()
-  if (!session) return null
+  const session = await verifySession();
+  if (!session) return null;
 
-  const sql = neon(`${process.env.STORE_DATABASE_URL}`)
+  const sql = neon(`${process.env.STORE_DATABASE_URL}`);
   const assignments = await sql`
     SELECT
       assignment_id,
@@ -22,6 +22,7 @@ export async function getMyAssignments() {
       feedback,
       collected_date,
       subject_id,
+      su.deactivated_date as deactivated_date,
       t.id as teacher_id,
       t.name as teacher_name,
       m.id as monitor_id,
@@ -40,16 +41,16 @@ export async function getMyAssignments() {
       su.monitor_id = m.id
     ORDER BY
       due_date DESC;
-  `
+  `;
 
   const formattedAssignments = assignments.map((a) => {
-    const subjectInfo = getSubjectInfo(a.subject_id)
+    const subjectInfo = getSubjectInfo(a.subject_id);
 
     return {
       ...a,
       subjectInfo: subjectInfo,
-    }
-  })
+    };
+  });
 
-  return formattedAssignments
+  return formattedAssignments;
 }

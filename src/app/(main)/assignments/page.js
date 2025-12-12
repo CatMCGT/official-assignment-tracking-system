@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { Suspense, useEffect, useState } from 'react'
-import MainLayout from '../layout'
-import { getMyAssignments } from '@/db/assignments/getMyAssignments'
+import { Suspense, useEffect, useState } from "react";
+import MainLayout from "../layout";
+import { getMyAssignments } from "@/db/assignments/getMyAssignments";
 import {
   ClockIcon,
   ChevronRightIcon,
   ChevronUpIcon,
-} from '@heroicons/react/24/outline'
-import formatDate from '@/utils/formatDate'
-import AssignmentModel from './AssignmentModel'
-import Icon from '@/components/Icon'
-import AssignmentItem from './AssignmentItem'
+} from "@heroicons/react/24/outline";
+import formatDate from "@/utils/formatDate";
+import AssignmentModel from "./AssignmentModel";
+import Icon from "@/components/Icon";
+import AssignmentItem from "./AssignmentItem";
 
 export default function Page() {
   // const [selectedView, setSelectedView] = useState('all')
@@ -20,28 +20,31 @@ export default function Page() {
   //   { id: 'high-priority', name: 'High Priority' },
   // ]
 
-  const [assignments, setAssignments] = useState([])
-  const notSubmitted = assignments?.filter((a) => a.collected_date === null)
+  const [assignments, setAssignments] = useState([]);
+  const notSubmitted = assignments?.filter((a) => a.collected_date === null);
   const submitted = assignments?.filter(
     (a) => a.collected_date !== null && new Date(a.due_date) >= new Date()
-  )
+  );
   const archived = assignments?.filter(
-    (a) => a.collected_date !== null && new Date(a.due_date) < new Date()
-  )
-  const [isArchivedOpen, setIsArchivedOpen] = useState(false)
+    (a) =>
+      a.collected_date !== null &&
+      new Date(a.due_date) < new Date() &&
+      a.deactivated_date === null
+  );
+  const [isArchivedOpen, setIsArchivedOpen] = useState(false);
 
   function refreshAssignments() {
-    getMyAssignments().then((res) => setAssignments(res || []))
+    getMyAssignments().then((res) => setAssignments(res || []));
   }
 
   useEffect(() => {
-    refreshAssignments()
-  }, [])
+    refreshAssignments();
+  }, []);
 
   const [assignmentModel, setAssignmentModel] = useState({
     isOpened: false,
-    assignmentId: '',
-  })
+    assignmentId: "",
+  });
 
   return (
     <div>
@@ -162,5 +165,5 @@ export default function Page() {
         )}
       </MainLayout.Body>
     </div>
-  )
+  );
 }

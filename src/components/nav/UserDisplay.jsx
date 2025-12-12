@@ -1,46 +1,51 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { AcademicCapIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { deleteSession } from '@/actions/userSession'
-import { redirect } from 'next/navigation'
+import { useState } from "react";
+import { AcademicCapIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
+import { deleteSession } from "@/actions/userSession";
+import { redirect } from "next/navigation";
 
-import ChangePassword from './ChangePassword'
-import { getSecurityQuestion } from '@/db/users/securityQuestion'
+import ChangePassword from "./ChangePassword";
+import { getSecurityQuestion } from "@/db/users/securityQuestion";
+import Icon from "../Icon";
+import { ChevronDoubleLeftIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 
 export default function UserDisplaySection({ user }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(false)
-  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [securityQuestion, setSecurityQuestion] = useState({
     success: null,
     message: null,
     data: { id: null, name: null },
-  })
+  });
 
   async function logOut() {
-    await deleteSession()
-    redirect('/')
+    await deleteSession();
+    redirect("/");
   }
 
   async function changePasswordFetch() {
-    setShowChangePassword(true)
-    const securQ = await getSecurityQuestion()
-    setSecurityQuestion(securQ)
+    setShowChangePassword(true);
+    const securQ = await getSecurityQuestion();
+    setSecurityQuestion(securQ);
   }
 
   return (
     <div>
-      <button
-        type="button"
-        className="flex flex-row select-none cursor-pointer nav-item-hover"
-        onClick={() => setIsMenuOpened((prev) => !prev)}
-      >
-        <div className="flex flex-row select-non">
-          <AcademicCapIcon className="size-6 fill-text-strong" />
-          <p className="font-bold text-text-strong mr-1 ml-3">{user?.name}</p>
-          <ChevronDownIcon className="size-6 fill-text-weaker" />
-        </div>
-      </button>
+      <div className="nav-item-hover flex flex-row justify-between items-center group">
+        <button
+          type="button"
+          className="flex flex-row select-none cursor-pointer"
+          onClick={() => setIsMenuOpened((prev) => !prev)}
+        >
+          <div className="flex flex-row select-non">
+            <AcademicCapIcon className="size-6 fill-text-strong" />
+            <p className="font-bold text-text-strong mr-1 ml-3">{user?.name}</p>
+            <ChevronDownIcon className="size-6 fill-text-weaker" />
+          </div>
+        </button>
+      </div>
 
       {isMenuOpened && (
         <div className="w-72 bg-background-weak border-2 border-stroke-weaker absolute top-13 left-4 py-3 px-4 flex flex-col gap-3 select-none rounded">
@@ -82,5 +87,5 @@ export default function UserDisplaySection({ user }) {
         />
       )}
     </div>
-  )
+  );
 }

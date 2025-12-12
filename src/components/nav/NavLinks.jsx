@@ -1,100 +1,199 @@
-'use client'
-import { BookOpenIcon, UserIcon, ChartPieIcon, ChartBarIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import clsx from 'clsx'
+"use client";
 
-export default function NavLinks({ user }) {
-  const pathname = usePathname()
+import {
+  BookOpenIcon,
+  UserIcon,
+  ArchiveBoxArrowDownIcon,
+} from "@heroicons/react/20/solid";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
+import { Fragment, useState } from "react";
+import UserDisplaySection from "./UserDisplay";
+import SubjectNavLink from "./SubjectNavLink";
+import Feedback from "./Feedback";
+import Icon from "../Icon";
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+} from "@heroicons/react/24/outline";
+
+export default function NavLinks({
+  user,
+  role,
+  taughtSubjects,
+  monitoredSubjects,
+}) {
+  const [isOpen, setIsOpen] = useState(true);
+  const pathname = usePathname();
+
+  const activatedTaughtSubjects = taughtSubjects.filter(
+    (s) => s.deactivated_date === null
+  );
+  const deactivatedTaughtSubjects = taughtSubjects.filter(
+    (s) => s.deactivated_date !== null
+  );
+
+  const activatedMonitoredSubjects = monitoredSubjects.filter(
+    (s) => s.deactivated_date === null
+  );
+  const deactivatedMonitoredSubjects = monitoredSubjects.filter(
+    (s) => s.deactivated_date !== null
+  );
 
   return (
-    <>
-      {user?.role === 'student' && (
-        <>
-          <Link
-            href="/assignments"
-            className={clsx(
-              'nav-tab',
-              pathname === '/assignments' ? 'active' : ''
-            )}
-          >
-            <BookOpenIcon className="size-6 text-text-weaker" />
-            <p
-              className={clsx(
-                'font-bold mr-1 ml-3',
-                pathname === '/assignments'
-                  ? 'text-text-strong'
-                  : 'text-text-weaker'
-              )}
-            >
-              Assignments
-            </p>
-          </Link>
-        </>
-      )}
+    <div className={`h-full z-20 relative`}>
+      <button
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={clsx(
+          isOpen ? "absolute top-[13px] right-[14px]" : "fixed top-10 left-8"
+        )}
+      >
+        {isOpen ? (
+          <Icon tooltip="Close sidebar">
+            <ChevronDoubleLeftIcon className="size-5 text-text-weak hover:text-text-strong" />
+          </Icon>
+        ) : (
+          <Icon tooltip="Open sidebar">
+            <ChevronDoubleRightIcon className="size-5 text-text-weak hover:text-text-strong" />
+          </Icon>
+        )}
+      </button>
 
-      {user?.role === 'admin' && (
-        <div className='flex flex-col gap-4'>
-          <Link
-            href="/admin/user"
-            className={clsx(
-              'nav-tab',
-              pathname === '/admin/user' ? 'active' : ''
-            )}
-          >
-            <UserIcon className="size-6 text-text-weaker" />
-            <p
-              className={clsx(
-                'font-bold mr-1 ml-3',
-                pathname === '/admin/user'
-                  ? 'text-text-strong'
-                  : 'text-text-weaker'
-              )}
-            >
-              User management
-            </p>
-          </Link>
+      <nav
+        className={`bg-background-weak flex flex-col justify-between px-5 py-4 w-64 h-full border-r-2 border-r-stroke-weak ${
+          isOpen ? "" : "hidden"
+        }`}
+      >
+        <div className="flex flex-col gap-5">
+          <UserDisplaySection user={user} />
 
-          <Link
-            href="/admin/subject"
-            className={clsx(
-              'nav-tab',
-              pathname === '/admin/subject' ? 'active' : ''
+          <div>
+            {user?.role === "student" && (
+              <>
+                <Link
+                  href="/assignments"
+                  className={clsx(
+                    "nav-tab",
+                    pathname === "/assignments" ? "active" : ""
+                  )}
+                >
+                  <BookOpenIcon className="size-6 text-text-weaker" />
+                  <p
+                    className={clsx(
+                      "font-bold mr-1 ml-3",
+                      pathname === "/assignments"
+                        ? "text-text-strong"
+                        : "text-text-weaker"
+                    )}
+                  >
+                    Assignments
+                  </p>
+                </Link>
+              </>
             )}
-          >
-            <BookOpenIcon className="size-6 text-text-weaker" />
-            <p
-              className={clsx(
-                'font-bold mr-1 ml-3',
-                pathname === '/admin/subject'
-                  ? 'text-text-strong'
-                  : 'text-text-weaker'
+
+            {user?.role === "admin" && (
+              <div className="flex flex-col gap-4">
+                <Link
+                  href="/admin/user"
+                  className={clsx(
+                    "nav-tab",
+                    pathname === "/admin/user" ? "active" : ""
+                  )}
+                >
+                  <UserIcon className="size-6 text-text-weaker" />
+                  <p
+                    className={clsx(
+                      "font-bold mr-1 ml-3",
+                      pathname === "/admin/user"
+                        ? "text-text-strong"
+                        : "text-text-weaker"
+                    )}
+                  >
+                    User management
+                  </p>
+                </Link>
+
+                <Link
+                  href="/admin/subject"
+                  className={clsx(
+                    "nav-tab",
+                    pathname === "/admin/subject" ? "active" : ""
+                  )}
+                >
+                  <BookOpenIcon className="size-6 text-text-weaker" />
+                  <p
+                    className={clsx(
+                      "font-bold mr-1 ml-3",
+                      pathname === "/admin/subject"
+                        ? "text-text-strong"
+                        : "text-text-weaker"
+                    )}
+                  >
+                    Subject management
+                  </p>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {role === "teacher" && activatedTaughtSubjects.length > 0 && (
+            <div>
+              <div>
+                <p className="text-sm text-text-weak tracking-wide">
+                  Taught Subjects
+                </p>
+                <div className="flex flex-col gap-2 mt-3">
+                  {activatedTaughtSubjects.map((subject) => (
+                    <Fragment key={subject.id}>
+                      <SubjectNavLink subject={subject} action="teach" />
+                    </Fragment>
+                  ))}
+                </div>
+              </div>
+
+              {deactivatedTaughtSubjects.length > 0 && (
+                <Link href="/deactivated" className="nav-tab mt-10 hover:mt-9">
+                  <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
+                  <p className="font-bold mr-1 ml-3 text-text-weak">
+                    Deactivated Subjects
+                  </p>
+                </Link>
               )}
-            >
-              Subject management
-            </p>
-          </Link>
+            </div>
+          )}
+
+          {role === "student" && activatedMonitoredSubjects.length > 0 && (
+            <div>
+              <p className="text-sm text-text-weak tracking-wide">
+                Monitored Subjects
+              </p>
+              <div className="flex flex-col gap-2 mt-3">
+                {activatedMonitoredSubjects.map((subject) => (
+                  <Fragment key={subject.id}>
+                    <SubjectNavLink subject={subject} action="monitor" />
+                  </Fragment>
+                ))}
+              </div>
+
+              {deactivatedMonitoredSubjects.length > 0 && (
+                <Link href="/deactivated" className="nav-tab mt-10 hover:mt-9">
+                  <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
+                  <p className="font-bold mr-1 ml-3 text-text-weak">
+                    Deactivated Subjects
+                  </p>
+                </Link>
+              )}
+            </div>
+          )}
         </div>
-       )}
 
-      {/* {user?.role === 'teacher' && (
-        <>
-          <Link href="/dashboard" className={clsx(
-                'nav-tab',
-                pathname === '/dashboard' ? 'active' : ''
-              )}>
-            <ChartPieIcon className="size-6 text-text-weaker" />
-            <p
-              className={clsx(
-                'font-bold mr-1 ml-3',
-                pathname === '/dashboard' ? 'text-text-strong' : 'text-text-weaker'
-              )}
-            >
-              Dashboard
-            </p>
-          </Link>
-        </>
-      )} */}
-    </>
-  )
+        <div className="">
+          <Feedback />
+          <p className="text-text-weak">© 2025 Lau Ka Yue</p>
+        </div>
+      </nav>
+    </div>
+  );
 }
