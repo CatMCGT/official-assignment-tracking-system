@@ -14,6 +14,7 @@ import SubjectNavLink from "./SubjectNavLink";
 import Feedback from "./Feedback";
 import Icon from "../Icon";
 import {
+  Bars3Icon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
@@ -42,29 +43,30 @@ export default function NavLinks({
   );
 
   return (
-    <div className={`h-full z-20 relative`}>
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={clsx(
-          isOpen ? "absolute top-[13px] right-[14px]" : "fixed top-10 left-8"
-        )}
-      >
-        {isOpen ? (
-          <Icon tooltip="Close sidebar">
-            <ChevronDoubleLeftIcon className="size-5 text-text-weak hover:text-text-strong" />
-          </Icon>
-        ) : (
+    <div className="h-full z-20">
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="fixed top-10 right-8 xs:left-8"
+        >
           <Icon tooltip="Open sidebar">
-            <ChevronDoubleRightIcon className="size-5 text-text-weak hover:text-text-strong" />
+            <Bars3Icon className="size-5 text-text-weak hover:text-text-strong" />
           </Icon>
-        )}
-      </button>
-
+        </button>
+      )}
       <nav
-        className={`bg-background-weak flex flex-col justify-between px-5 py-4 w-64 h-full border-r-2 border-r-stroke-weak ${
+        className={`block max-md:absolute relative bg-background-weak flex flex-col justify-between px-5 py-4 w-64 h-dvh border-r-2 border-r-stroke-weak ${
           isOpen ? "" : "hidden"
         }`}
       >
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="absolute top-[13px] right-[14px] z-50"
+        >
+          <Icon tooltip="Close sidebar">
+            <ChevronDoubleLeftIcon className="size-5 text-text-weak hover:text-text-strong" />
+          </Icon>
+        </button>
         <div className="flex flex-col gap-5">
           <UserDisplaySection user={user} />
 

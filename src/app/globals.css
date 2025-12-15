@@ -12,20 +12,22 @@
   --font-mono: var(--font-geist-mono);
 
   --color-text-strong: #413730;
-  --color-text-weak: #5B564E;
-  --color-text-weaker: #88847C;
-  --color-text-weakest: #B0AEA8;
-  --color-icon-neutral: #87837C;
+  --color-text-weak: #5b564e;
+  --color-text-weaker: #88847c;
+  --color-text-weakest: #b0aea8;
+  --color-icon-neutral: #87837c;
   --color-icon-inverse: #413730;
-  --color-stroke-weak: #E8E8E8;
-  --color-stroke-weaker: #EFEFEF;
-  --color-background-weak: #FCFCFC;
-  --color-fill-weak: #F5F5F5;
+  --color-stroke-weak: #e8e8e8;
+  --color-stroke-weaker: #efefef;
+  --color-background-weak: #fcfcfc;
+  --color-fill-weak: #f5f5f5;
+
+  --breakpoint-xs: 26rem;
 }
 
 @layer components {
   .nav-item-hover:hover {
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
     margin: -4px -8px;
     padding: 4px 8px;
     border: none;
@@ -41,7 +43,7 @@
     transition: all ease 0.2s;
 
     &:hover {
-      background-color: #F5F5F5;
+      background-color: #f5f5f5;
       margin: -4px -8px;
       padding: 4px 8px;
       border: none;
