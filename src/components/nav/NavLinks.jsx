@@ -43,7 +43,7 @@ export default function NavLinks({
   );
 
   return (
-    <div className="h-full z-20">
+    <div className="h-screen z-20 max-md:fixed">
       {!isOpen && (
         <button
           onClick={() => setIsOpen((prev) => !prev)}
@@ -55,7 +55,7 @@ export default function NavLinks({
         </button>
       )}
       <nav
-        className={`block max-md:absolute relative bg-background-weak flex flex-col justify-between px-5 py-4 w-64 h-dvh border-r-2 border-r-stroke-weak ${
+        className={`relative bg-background-weak flex flex-col justify-between px-5 py-4 w-64 h-dvh border-r-2 border-r-stroke-weak ${
           isOpen ? "" : "hidden"
         }`}
       >

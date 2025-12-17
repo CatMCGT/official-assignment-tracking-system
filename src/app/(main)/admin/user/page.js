@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { getAllSubjects } from "@/db/subjects/getAllSubjects";
 import { getAllUsers } from "@/db/users/getAllUsers";
@@ -8,14 +8,16 @@ import AllUsers from "./AllUsers";
 import BulkCreateUsers from "./BulkCreateUsers";
 
 export default async function Page() {
-  const allSubjects = await getAllSubjects()
-  const allUsers = await getAllUsers()
+  const allSubjects = await getAllSubjects();
+  const allUsers = await getAllUsers();
 
   return (
     <div>
       <MainLayout.Header>User Management</MainLayout.Header>
 
-      <div className="flex flex-row gap-10">
+      <p className="md:hidden">Please view the page through a computer.</p>
+
+      <div className="flex flex-row gap-10 max-md:hidden">
         <div className="flex flex-col gap-4">
           <CreateUser allSubjects={allSubjects} />
           <BulkCreateUsers />

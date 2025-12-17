@@ -69,7 +69,7 @@ export default function Select({
               autoFocus
             ></input>
           )}
-          <div className="max-h-32 overflow-scroll flex flex-col gap-1 overflow-x-hidden overflow-y-auto">
+          <div className="max-h-32 flex flex-col gap-1 overflow-x-hidden overflow-y-auto">
             {options
               ?.filter(
                 (option) =>

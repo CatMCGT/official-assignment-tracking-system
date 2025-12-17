@@ -3,9 +3,11 @@ import { BookOpenIcon } from "@heroicons/react/20/solid";
 
 export default function MainLayout({ children }) {
   return (
-    <div className="h-screen flex flex-row">
+    <div className="h-screen flex flex-row overflow-none">
       <Navbar />
-      <main className="py-10 px-8 xs:px-20 w-full">{children}</main>
+      <main className="py-10 px-8 xs:px-20 w-screen h-screen overflow-auto">
+        {children}
+      </main>
     </div>
   );
 }
