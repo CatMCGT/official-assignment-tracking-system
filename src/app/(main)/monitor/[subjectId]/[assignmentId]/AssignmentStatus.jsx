@@ -17,6 +17,7 @@ import { setCollectedAssignments } from "@/db/assignments/setCollectedAssignment
 import Select from "@/components/Select";
 import Link from "next/link";
 import Statistics from "./Statistics";
+import Form from "next/form";
 
 export default function AssignmentStatus({ assignment, students, userRole }) {
   const [updatedStudents, setUpdatedStudents] = useState(students);
@@ -26,6 +27,8 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
   const [isPendingSave, setIsPendingSave] = useState(false);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [isStatsOpened, setIsStatsOpened] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (
@@ -56,6 +59,13 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
   async function handleSubmit() {
     try {
       setIsPendingSave(true);
+
+      updatedStudents.forEach((student) => {
+        if (student.grade > assignment.assignment_grade || student.grade < 0) {
+          throw new Error(`Grade out of range for student #${student.id}`);
+        }
+      });
+
       await setCollectedAssignments(
         assignment.subject_id,
         assignment.assignment_id,
@@ -63,6 +73,8 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
       );
     } catch (err) {
       console.error(err);
+      // setErrorMessage(err.message);
+      setIsPendingSave(false);
     }
   }
 
@@ -90,7 +102,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
   }
 
   return (
-    <div onClick={closeMenus}>
+    <Form onClick={closeMenus}>
       <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center">
         <Radio
           options={viewOptions}
@@ -193,7 +205,11 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 mt-2">
+      {errorMessage && (
+        <p className="font-bold text-sm mt-0 text-red-400">{errorMessage}</p>
+      )}
+
+      <div className="flex flex-col gap-2 mt-2 overflow-auto">
         <div className="grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center px-3 py-2 text-sm text-text-weak">
           <input
             type="checkbox"
@@ -213,7 +229,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
           <p>Status</p>
           {userRole === "teacher" && <p>Grade</p>}
         </div>
-        <div className="flex flex-col gap-2 h-[400px] w-fit overflow-auto">
+        <div className="flex flex-col gap-2 h-[400px] w-fit">
           {updatedStudents
             ?.filter((student) => {
               if (selectedView === "all") return true;
@@ -348,6 +364,6 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
             })}
         </div>
       </div>
-    </div>
+    </Form>
   );
 }

@@ -100,7 +100,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="md:w-2xl flex flex-col gap-3">
+            <div className="lg:w-2xl flex flex-col gap-3">
               {submitted.map((a) => (
                 <AssignmentItem
                   key={a.assignment_id}
@@ -138,7 +138,7 @@ export default function Page() {
           </div>
 
           {isArchivedOpen && (
-            <div className="md:w-2xl flex flex-col gap-3">
+            <div className="lg:w-2xl flex flex-col gap-3">
               {archived.map((a) => (
                 <AssignmentItem
                   key={a.assignment_id}

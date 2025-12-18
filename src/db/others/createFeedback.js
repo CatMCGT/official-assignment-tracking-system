@@ -19,7 +19,7 @@ export async function createFeedback(additionalData, prevState, formData) {
 
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
     const response =
-      await sql`INSERT INTO ats_feedback(description, time, user_id) VALUES (${feedback}, ${additionalData.time}, ${additionalData.userId}) RETURNING id;`
+      await sql`INSERT INTO ats_feedback(description, time, user_id) VALUES (${feedback}, ${additionalData.time}, ${session.userId}) RETURNING id;`
 
     const fid = response[0].id
 
