@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import Radio from "@/components/Radio";
-import Select from "@/components/Select";
-import Form from "next/form";
-import { useActionState, useEffect, useState } from "react";
-import { subjectShorthands } from "@/utils/getSubjectInfo";
-import { createSubject } from "@/db/subjects/createSubject";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
+import Radio from '@/components/Radio'
+import Select from '@/components/Select'
+import Form from 'next/form'
+import { useActionState, useEffect, useState } from 'react'
+import { subjectShorthands } from '@/utils/getSubjectInfo'
+import { createSubject } from '@/db/subjects/createSubject'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 
 export default function CreateSubject({ allUsers, allSubjects }) {
-  const [subjectType, setSubjectType] = useState("grade");
-  const [subjectTeacherId, setSubjectTeacherId] = useState(null);
-  const [subjectMonitorId, setSubjectMonitorId] = useState(null);
-  const [subjectStudentIds, setSubjectStudentIds] = useState([]);
-  const [subjectShorthand, setSubjectShorthand] = useState(null);
+  const [subjectType, setSubjectType] = useState('grade')
+  const [subjectTeacherId, setSubjectTeacherId] = useState(null)
+  const [subjectMonitorId, setSubjectMonitorId] = useState(null)
+  const [subjectStudentIds, setSubjectStudentIds] = useState([])
+  const [subjectShorthand, setSubjectShorthand] = useState(null)
 
-  const allTeachers = allUsers?.filter((user) => user.role === "teacher");
-  const allStudents = allUsers?.filter((user) => user.role === "student");
+  const allTeachers = allUsers?.filter((user) => user.role === 'teacher')
+  const allStudents = allUsers?.filter((user) => user.role === 'student')
 
   const subjectShorthandOptions = Object.keys(subjectShorthands).map(
     (shorthand) => {
       return {
         id: shorthand,
         name: subjectShorthands[shorthand].name,
-      };
+      }
     }
-  );
+  )
 
   const additionalData = {
     subjectType: subjectType,
@@ -36,25 +36,34 @@ export default function CreateSubject({ allUsers, allSubjects }) {
     subjectStudentIds: subjectStudentIds.filter(
       (id) => id !== null && id !== undefined
     ),
-  };
+  }
 
   useEffect(() => {
     if (
       !subjectStudentIds.includes(subjectMonitorId) &&
       subjectMonitorId !== null
     ) {
-      setSubjectStudentIds((prev) => [...prev, subjectMonitorId]);
+      setSubjectStudentIds((prev) => [...prev, subjectMonitorId])
     }
-  }, [subjectMonitorId]);
+  }, [subjectMonitorId])
+
+  useEffect(() => {
+    if (
+      !subjectStudentIds.includes(subjectMonitorId) &&
+      subjectMonitorId !== null
+    ) {
+      setSubjectMonitorId(null)
+    }
+  }, [subjectStudentIds])
 
   const [createSubjectState, createSubjectAction, isPending] = useActionState(
     createSubject.bind(null, additionalData),
     {
-      grade: "",
-      class: "",
-      block: "",
+      grade: '',
+      class: '',
+      block: '',
     }
-  );
+  )
 
   return (
     <Form
@@ -66,19 +75,19 @@ export default function CreateSubject({ allUsers, allSubjects }) {
       <Radio
         options={[
           {
-            id: "grade",
-            name: "Grade",
+            id: 'grade',
+            name: 'Grade',
           },
           {
-            id: "class",
-            name: "Class",
+            id: 'class',
+            name: 'Class',
           },
         ]}
         selected={subjectType}
         setSelected={setSubjectType}
       />
 
-      {subjectType === "grade" && (
+      {subjectType === 'grade' && (
         <div>
           <div className="flex flex-row justify-between items-center mb-3">
             <label htmlFor="grade">
@@ -103,7 +112,6 @@ export default function CreateSubject({ allUsers, allSubjects }) {
               type="number"
               className="w-12 px-1 border-1 border-stroke-weak bg-white rounded focus:outline-1 focus:outline-text-weakest"
               min="1"
-              max="4"
               id="block"
               name="block"
               required
@@ -112,7 +120,7 @@ export default function CreateSubject({ allUsers, allSubjects }) {
         </div>
       )}
 
-      {subjectType === "class" && (
+      {subjectType === 'class' && (
         <div className="flex flex-row justify-between items-center">
           <label htmlFor="class">
             Class <span className="text-red-500">*</span>
@@ -183,8 +191,8 @@ export default function CreateSubject({ allUsers, allSubjects }) {
       {createSubjectState?.message && (
         <p
           className={clsx(
-            "font-bold text-sm mt-0" && true,
-            createSubjectState?.success ? "text-green-400" : "text-red-400"
+            'font-bold text-sm mt-0' && true,
+            createSubjectState?.success ? 'text-green-400' : 'text-red-400'
           )}
         >
           {createSubjectState.message}
@@ -196,8 +204,8 @@ export default function CreateSubject({ allUsers, allSubjects }) {
         className="px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit mt-2 bg-text-weak"
         disabled={isPending}
       >
-        {isPending ? <ArrowPathIcon className="size-6 text-white" /> : "Create"}
+        {isPending ? <ArrowPathIcon className="size-6 text-white" /> : 'Create'}
       </button>
     </Form>
-  );
+  )
 }

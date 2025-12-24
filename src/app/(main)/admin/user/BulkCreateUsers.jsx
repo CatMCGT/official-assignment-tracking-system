@@ -79,7 +79,7 @@ export default function BulkCreateUsers() {
         {createUsersState?.message && (
           <p
             className={clsx(
-              'font-bold mt-2',
+              'font-bold mt-2 max-w-70 wrap-anywhere',
               createUsersState?.success ? 'text-green-500' : 'text-red-400'
             )}
           >

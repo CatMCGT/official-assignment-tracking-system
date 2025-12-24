@@ -12,6 +12,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import Form from 'next/form'
 import { useEffect, useState } from 'react'
 
 export default function StuAssignmentDetails({
@@ -57,7 +58,12 @@ export default function StuAssignmentDetails({
   }
 
   return (
-    <div className="flex flex-col gap-4 w-2xl">
+    <Form
+      className="flex flex-col gap-4 w-2xl"
+      action={async (formData) => {
+        await handleSubmit()
+      }}
+    >
       <div className="flex flex-row gap-3 items-center">
         <div
           className="px-5 py-[5px] rounded-full w-fit flex justify-center items-center uppercase text-xs font-semibold"
@@ -107,6 +113,11 @@ export default function StuAssignmentDetails({
               collected_date: e.target.value,
             }))
           }
+          min={
+            new Date(assignment.assigned_date).toLocaleDateString('en-CA') +
+            'T00:00'
+          }
+          disabled={updatedStudent.status == null}
         />
 
         <Properties.Property name="Status">
@@ -174,6 +185,7 @@ export default function StuAssignmentDetails({
       <div className="flex flex-row gap-2">
         {isEdited && !isPendingSave && (
           <button
+            type="button"
             className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak"
             onClick={() => {
               setUpdatedStudent(student)
@@ -190,7 +202,6 @@ export default function StuAssignmentDetails({
             isEdited ? 'bg-text-weak' : 'bg-text-weakest'
           )}
           disabled={isPendingSave || !isEdited}
-          onClick={handleSubmit}
         >
           {isPendingSave ? (
             <ArrowPathIcon className="size-6 text-white" />
@@ -199,6 +210,6 @@ export default function StuAssignmentDetails({
           )}
         </button>
       </div>
-    </div>
+    </Form>
   )
 }

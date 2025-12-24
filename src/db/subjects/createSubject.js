@@ -7,7 +7,7 @@ import { neon } from '@neondatabase/serverless'
 export async function createSubject(additionalData, prevState, formData) {
   try {
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
-    
+
     const session = await verifySession()
     if (!session) throw new Error('Session not found.')
 
@@ -24,6 +24,13 @@ export async function createSubject(additionalData, prevState, formData) {
       subjectMonitorId,
       subjectStudentIds,
     } = additionalData
+
+    if (subjectShorthand === null) {
+      throw new Error('Subject name missing')
+    }
+    if (subjectTeacherId === null) {
+      throw new Error('Subject teacher missing')
+    }
 
     let subjectId = ''
     const dateNow = new Date()
@@ -68,7 +75,9 @@ export async function createSubject(additionalData, prevState, formData) {
 
     return {
       success: false,
-      message: `Failed to create user. Please check the developer console.`,
+      message:
+        `${err.message}. ${err.detail || ""}` ||
+        `Failed to create subject. Please check the developer console.`,
     }
   }
 }

@@ -10,6 +10,7 @@ import {
   updateSubjectStudents,
   updateSubjectTeachers,
 } from '@/db/subjects/setSubject'
+import Form from 'next/form'
 
 export default function EditUser({ user, allSubjects, setInspectingUser }) {
   const router = useRouter()
@@ -115,6 +116,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
   return (
     <div className="flex flex-row gap-4 items-start border-1 rounded border-stroke-weak p-4">
       <button
+        type="button"
         onClick={() => setInspectingUser(null)}
         disabled={isPending || isEdited}
       >
@@ -128,7 +130,12 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
           </Icon>
         )}
       </button>
-      <div className="p-4 pt-0 pl-0 w-72">
+      <Form
+        className="p-4 pt-0 pl-0 w-72"
+        action={async (formData) => {
+          await handleSubmit()
+        }}
+      >
         <h2 className="text-lg font-bold mb-3">Edit User #{user.id}</h2>
 
         <div className="flex flex-col gap-3">
@@ -148,6 +155,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
               id="name"
               name="name"
               value={updatedName}
+              required
               onChange={(e) => setUpdatedName(e.target.value)}
             />
           </div>
@@ -211,6 +219,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
           <div className="flex flex-row gap-2">
             {isEdited && !isPending && (
               <button
+                type="button"
                 className="px-4 py-[6px] rounded-lg cursor-pointer transition-colors bg-fill-weak text-text-weak w-fit"
                 onClick={handleUndo}
               >
@@ -225,7 +234,6 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
                 isEdited ? 'bg-text-weak' : 'bg-text-weakest'
               )}
               disabled={isPending || !isEdited}
-              onClick={handleSubmit}
             >
               {isPending ? (
                 <ArrowPathIcon className="size-6 text-white" />
@@ -235,7 +243,7 @@ export default function EditUser({ user, allSubjects, setInspectingUser }) {
             </button>
           </div>
         </div>
-      </div>
+      </Form>
     </div>
   )
 }

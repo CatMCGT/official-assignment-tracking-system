@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
 import {
   BookOpenIcon,
   UserIcon,
   ArchiveBoxArrowDownIcon,
-} from "@heroicons/react/20/solid";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
-import { Fragment, useState } from "react";
-import UserDisplaySection from "./UserDisplay";
-import SubjectNavLink from "./SubjectNavLink";
-import Feedback from "./Feedback";
-import Icon from "../Icon";
+} from '@heroicons/react/20/solid'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import clsx from 'clsx'
+import { Fragment, useState } from 'react'
+import UserDisplaySection from './UserDisplay'
+import SubjectNavLink from './SubjectNavLink'
+import Feedback from './Feedback'
+import Icon from '../Icon'
 import {
   Bars3Icon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline'
 
 export default function NavLinks({
   user,
@@ -25,29 +25,29 @@ export default function NavLinks({
   taughtSubjects,
   monitoredSubjects,
 }) {
-  const [isOpen, setIsOpen] = useState(true);
-  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(true)
+  const pathname = usePathname()
 
   const activatedTaughtSubjects = taughtSubjects.filter(
     (s) => s.deactivated_date === null
-  );
+  )
   const deactivatedTaughtSubjects = taughtSubjects.filter(
     (s) => s.deactivated_date !== null
-  );
+  )
 
   const activatedMonitoredSubjects = monitoredSubjects.filter(
     (s) => s.deactivated_date === null
-  );
+  )
   const deactivatedMonitoredSubjects = monitoredSubjects.filter(
     (s) => s.deactivated_date !== null
-  );
+  )
 
   return (
     <div className="h-screen z-20 max-md:fixed">
       {!isOpen && (
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="fixed top-10 right-8 xs:left-8"
+          className="fixed top-10 right-8 w-fit xs:left-8"
         >
           <Icon tooltip="Open sidebar">
             <Bars3Icon className="size-5 text-text-weak hover:text-text-strong" />
@@ -56,7 +56,7 @@ export default function NavLinks({
       )}
       <nav
         className={`relative bg-background-weak flex flex-col justify-between px-5 py-4 w-64 h-dvh border-r-2 border-r-stroke-weak ${
-          isOpen ? "" : "hidden"
+          isOpen ? '' : 'hidden'
         }`}
       >
         <button
@@ -71,22 +71,22 @@ export default function NavLinks({
           <UserDisplaySection user={user} />
 
           <div>
-            {user?.role === "student" && (
+            {user?.role === 'student' && (
               <>
                 <Link
                   href="/assignments"
                   className={clsx(
-                    "nav-tab",
-                    pathname === "/assignments" ? "active" : ""
+                    'nav-tab',
+                    pathname === '/assignments' ? 'active' : ''
                   )}
                 >
                   <BookOpenIcon className="size-6 text-text-weaker" />
                   <p
                     className={clsx(
-                      "font-bold mr-1 ml-3",
-                      pathname === "/assignments"
-                        ? "text-text-strong"
-                        : "text-text-weaker"
+                      'font-bold mr-1 ml-3',
+                      pathname === '/assignments'
+                        ? 'text-text-strong'
+                        : 'text-text-weaker'
                     )}
                   >
                     Assignments
@@ -95,22 +95,22 @@ export default function NavLinks({
               </>
             )}
 
-            {user?.role === "admin" && (
+            {user?.role === 'admin' && (
               <div className="flex flex-col gap-4">
                 <Link
                   href="/admin/user"
                   className={clsx(
-                    "nav-tab",
-                    pathname === "/admin/user" ? "active" : ""
+                    'nav-tab',
+                    pathname === '/admin/user' ? 'active' : ''
                   )}
                 >
                   <UserIcon className="size-6 text-text-weaker" />
                   <p
                     className={clsx(
-                      "font-bold mr-1 ml-3",
-                      pathname === "/admin/user"
-                        ? "text-text-strong"
-                        : "text-text-weaker"
+                      'font-bold mr-1 ml-3',
+                      pathname === '/admin/user'
+                        ? 'text-text-strong'
+                        : 'text-text-weaker'
                     )}
                   >
                     User management
@@ -120,17 +120,17 @@ export default function NavLinks({
                 <Link
                   href="/admin/subject"
                   className={clsx(
-                    "nav-tab",
-                    pathname === "/admin/subject" ? "active" : ""
+                    'nav-tab',
+                    pathname === '/admin/subject' ? 'active' : ''
                   )}
                 >
                   <BookOpenIcon className="size-6 text-text-weaker" />
                   <p
                     className={clsx(
-                      "font-bold mr-1 ml-3",
-                      pathname === "/admin/subject"
-                        ? "text-text-strong"
-                        : "text-text-weaker"
+                      'font-bold mr-1 ml-3',
+                      pathname === '/admin/subject'
+                        ? 'text-text-strong'
+                        : 'text-text-weaker'
                     )}
                   >
                     Subject management
@@ -140,7 +140,7 @@ export default function NavLinks({
             )}
           </div>
 
-          {role === "teacher" && activatedTaughtSubjects.length > 0 && (
+          {role === 'teacher' && activatedTaughtSubjects.length > 0 && (
             <div>
               <div>
                 <p className="text-sm text-text-weak tracking-wide">
@@ -166,7 +166,7 @@ export default function NavLinks({
             </div>
           )}
 
-          {role === "student" && activatedMonitoredSubjects.length > 0 && (
+          {role === 'student' && activatedMonitoredSubjects.length > 0 && (
             <div>
               <p className="text-sm text-text-weak tracking-wide">
                 Monitored Subjects
@@ -197,5 +197,5 @@ export default function NavLinks({
         </div>
       </nav>
     </div>
-  );
+  )
 }

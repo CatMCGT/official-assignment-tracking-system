@@ -192,6 +192,7 @@ export default function ChangePassword({
                 id="securityAns"
                 name="securityAns"
                 required
+                minLength="5"
               />
             </div>
 

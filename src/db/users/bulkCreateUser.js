@@ -11,39 +11,45 @@ export default async function bulkCreateUsers(users, prevState, formData) {
     const saltRounds = 10
 
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
-    await sql.transaction(
-      users.map(async (user) => {
-        if (
-          user.id === '' ||
-          user.name === '' ||
-          user.password === '' ||
-          user.role === ''
-        ) {
-          return ''
-        }
 
-        const hashedPassword = await bcrypt.hash(user.password, saltRounds)
+    const validUsers = users.filter(
+      (user) =>
+        user.id !== '' &&
+        user.name !== '' &&
+        user.password !== '' &&
+        user.role !== ''
+    )
 
-        return sql`INSERT INTO users (id, name, password, role, reg_date, deactivated_date) VALUES (${
+    if (validUsers.legnth === 0) {
+      return {
+        sucess: false,
+        message: 'No valid users provided. Please check that all users have their ids, names, passwords, and roles specified in the correct format.',
+      }
+    }
+
+    const hashedUsers = await Promise.all(
+      validUsers.map(async (user) => ({
+        ...user,
+        hashedPassword: await bcrypt.hash(user.password, saltRounds),
+      }))
+    )
+
+    const queries = hashedUsers.map(
+      (user) =>
+        sql`INSERT INTO users (id, name, password, role, reg_date, deactivated_date) VALUES (${
           user.id
-        }, ${user.name}, ${hashedPassword}, ${
+        }, ${user.name}, ${user.hashedPassword}, ${
           user.role
         }, ${new Date().toISOString()}, null)`
-      })
     )
+
+    await sql.transaction(queries)
 
     revalidatePath('/admin/user')
 
     return {
       success: true,
-      message: `Successfully created users ${users
-        .filter(
-          (user) =>
-            user.id !== '' &&
-            user.name !== '' &&
-            user.password !== '' &&
-            user.role !== ''
-        )
+      message: `Successfully created users ${validUsers
         .map((u) => u.id)
         .join(', ')}.`,
     }
@@ -52,7 +58,7 @@ export default async function bulkCreateUsers(users, prevState, formData) {
 
     return {
       success: false,
-      message: `Failed to create users. Please check the developer console and upload again.`,
+      message: `${err.message}. ${err.detail}` || 'Error creating users.',
     }
   }
 }

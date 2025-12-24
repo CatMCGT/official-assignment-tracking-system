@@ -27,10 +27,14 @@ export default function EditSubject({
     subjectMonitorId !== subject.monitor_id ||
     originalEnrolledIds.toString() !== subjectStudentIds.toString()
   const [isPending, setIsPending] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   async function handleSubmit() {
     try {
       setIsPending(true)
+      if (subjectTeacherId === null) {
+        throw new Error('Subject teacher missing.')
+      }
       const newlyEnrolled = subjectStudentIds
         .filter((id) => !originalEnrolledIds.includes(id))
         .map((item) => {
@@ -53,6 +57,7 @@ export default function EditSubject({
       setInspectingSubject(null)
     } catch (err) {
       console.error(err)
+      setErrorMessage(err.message)
     } finally {
       setIsPending(false)
     }
@@ -62,6 +67,7 @@ export default function EditSubject({
     setSubjectTeacherId(subject.teacher_id)
     setSubjectMonitorId(subject.monitor_id)
     setSubjectStudentIds(originalEnrolledIds)
+    setErrorMessage(null)
   }
 
   return (
@@ -121,6 +127,8 @@ export default function EditSubject({
             multiSelect
           />
         </div>
+
+        {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
         <div className="flex flex-row gap-2">
           {isEdited && !isPending && (
