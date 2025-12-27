@@ -1,34 +1,31 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { AcademicCapIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import { deleteSession } from "@/actions/userSession";
-import { redirect } from "next/navigation";
+import { useState } from 'react'
+import { AcademicCapIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { deleteSession } from '@/actions/userSession'
+import { redirect } from 'next/navigation'
 
-import ChangePassword from "./ChangePassword";
-import { getSecurityQuestion } from "@/db/users/securityQuestion";
-import Icon from "../Icon";
-import { ChevronDoubleLeftIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
+import ChangePassword from './ChangePassword'
+import { getSecurityQuestion } from '@/db/users/securityQuestion'
 
 export default function UserDisplaySection({ user }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
   const [securityQuestion, setSecurityQuestion] = useState({
     success: null,
     message: null,
     data: { id: null, name: null },
-  });
+  })
 
   async function logOut() {
-    await deleteSession();
-    redirect("/");
+    await deleteSession()
+    redirect('/')
   }
 
   async function changePasswordFetch() {
-    setShowChangePassword(true);
-    const securQ = await getSecurityQuestion();
-    setSecurityQuestion(securQ);
+    setShowChangePassword(true)
+    const securQ = await getSecurityQuestion()
+    setSecurityQuestion(securQ)
   }
 
   return (
@@ -62,19 +59,19 @@ export default function UserDisplaySection({ user }) {
           <hr className="mx-[-16px] border-stroke-weak"></hr>
 
           <div className="flex flex-col gap-2">
-            <p
+            <button
               className="text-ms text-text-weaker hover:text-text-weak nav-item-hover"
               onClick={logOut}
             >
               Log out
-            </p>
+            </button>
 
-            <p
+            <button
               className="text-ms text-text-weaker hover:text-red-500 nav-item-hover"
               onClick={changePasswordFetch}
             >
               Change password
-            </p>
+            </button>
           </div>
         </div>
       )}
@@ -87,5 +84,5 @@ export default function UserDisplaySection({ user }) {
         />
       )}
     </div>
-  );
+  )
 }

@@ -62,7 +62,7 @@ export default function BulkCreateUsers() {
             htmlFor="csvFileInput"
             className="border-1 border-stroke-weak rounded p-4 flex flex-col gap-4 justify-center items-center cursor-pointer text-center"
           >
-            <img src="/create_csv_2.svg"></img>
+            <img src="/create_csv_2.svg" alt=''></img>
             <p>You've uploaded an item.</p>
             <p></p>
           </label>
@@ -71,7 +71,7 @@ export default function BulkCreateUsers() {
             htmlFor="csvFileInput"
             className="border-1 border-stroke-weak rounded p-4 flex flex-col gap-4 justify-center items-center cursor-pointer text-center"
           >
-            <img src="/create_csv_1.svg"></img>
+            <img src="/create_csv_1.svg" alt=''></img>
             <p>Upload a csv to bulk-create users</p>
           </label>
         )}

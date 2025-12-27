@@ -109,7 +109,7 @@ export default function Page() {
 
           <button
             type="button"
-            className="text-sm underline cursor-pointer text-text-weaker tracking-wide w-fit"
+            className="text-sm underline cursor-pointer text-text-weak tracking-wide w-fit"
             onClick={() => setShowForgotPassword(true)}
           >
             Forgot password?
@@ -209,6 +209,7 @@ export default function Page() {
             </Form>
             <img
               src="undraw_forgot-password_nttj.svg"
+              alt=""
               className="absolute bottom-10 right-10 w-100 opacity-25"
             />
           </div>

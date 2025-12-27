@@ -226,6 +226,7 @@ export default function ChangePassword({
         )}
         <img
           src="undraw_forgot-password_nttj.svg"
+          alt=""
           className="absolute bottom-10 right-10 w-100 opacity-25"
         />
       </div>

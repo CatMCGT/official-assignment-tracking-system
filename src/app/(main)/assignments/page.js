@@ -123,6 +123,7 @@ export default function Page() {
             {archived.length > 0 && (
               <button
                 type="button"
+                aria-label="expand archived assignments"
                 className="ml-2"
                 onClick={() => setIsArchivedOpen((prev) => !prev)}
               >
