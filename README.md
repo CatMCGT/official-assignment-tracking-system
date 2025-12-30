@@ -1,38 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
 
-## Conventional Commits
-**Conventional Commits**: https://www.conventionalcommits.org/en/v1.0.0/
-**Semantic Versioning**: https://semver.org/#summary
-**Angular Commit Message Guidelines**: https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
+  # Assignment Tracking System
 
-### Summary
-The Conventional Commits specification is a lightweight convention on top of commit messages. It provides an easy set of rules for creating an explicit commit history; which makes it easier to write automated tools on top of. This convention dovetails with SemVer, by describing the features, fixes, and breaking changes made in commit messages.
+  ![Next.JS](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)
+  ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+   ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+   ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 
-The commit message should be structured as follows:
-```
-<type>[optional scope]: <description>
+   **Streamlining the process of managing assignments records. For HKDSE ICT SBA.**
+</div>
 
-[optional body]
+## Features
 
-[optional footer(s)]
-```
+1. **Teachers** are able to create assignments, view submission records, and generate reports and statistics.
+2. **Subject Monitors** are able to update assignment submission statuses for their assigned classes.
+3. **Administrators** are able to manage users and monitor the system.
+4. **Students** are able to view their own assignment records and deadlines.
 
-The commit contains the following structural elements, to communicate intent to the consumers of your library:
-1. **fix:** a commit of the type `fix` patches a bug in your codebase (this correlates with `PATCH` in Semantic Versioning).
-2. **feat**: a commit of the type `feat` introduces a new feature to the codebase (this correlates with `MINOR` in Semantic Versioning).
-3. **BREAKING CHANGE**: a commit that has a footer `BREAKING CHANGE:`, or appends a `!` after the type/scope, introduces a breaking API change (correlating with `MAJOR` in Semantic Versioning). A `BREAKING CHANGE` can be part of commits of any type.
-4. *types* other than `fix:` and `feat:` are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, and others.
-5. *footers* other than `BREAKING CHANGE: <description>` may be provided and follow a convention similar to git trailer format.
+## HKDSE ICT SBA
 
-### Type
-Must be one of the following:
+The **School-Based Assignment (SBA)** accounts for 20% of the total subject mark in the ICT curriculum. It consists of two guided tasks that focus on the development of an information system. These tasks are centred around two key stages of system development:
 
-* **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-* **ci**: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
-* **docs**: Documentation only changes
-* **feat**: A new feature
-* **fix**: A bug fix
-* **perf**: A code change that improves performance
-* **refactor**: A code change that neither fixes a bug nor adds a feature
-* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-* **test**: Adding missing tests or correcting existing tests
+- **Task 1: Design and Implementation (25 marks)**
+- **Task 2: Testing and Evaluation (15 marks)**
+
+This SBA combines components from 2A: Databases and 2B: Web Application Development.
+
+---
