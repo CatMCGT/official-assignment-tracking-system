@@ -2,10 +2,7 @@ import formatDate from '@/utils/formatDate'
 import getSubjectInfo from '@/utils/getSubjectInfo'
 import Link from 'next/link'
 
-export default function DeactivatedSubjects({
-  deactivatedSubjects,
-  action
-}) {
+export default function DeactivatedSubjects({ deactivatedSubjects, action }) {
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-[1200px]">
       {deactivatedSubjects.map((subject) => {

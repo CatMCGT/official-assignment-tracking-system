@@ -23,7 +23,7 @@ export default function Loading() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5 mt-5">
-          {[1,2,3,4,5,6,7,8,9,10].map((x) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((x) => (
             <Fragment key={x}>
               <Skeleton className="h-20" />
             </Fragment>

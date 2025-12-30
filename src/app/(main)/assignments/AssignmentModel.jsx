@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import Icon from "@/components/Icon";
+import Icon from '@/components/Icon'
 import {
   XMarkIcon,
   ClockIcon,
   AcademicCapIcon,
   PencilSquareIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline'
 
-import formatDate from "@/utils/formatDate";
-import Properties from "@/components/Properties";
-import Skeleton from "@/components/Skeleton";
+import formatDate from '@/utils/formatDate'
+import Properties from '@/components/Properties'
+import Skeleton from '@/components/Skeleton'
 
 export default function AssignmentModel({ assignment, onClose }) {
   return (
@@ -85,7 +85,7 @@ export default function AssignmentModel({ assignment, onClose }) {
             <div className="flex flex-row justify-between items-center">
               <h3 className="font-semibold text-lg">Grade</h3>
               <p>
-                {assignment.grade !== "" ? assignment.grade : "-"} /{" "}
+                {assignment.grade !== '' ? assignment.grade : '-'} /{' '}
                 {assignment.assignment_grade}
               </p>
             </div>
@@ -102,5 +102,5 @@ export default function AssignmentModel({ assignment, onClose }) {
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,54 +1,54 @@
-"use client";
+'use client'
 
-import { createUser } from "@/db/users/createUser";
-import { ArrowPathIcon, CheckIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import Form from "next/form";
-import { useState, useActionState } from "react";
-import Select from "@/components/Select";
+import { createUser } from '@/db/users/createUser'
+import { ArrowPathIcon, CheckIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import Form from 'next/form'
+import { useState, useActionState } from 'react'
+import Select from '@/components/Select'
 
 export default function CreateUser({ allSubjects }) {
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState('student')
   const roleOptions = [
     {
-      id: "student",
-      name: "Student",
+      id: 'student',
+      name: 'Student',
     },
     {
-      id: "teacher",
-      name: "Teacher",
+      id: 'teacher',
+      name: 'Teacher',
     },
     {
-      id: "admin",
-      name: "Admin",
+      id: 'admin',
+      name: 'Admin',
     },
-  ];
-  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([]);
-  const [taughtSubjectIds, setTaughtSubjectIds] = useState([]);
+  ]
+  const [enrolledSubjectIds, setEnrolledSubjectIds] = useState([])
+  const [taughtSubjectIds, setTaughtSubjectIds] = useState([])
 
   const additionalData =
-    role === "student"
+    role === 'student'
       ? {
           enrolledSubjectIds: enrolledSubjectIds,
           role: role,
         }
-      : role === "teacher"
+      : role === 'teacher'
       ? {
           taughtSubjectIds: taughtSubjectIds,
           role: role,
         }
       : {
           role: role,
-        };
+        }
 
   const [createUserState, createUserAction, isPending] = useActionState(
     createUser.bind(null, additionalData),
     {
-      id: "",
-      name: "",
-      password: "",
+      id: '',
+      name: '',
+      password: '',
     }
-  );
+  )
 
   return (
     <Form
@@ -109,7 +109,7 @@ export default function CreateUser({ allSubjects }) {
           />
         </div>
 
-        {role === "student" && (
+        {role === 'student' && (
           <div className="flex flex-col gap-1">
             <label htmlFor="subjects">Enrolled Subjects</label>
             <Select
@@ -124,7 +124,7 @@ export default function CreateUser({ allSubjects }) {
           </div>
         )}
 
-        {role === "teacher" && (
+        {role === 'teacher' && (
           <div className="flex flex-col gap-1">
             <label htmlFor="subjects">Taught Subjects</label>
             <Select
@@ -142,8 +142,8 @@ export default function CreateUser({ allSubjects }) {
         {createUserState?.message && (
           <p
             className={clsx(
-              "font-bold text-sm mt-0" && true,
-              createUserState?.success ? "text-green-500" : "text-red-400"
+              'font-bold text-sm mt-0' && true,
+              createUserState?.success ? 'text-green-500' : 'text-red-400'
             )}
           >
             {createUserState.message}
@@ -158,10 +158,10 @@ export default function CreateUser({ allSubjects }) {
           {isPending ? (
             <ArrowPathIcon className="size-6 text-white" />
           ) : (
-            "Create"
+            'Create'
           )}
         </button>
       </div>
     </Form>
-  );
+  )
 }

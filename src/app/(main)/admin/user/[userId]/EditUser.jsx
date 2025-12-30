@@ -92,9 +92,7 @@ export default function CreateUser({ allSubjects, user }) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="password">
-            Password
-          </label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             className="px-3 py-2 rounded-xs placeholder:text-text-weaker text-text-weaker disabled:cursor-not-allowed"

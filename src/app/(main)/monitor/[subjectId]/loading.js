@@ -1,10 +1,7 @@
 import Skeleton from '@/components/Skeleton'
 import MainLayout from '../../layout'
 import Properties from '@/components/Properties'
-import {
-  AcademicCapIcon,
-  PencilSquareIcon,
-} from '@heroicons/react/24/outline'
+import { AcademicCapIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 
 export default function Loading() {
   return (
@@ -32,7 +29,7 @@ export default function Loading() {
 
       <hr className="text-stroke-weak w-full mt-8 mb-10"></hr>
 
-      <div className='w-2xl mt-4'>
+      <div className="w-2xl mt-4">
         <div className="flex flex-row gap-3 items-center justify-between mb-3">
           <h2 className="font-semibold text-xl">Assignments</h2>
           <Skeleton className="w-20 h-8" />

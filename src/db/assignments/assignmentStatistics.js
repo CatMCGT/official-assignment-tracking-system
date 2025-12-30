@@ -15,7 +15,6 @@ export async function getOnTimeSubmitPercentages(subjectId) {
         throw new Error('User is not authorised to view assignment statistics.')
 
       // https://www.w3schools.com/mysql/mysql_join_cross.asp
-      // https://www.geeksforgeeks.org/postgresql/understanding-lateral-joins-in-postgresql/
 
       const sql = neon(`${process.env.STORE_DATABASE_URL}`)
       const response = await sql`
@@ -53,13 +52,11 @@ export async function getOnTimeSubmitPercentages(subjectId) {
     } else {
       // The following pgsql statement was written with AI assistance (Grok)
       // Prompt: "update this sql statement to include students who have not submitted on-time for any assignments, i.e. on_time_count is 0. If the student has not submitted on-time, the status is "late" or "not submitted": `original code`"
-
       // https://www.postgresql.org/docs/current/queries-with.html
-
       // const sql = neon(`${process.env.STORE_DATABASE_URL}`)
       // const response = await sql`
       //   WITH subject_stats AS (
-      //     SELECT 
+      //     SELECT
       //       a.subject_id,
       //       COUNT(*) AS total_assignments
       //     FROM assignments a
@@ -69,7 +66,6 @@ export async function getOnTimeSubmitPercentages(subjectId) {
       //       a.due_date <= NOW()
       //     GROUP BY a.subject_id
       //   ),
-
       //   active_students_in_subject AS (
       //     SELECT DISTINCT
       //       a.subject_id,
@@ -83,23 +79,21 @@ export async function getOnTimeSubmitPercentages(subjectId) {
       //       st.deactivated_date is null AND
       //       a.due_date <= NOW()
       //   ),
-
       //   on_time_counts AS (
-      //     SELECT 
+      //     SELECT
       //       a.subject_id,
       //       sa.student_id,
       //       COUNT(*) AS on_time_count
       //     FROM assignments a
-      //     JOIN student_assignment sa ON sa.assignment_id = a.id 
+      //     JOIN student_assignment sa ON sa.assignment_id = a.id
       //     JOIN subjects s ON a.subject_id = s.id
-      //     WHERE 
+      //     WHERE
       //       s.teacher_id = ${session.userId} AND
       //       sa.collected_date <= a.due_date AND
       //       sa.collected_date is not null AND
       //       a.due_date <= NOW()
       //     GROUP BY a.subject_id, sa.student_id
       //   ),
-
       //   student_percentages AS (
       //     SELECT
       //       sis.subject_id,
@@ -115,11 +109,9 @@ export async function getOnTimeSubmitPercentages(subjectId) {
       //       ON otc.subject_id = ss.subject_id
       //       AND otc.student_id = sis.student_id
       //   )
-
       //   SELECT
       //     sp.subject_id,
       //     ROUND(AVG(sp.on_time_percentage)) AS average_on_time_submit,
-
       //     COALESCE(
       //       JSON_AGG(
       //         JSON_BUILD_OBJECT(
@@ -130,12 +122,10 @@ export async function getOnTimeSubmitPercentages(subjectId) {
       //       ),
       //       '[]'::json
       //     ) AS students
-
       //   FROM student_percentages sp
       //   GROUP BY sp.subject_id
       //   ORDER BY sp.subject_id
       // `
-
       // return response
     }
   } catch (err) {

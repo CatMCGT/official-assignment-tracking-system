@@ -7,7 +7,9 @@ export default async function Page() {
   if (user.role === 'student') {
     redirect('/assignments')
   } else if (user.role === 'teacher') {
-    const taughtSubjects = (await getTaughtSubjects()).filter(s => s.deactivated_date === null)
+    const taughtSubjects = (await getTaughtSubjects()).filter(
+      (s) => s.deactivated_date === null
+    )
     const firstId = taughtSubjects[0].id
     redirect(`/teach/${firstId}`)
   } else if (user.role === 'admin') {

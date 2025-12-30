@@ -23,7 +23,8 @@ export default async function bulkCreateUsers(users, prevState, formData) {
     if (validUsers.legnth === 0) {
       return {
         sucess: false,
-        message: 'No valid users provided. Please check that all users have their ids, names, passwords, and roles specified in the correct format.',
+        message:
+          'No valid users provided. Please check that all users have their ids, names, passwords, and roles specified in the correct format.',
       }
     }
 

@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import Link from "next/link";
+import Link from 'next/link'
 import {
   ClockIcon,
   CheckCircleIcon,
   ChevronUpIcon,
   ChevronRightIcon,
-} from "@heroicons/react/24/outline";
-import Icon from "@/components/Icon";
-import formatDate from "@/utils/formatDate";
-import { useState } from "react";
+} from '@heroicons/react/24/outline'
+import Icon from '@/components/Icon'
+import formatDate from '@/utils/formatDate'
+import { useState } from 'react'
 
 export default function ArchivedAssignments({
   archived,
   subjectId,
   subjectInfo,
 }) {
-  const [isArchivedOpen, setIsArchivedOpen] = useState(false);
+  const [isArchivedOpen, setIsArchivedOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-3 mt-2">
@@ -47,11 +47,11 @@ export default function ArchivedAssignments({
           {archived.map((a) => {
             const submittedCount = a.students.filter(
               (student) => student.collected_date !== null
-            ).length;
+            ).length
             const stats = {
               submitted: submittedCount,
               not_submitted: a.students.length - submittedCount,
-            };
+            }
 
             return (
               <Link
@@ -86,10 +86,10 @@ export default function ArchivedAssignments({
                   </div>
                 </div>
               </Link>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
+  )
 }

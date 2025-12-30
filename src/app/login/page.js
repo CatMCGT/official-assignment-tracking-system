@@ -1,65 +1,65 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useActionState } from "react";
-import Form from "next/form";
-import { redirect } from "next/navigation";
+import { useEffect, useState } from 'react'
+import { useActionState } from 'react'
+import Form from 'next/form'
+import { redirect } from 'next/navigation'
 import {
   ArrowPathIcon,
   ArrowRightIcon,
   XMarkIcon,
-} from "@heroicons/react/20/solid";
-import clsx from "clsx";
+} from '@heroicons/react/20/solid'
+import clsx from 'clsx'
 
-import { logIn } from "@/actions/auth";
-import { verifySession, createSession } from "@/actions/userSession";
-import { getSecurityQuestion } from "@/db/users/securityQuestion";
-import Icon from "@/components/Icon";
-import ChangePassword from "@/components/nav/ChangePassword";
+import { logIn } from '@/actions/auth'
+import { verifySession, createSession } from '@/actions/userSession'
+import { getSecurityQuestion } from '@/db/users/securityQuestion'
+import Icon from '@/components/Icon'
+import ChangePassword from '@/components/nav/ChangePassword'
 
 export default function Page() {
   const [logInState, logInAction, isPending] = useActionState(logIn, {
     success: undefined,
-    message: "",
+    message: '',
     data: {},
-  });
+  })
 
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
   const [securityQuestion, setSecurityQuestion] = useState({
     success: null,
     message: null,
     data: { id: null, name: null },
-  });
-  const [userId, setUserId] = useState(null);
+  })
+  const [userId, setUserId] = useState(null)
 
   async function changePasswordFetch(formData) {
-    const userId = formData.get("userId");
-    setUserId(userId);
+    const userId = formData.get('userId')
+    setUserId(userId)
 
-    const securQ = await getSecurityQuestion(userId);
+    const securQ = await getSecurityQuestion(userId)
     if (securQ.success) {
-      setShowChangePassword(true);
-      setShowForgotPassword(false);
+      setShowChangePassword(true)
+      setShowForgotPassword(false)
     }
-    setSecurityQuestion(securQ);
+    setSecurityQuestion(securQ)
   }
 
   useEffect(() => {
     verifySession().then((res) => {
       if (res.isAuth) {
-        redirect("/");
+        redirect('/')
       }
-    });
-  }, []);
+    })
+  }, [])
 
   useEffect(() => {
     if (logInState?.success) {
       createSession(logInState.data.id).then(() => {
-        redirect("/");
-      });
+        redirect('/')
+      })
     }
-  }, [logInState]);
+  }, [logInState])
 
   return (
     <main className="h-full flex flex-col justify-center items-center">
@@ -118,8 +118,8 @@ export default function Page() {
           {logInState?.message && (
             <p
               className={clsx(
-                "font-bold text-sm mt-0" && true,
-                logInState?.success ? "text-green-400" : "text-red-400"
+                'font-bold text-sm mt-0' && true,
+                logInState?.success ? 'text-green-400' : 'text-red-400'
               )}
             >
               {logInState.message}
@@ -154,12 +154,12 @@ export default function Page() {
               <button
                 type="button"
                 onClick={() => {
-                  setShowForgotPassword(false);
+                  setShowForgotPassword(false)
                   setSecurityQuestion({
                     success: null,
                     message: null,
                     data: { id: null, name: null },
-                  });
+                  })
                 }}
               >
                 <Icon tooltip="Close">
@@ -186,10 +186,10 @@ export default function Page() {
               {securityQuestion?.message && (
                 <p
                   className={clsx(
-                    "font-bold text-sm mt-0" && true,
+                    'font-bold text-sm mt-0' && true,
                     securityQuestion?.success
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? 'text-green-400'
+                      : 'text-red-400'
                   )}
                 >
                   {securityQuestion.message}
@@ -203,7 +203,7 @@ export default function Page() {
                 {false ? (
                   <ArrowPathIcon className="size-6 text-white" />
                 ) : (
-                  "Proceed"
+                  'Proceed'
                 )}
               </button>
             </Form>
@@ -229,5 +229,5 @@ export default function Page() {
         Made with ♥︎ by CatMCGT
       </p>
     </main>
-  );
+  )
 }

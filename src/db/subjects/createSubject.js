@@ -76,7 +76,7 @@ export async function createSubject(additionalData, prevState, formData) {
     return {
       success: false,
       message:
-        `${err.message}. ${err.detail || ""}` ||
+        `${err.message}. ${err.detail || ''}` ||
         `Failed to create subject. Please check the developer console.`,
     }
   }

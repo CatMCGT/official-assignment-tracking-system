@@ -1,22 +1,22 @@
-"use server";
+'use server'
 
-import { neon } from "@neondatabase/serverless";
-import { verifySession } from "@/actions/userSession";
-import { getUser } from "../users/getUser";
-import getSubjectInfo from "@/utils/getSubjectInfo";
+import { neon } from '@neondatabase/serverless'
+import { verifySession } from '@/actions/userSession'
+import { getUser } from '../users/getUser'
+import getSubjectInfo from '@/utils/getSubjectInfo'
 
 export async function getAllSubjects() {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Session not found.");
+    const session = await verifySession()
+    if (!session) throw new Error('Session not found.')
 
-    const user = await getUser();
-    const userRole = user.role;
+    const user = await getUser()
+    const userRole = user.role
 
-    if (userRole !== "admin")
-      throw new Error("User not authorised to get all subjects.");
+    if (userRole !== 'admin')
+      throw new Error('User not authorised to get all subjects.')
 
-    const sql = neon(`${process.env.STORE_DATABASE_URL}`);
+    const sql = neon(`${process.env.STORE_DATABASE_URL}`)
     // const response = await sql`SELECT s.id as id, t.id as teacher_id, t.name as teacher_name, st.id as monitor_id, st.name as monitor_name FROM subjects s, teachers t, students st WHERE s.teacher_id = t.id AND s.monitor_id = st.id;`;
 
     // https://neon.com/docs/functions/json_agg -> prevent N+1 query problem
@@ -44,21 +44,21 @@ export async function getAllSubjects() {
         LEFT JOIN students st ON ss.student_id = st.id
       GROUP BY
         s.id, t.id, t.name, m.id, m.name, s.deactivated_date
-    `;
+    `
 
     const subjects = await Promise.all(
       response.map(async (subject) => {
-        const subjectInfo = getSubjectInfo(subject.id);
+        const subjectInfo = getSubjectInfo(subject.id)
 
         return {
           ...subject,
           ...subjectInfo,
-        };
+        }
       })
-    );
+    )
 
-    return subjects;
+    return subjects
   } catch (err) {
-    console.error("Error fetching subjects:", err);
+    console.error('Error fetching subjects:', err)
   }
 }

@@ -16,12 +16,16 @@ export default async function Page() {
       <div>
         <MainLayout.Header>Deactivated Subjects</MainLayout.Header>
 
-        <DeactivatedSubjects deactivatedSubjects={deactivatedSubjects} action="teach"/>
+        <DeactivatedSubjects
+          deactivatedSubjects={deactivatedSubjects}
+          action="teach"
+        />
       </div>
     )
   } else if (user.role === 'student') {
     const monitoredSubjects = await getMonitoredSubjects()
-    if (monitoredSubjects.length === 0) return "You do not have permission to view this page."
+    if (monitoredSubjects.length === 0)
+      return 'You do not have permission to view this page.'
     const deactivatedSubjects = monitoredSubjects.filter(
       (s) => s.deactivated_date !== null
     )
@@ -30,7 +34,10 @@ export default async function Page() {
       <div>
         <MainLayout.Header>Deactivated Subjects</MainLayout.Header>
 
-        <DeactivatedSubjects deactivatedSubjects={deactivatedSubjects} action="monitor"/>
+        <DeactivatedSubjects
+          deactivatedSubjects={deactivatedSubjects}
+          action="monitor"
+        />
       </div>
     )
   }

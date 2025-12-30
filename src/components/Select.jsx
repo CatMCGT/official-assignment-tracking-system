@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import { CheckIcon, XCircleIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { CheckIcon, XCircleIcon } from '@heroicons/react/20/solid'
+import { useState } from 'react'
 
 export default function Select({
   options,
   selected,
   setSelected,
-  placeholder = "No options selected",
+  placeholder = 'No options selected',
   showId = false,
   allowSearch = false,
   multiSelect = false,
 }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [search, setSearch] = useState("");
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [search, setSearch] = useState('')
 
   return (
     <div className="relative">
@@ -38,10 +38,10 @@ export default function Select({
                     type="button"
                     className="cursor-pointer"
                     onClick={(e) => {
-                      e.stopPropagation();
+                      e.stopPropagation()
                       setSelected((prev) =>
                         prev.filter((id) => id !== option.id)
-                      );
+                      )
                     }}
                   >
                     <XCircleIcon className="size-4 text-text-weaker"></XCircleIcon>
@@ -85,16 +85,16 @@ export default function Select({
                     if (multiSelect) {
                       setSelected((prev) => {
                         if (prev.includes(option.id)) {
-                          return prev.filter((id) => id !== option.id);
+                          return prev.filter((id) => id !== option.id)
                         } else {
-                          return [...prev, option.id];
+                          return [...prev, option.id]
                         }
-                      });
+                      })
                     } else {
                       if (selected === option.id) {
-                        setSelected(null);
+                        setSelected(null)
                       } else {
-                        setSelected(option.id);
+                        setSelected(option.id)
                       }
                     }
                   }}
@@ -114,5 +114,5 @@ export default function Select({
         </div>
       )}
     </div>
-  );
+  )
 }

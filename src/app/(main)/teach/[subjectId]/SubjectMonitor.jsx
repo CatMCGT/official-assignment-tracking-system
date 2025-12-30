@@ -1,33 +1,33 @@
-"use client";
+'use client'
 
-import Icon from "@/components/Icon";
-import { updateSubjects } from "@/db/subjects/setSubject";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Icon from '@/components/Icon'
+import { updateSubjects } from '@/db/subjects/setSubject'
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function SubjectMonitorProperty({ subject }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-  const [search, setSearch] = useState("");
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
+  const [search, setSearch] = useState('')
   const [subjectMonitorState, setSubjectMonitorState] = useState({
     id: subject.monitor_id,
     name: subject.monitor_name,
-  });
-  const [isPending, setIsPending] = useState(false);
-  const router = useRouter();
+  })
+  const [isPending, setIsPending] = useState(false)
+  const router = useRouter()
 
   async function handleSubmit() {
-    setIsMenuOpened(false);
-    setIsPending(true);
+    setIsMenuOpened(false)
+    setIsPending(true)
     await updateSubjects([
       {
         ...subject,
         monitor_id: subjectMonitorState.id,
       },
-    ]);
-    setIsPending(false);
-    router.refresh;
+    ])
+    setIsPending(false)
+    router.refresh
   }
 
   return (
@@ -37,7 +37,7 @@ export default function SubjectMonitorProperty({ subject }) {
           className="border-1 border-stroke-weak rounded py-1 px-2 hover:bg-fill-weak cursor-pointer transition-colors w-full text-left"
           onClick={() => setIsMenuOpened((prev) => !prev)}
         >
-          {subjectMonitorState.name || "No subject monitor"}
+          {subjectMonitorState.name || 'No subject monitor'}
         </button>
 
         {subjectMonitorState.id !== subject.monitor_id && (
@@ -93,15 +93,15 @@ export default function SubjectMonitorProperty({ subject }) {
                   key={student.id}
                   type="button"
                   className={clsx(
-                    "flex flex-row gap-2 items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full",
-                    subjectMonitorState.id === student.id && "bg-fill-weak"
+                    'flex flex-row gap-2 items-center rounded hover:bg-fill-weak cursor-pointer py-1 px-2 transition-colors w-full',
+                    subjectMonitorState.id === student.id && 'bg-fill-weak'
                   )}
                   onClick={() => {
-                    setIsMenuOpened(false);
+                    setIsMenuOpened(false)
                     setSubjectMonitorState({
                       id: student.id,
                       name: student.name,
-                    });
+                    })
                   }}
                 >
                   {student.name}
@@ -111,5 +111,5 @@ export default function SubjectMonitorProperty({ subject }) {
         </div>
       )}
     </div>
-  );
+  )
 }

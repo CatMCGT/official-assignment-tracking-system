@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import { useActionState, useEffect, useState } from "react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { useActionState, useEffect, useState } from 'react'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 import {
   compareSecurityAns,
   setSecurityQuestionAns,
-} from "@/db/users/securityQuestion";
-import Select from "../Select";
-import { securityQuestions } from "@/utils/securityQuestions";
-import Form from "next/form";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import Icon from "../Icon";
-import clsx from "clsx";
-import { changePassword } from "@/db/users/changePassword";
+} from '@/db/users/securityQuestion'
+import Select from '../Select'
+import { securityQuestions } from '@/utils/securityQuestions'
+import Form from 'next/form'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import Icon from '../Icon'
+import clsx from 'clsx'
+import { changePassword } from '@/db/users/changePassword'
 
 export default function ChangePassword({
   changePasswordFetch,
@@ -20,45 +20,45 @@ export default function ChangePassword({
   setShowChangePassword,
   userId = null,
 }) {
-  const [selectedSecurityQuestion, setSelectedSecurityQuestion] = useState("");
+  const [selectedSecurityQuestion, setSelectedSecurityQuestion] = useState('')
 
   const additionalData = {
     securityQuestionId: selectedSecurityQuestion,
     userId: userId,
-  };
+  }
   const [setSecurityState, setSecurityAction, isPendingSet] = useActionState(
     setSecurityQuestionAns.bind(null, additionalData),
     {
       success: null,
-      message: "",
+      message: '',
     }
-  );
+  )
 
   const [compareSecurityState, compareSecurityAction, isPendingCompare] =
     useActionState(compareSecurityAns.bind(null, { userId: userId }), {
       success: null,
-      message: "",
-    });
+      message: '',
+    })
 
   const [changePasswordState, changePasswordAction, isPendingChange] =
     useActionState(changePassword.bind(null, { userId: userId }), {
       success: null,
-      message: "",
-    });
+      message: '',
+    })
 
   useEffect(() => {
     if (setSecurityState.success) {
-      changePasswordFetch();
+      changePasswordFetch()
     }
-  }, [setSecurityState?.success]);
+  }, [setSecurityState?.success])
 
   useEffect(() => {
     if (changePasswordState.success) {
       setTimeout(() => {
-        setShowChangePassword(false);
-      }, 2000);
+        setShowChangePassword(false)
+      }, 2000)
     }
-  }, [changePasswordState?.success]);
+  }, [changePasswordState?.success])
 
   return (
     <div className="fixed w-full h-full md:px-40 top-0 left-0 flex flex-row justify-center items-center">
@@ -105,10 +105,10 @@ export default function ChangePassword({
               {changePasswordState?.message && (
                 <p
                   className={clsx(
-                    "font-bold text-sm mt-0" && true,
+                    'font-bold text-sm mt-0' && true,
                     changePasswordState?.success
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? 'text-green-400'
+                      : 'text-red-400'
                   )}
                 >
                   {changePasswordState.message}
@@ -123,7 +123,7 @@ export default function ChangePassword({
                 {isPendingChange ? (
                   <ArrowPathIcon className="size-6 text-white" />
                 ) : (
-                  "Save"
+                  'Save'
                 )}
               </button>
             </Form>
@@ -146,10 +146,10 @@ export default function ChangePassword({
               {compareSecurityState?.message && (
                 <p
                   className={clsx(
-                    "font-bold text-sm mt-0" && true,
+                    'font-bold text-sm mt-0' && true,
                     compareSecurityState?.success
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? 'text-green-400'
+                      : 'text-red-400'
                   )}
                 >
                   {compareSecurityState.message}
@@ -164,7 +164,7 @@ export default function ChangePassword({
                 {isPendingCompare ? (
                   <ArrowPathIcon className="size-6 text-white" />
                 ) : (
-                  "Proceed"
+                  'Proceed'
                 )}
               </button>
             </Form>
@@ -201,22 +201,22 @@ export default function ChangePassword({
               className="px-4 py-[4px] mt-4 text-white bg-text-weak rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed w-fit"
               disabled={
                 isPendingSet ||
-                selectedSecurityQuestion === "" ||
+                selectedSecurityQuestion === '' ||
                 selectedSecurityQuestion === null
               }
             >
               {isPendingSet ? (
                 <ArrowPathIcon className="size-6 text-white" />
               ) : (
-                "Save"
+                'Save'
               )}
             </button>
 
             {setSecurityState?.message && (
               <p
                 className={clsx(
-                  "font-bold text-sm mt-0" && true,
-                  setSecurityState?.success ? "text-green-400" : "text-red-400"
+                  'font-bold text-sm mt-0' && true,
+                  setSecurityState?.success ? 'text-green-400' : 'text-red-400'
                 )}
               >
                 {setSecurityState.message}
@@ -231,5 +231,5 @@ export default function ChangePassword({
         />
       </div>
     </div>
-  );
+  )
 }

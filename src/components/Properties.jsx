@@ -3,22 +3,22 @@ export default function Properties({ children }) {
     <div className="grid grid-cols-[200px_200px] sm:grid-cols-[200px_300px] md:grid-cols-[200px_400px] gap-2 text-nowrap">
       {children}
     </div>
-  );
+  )
 }
 
 function Property({ children, name }) {
   return (
     <div className="flex flex-row gap-2 items-center">
       {children}
-      <p className="text-text-weak">{name}</p>{" "}
+      <p className="text-text-weak">{name}</p>{' '}
     </div>
-  );
+  )
 }
 
-Properties.Property = Property;
+Properties.Property = Property
 
 function Value({ children }) {
-  return <p className="text-lg">{children}</p>;
+  return <p className="text-lg">{children}</p>
 }
 
-Properties.Property.Value = Value;
+Properties.Property.Value = Value

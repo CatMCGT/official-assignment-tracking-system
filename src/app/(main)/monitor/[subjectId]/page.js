@@ -4,55 +4,55 @@ import {
   ClockIcon,
   HashtagIcon,
   PencilSquareIcon,
-} from "@heroicons/react/24/outline";
-import formatDate from "@/utils/formatDate";
-import { getMonitoredAssignments } from "@/db/assignments/getMonitoredAssignments";
-import MainLayout from "../../layout";
-import getSubjectInfo from "@/utils/getSubjectInfo";
-import Link from "next/link";
-import ArchivedAssignments from "../../../../components/ArchivedAssignments";
-import Properties from "../../../../components/Properties";
-import { Suspense } from "react";
-import Loading from "./loading";
-import { getMonitoredSubjects } from "@/db/subjects/getMonitoredSubjects";
+} from '@heroicons/react/24/outline'
+import formatDate from '@/utils/formatDate'
+import { getMonitoredAssignments } from '@/db/assignments/getMonitoredAssignments'
+import MainLayout from '../../layout'
+import getSubjectInfo from '@/utils/getSubjectInfo'
+import Link from 'next/link'
+import ArchivedAssignments from '../../../../components/ArchivedAssignments'
+import Properties from '../../../../components/Properties'
+import { Suspense } from 'react'
+import Loading from './loading'
+import { getMonitoredSubjects } from '@/db/subjects/getMonitoredSubjects'
 
 export async function generateMetadata({ params }) {
-  const { subjectId } = await params;
+  const { subjectId } = await params
 
   return {
     title: `${subjectId}`,
-  };
+  }
 }
 
 export default async function Page({ params }) {
-  const { subjectId } = await params;
-  const subjectInfo = getSubjectInfo(subjectId);
-  const subjectAssignments = await getMonitoredAssignments(subjectId);
+  const { subjectId } = await params
+  const subjectInfo = getSubjectInfo(subjectId)
+  const subjectAssignments = await getMonitoredAssignments(subjectId)
 
-  let subjectAdmin = {};
-  let numOfStudents = 0;
+  let subjectAdmin = {}
+  let numOfStudents = 0
   if (subjectAssignments.length > 0) {
     subjectAdmin = {
       teacher_id: subjectAssignments[0].teacher_id,
       teacher_name: subjectAssignments[0].teacher_name,
       monitor_id: subjectAssignments[0].monitor_id,
       monitor_name: subjectAssignments[0].monitor_name,
-    };
-    numOfStudents = subjectAssignments[0].number_of_students;
+    }
+    numOfStudents = subjectAssignments[0].number_of_students
   } else {
     const details = (await getMonitoredSubjects()).filter(
       (subject) => subject.id === subjectId
-    );
-    subjectAdmin = details[0];
-    numOfStudents = details[0].number_of_students;
+    )
+    subjectAdmin = details[0]
+    numOfStudents = details[0].number_of_students
   }
 
   const inProgress = subjectAssignments?.filter(
     (a) => new Date(a.due_date) >= new Date()
-  );
+  )
   const archived = subjectAssignments?.filter(
     (a) => new Date(a.due_date) < new Date()
-  );
+  )
 
   return (
     <div>
@@ -61,8 +61,8 @@ export default async function Page({ params }) {
           <div className="flex flex-col gap-1 sm:flex-row sm:gap-3 mb-2">
             {subjectInfo.grade
               ? `Grade ${subjectInfo.grade}`
-              : `Class ${subjectInfo.class}`}{" "}
-            {subjectInfo.name}{" "}
+              : `Class ${subjectInfo.class}`}{' '}
+            {subjectInfo.name}{' '}
             {subjectInfo.block && `Block ${subjectInfo.block}`}
             <div className="px-3 py-2 rounded-full bg-fill-weak w-fit flex justify-center items-center text-xs text-text-weak tracking-wide">
               #{subjectId}
@@ -113,11 +113,11 @@ export default async function Page({ params }) {
                 {inProgress.map((a) => {
                   const submittedCount = a.students.filter(
                     (student) => student.collected_date !== null
-                  ).length;
+                  ).length
                   const stats = {
                     submitted: submittedCount,
                     not_submitted: a.students.length - submittedCount,
-                  };
+                  }
 
                   return (
                     <Link
@@ -143,14 +143,14 @@ export default async function Page({ params }) {
                           <div className="flex flex-row gap-1 items-center">
                             <CheckCircleIcon className="size-4 text-text-weaker" />
                             <p className="text-sm text-text-weak">
-                              {stats.submitted} Submitted, {stats.not_submitted}{" "}
+                              {stats.submitted} Submitted, {stats.not_submitted}{' '}
                               Left
                             </p>
                           </div>
                         </div>
                       </div>
                     </Link>
-                  );
+                  )
                 })}
               </div>
             ) : (
@@ -170,5 +170,5 @@ export default async function Page({ params }) {
         </MainLayout.Body>
       </Suspense>
     </div>
-  );
+  )
 }

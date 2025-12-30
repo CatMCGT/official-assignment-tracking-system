@@ -1,15 +1,15 @@
-"use server";
+'use server'
 
-import { getAllSubjects } from "@/db/subjects/getAllSubjects";
-import { getAllUsers } from "@/db/users/getAllUsers";
-import MainLayout from "../../layout";
-import CreateUser from "./CreateUser";
-import AllUsers from "./AllUsers";
-import BulkCreateUsers from "./BulkCreateUsers";
+import { getAllSubjects } from '@/db/subjects/getAllSubjects'
+import { getAllUsers } from '@/db/users/getAllUsers'
+import MainLayout from '../../layout'
+import CreateUser from './CreateUser'
+import AllUsers from './AllUsers'
+import BulkCreateUsers from './BulkCreateUsers'
 
 export default async function Page() {
-  const allSubjects = await getAllSubjects();
-  const allUsers = await getAllUsers();
+  const allSubjects = await getAllSubjects()
+  const allUsers = await getAllUsers()
 
   return (
     <div>
@@ -26,5 +26,5 @@ export default async function Page() {
         <AllUsers allUsers={allUsers} allSubjects={allSubjects} />
       </div>
     </div>
-  );
+  )
 }

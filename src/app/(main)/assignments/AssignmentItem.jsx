@@ -1,5 +1,5 @@
-import formatDate from "@/utils/formatDate";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import formatDate from '@/utils/formatDate'
+import { ClockIcon } from '@heroicons/react/24/outline'
 
 export default function AssignmentItem({ a, setAssignmentModel }) {
   return (
@@ -32,5 +32,5 @@ export default function AssignmentItem({ a, setAssignmentModel }) {
         </div>
       </div>
     </button>
-  );
+  )
 }
