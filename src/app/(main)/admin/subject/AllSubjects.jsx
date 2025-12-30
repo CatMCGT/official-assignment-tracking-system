@@ -85,6 +85,7 @@ export default function AllSubjects({ allSubjects, allUsers }) {
                   type="text"
                   className="border-1 border-stroke-weak rounded focus:outline-text-weaker focus:outline-1 h-8 pl-2 pr-8"
                   value={search}
+                  placeholder='Search subjects...'
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="absolute right-0 top-0">

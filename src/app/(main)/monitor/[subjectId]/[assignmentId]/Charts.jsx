@@ -35,7 +35,7 @@ export default function Charts({ assignment }) {
 
   return (
     <div>
-      <div className="border-1 rounded border-stroke-weak px-7 py-5">
+      <div className="border-1 rounded border-stroke-weak px-7 py-5 w-full md:w-[940px]">
         <h2 className="text-lg font-bold">Student Grade for Assignment</h2>
         <p className="text-text-weak mb-2">The distribution of grade.</p>
 

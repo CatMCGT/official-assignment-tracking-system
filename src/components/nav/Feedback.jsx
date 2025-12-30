@@ -43,8 +43,7 @@ export default function Feedback() {
   }, [])
 
   useEffect(() => {
-    // setIsOpen(randomNum < 0.2);
-    setIsOpen(true)
+    setIsOpen(randomNum < 0.2);
   }, [randomNum])
 
   useEffect(() => {

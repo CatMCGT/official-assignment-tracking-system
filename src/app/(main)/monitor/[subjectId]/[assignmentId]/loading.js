@@ -1,5 +1,4 @@
 import Skeleton from '@/components/Skeleton'
-import { Fragment } from 'react'
 
 export default function Loading() {
   return (
@@ -17,18 +16,20 @@ export default function Loading() {
       </div>
 
       <div>
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-between items-center mb-10 w-[940px]">
           <Skeleton className="w-80 h-10" />
           <Skeleton className="w-80 h-10" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5 mt-5">
+        <Skeleton className="w-[940px] h-[400px]" />
+
+        {/* <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5 mt-5">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((x) => (
             <Fragment key={x}>
               <Skeleton className="h-20" />
             </Fragment>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   )

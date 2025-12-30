@@ -60,14 +60,14 @@ export default function UserDisplaySection({ user }) {
 
           <div className="flex flex-col gap-2">
             <button
-              className="text-ms text-text-weaker hover:text-text-weak nav-item-hover"
+              className="text-ms text-text-weaker hover:text-text-weak nav-item-hover text-left"
               onClick={logOut}
             >
               Log out
             </button>
 
             <button
-              className="text-ms text-text-weaker hover:text-red-500 nav-item-hover"
+              className="text-ms text-text-weaker hover:text-red-500 nav-item-hover text-left"
               onClick={changePasswordFetch}
             >
               Change password

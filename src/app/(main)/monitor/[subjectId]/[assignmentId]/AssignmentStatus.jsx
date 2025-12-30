@@ -103,7 +103,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
 
   return (
     <Form onClick={closeMenus}>
-      <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center">
+      <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center md:w-[940px]">
         <Radio
           options={viewOptions}
           selected={selectedView}
@@ -117,6 +117,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
               name="search bar"
               className="border-1 border-stroke-weak rounded focus:outline-text-weaker focus:outline-1 h-8 pl-2 pr-8"
               value={search}
+              placeholder='Search records...'
               onChange={(e) => setSearch(e.target.value)}
             />
             <div className="absolute right-0 top-0">
@@ -211,8 +212,8 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
       )}
 
       <div className="flex flex-col gap-2 mt-2 overflow-auto">
-        <div className="grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center px-3 py-2 text-sm text-text-weak">
-          <input
+        <div className="grid grid-cols-[180px_120px_180px_300px_100px_auto] items-center px-3 py-2 text-sm text-text-weak">
+          {/* <input
             type="checkbox"
             name="master checkbox"
             className="border-1 border-text-weak accent-text-weak"
@@ -224,14 +225,14 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                 setSelectedStudents([])
               }
             }}
-          />
+          /> */}
           <p>Name</p>
           <p>ID</p>
           <p>Collected date</p>
           <p>Status</p>
           {userRole === 'teacher' && <p>Grade</p>}
         </div>
-        <div className="flex flex-col gap-2 h-[400px] w-fit">
+        <div className="flex flex-col gap-2 max-h-[400px] w-fit">
           {updatedStudents
             ?.filter((student) => {
               if (selectedView === 'all') return true
@@ -256,7 +257,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                 <div
                   key={student.id}
                   className={clsx(
-                    'grid grid-cols-[40px_180px_120px_180px_300px_100px_auto] items-center border-1 rounded px-3 py-2',
+                    'grid grid-cols-[180px_120px_180px_300px_100px_auto] items-center border-1 rounded px-3 py-2',
                     student.collected_date && 'border-dashed',
                     late
                       ? 'border-red-500 bg-red-50'
@@ -274,7 +275,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                     )
                   }
                 >
-                  <input
+                  {/* <input
                     type="checkbox"
                     name={`checkbox for student id ${student.id}`}
                     className="border-1 border-text-weak accent-text-weak"
@@ -288,7 +289,7 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
                         setSelectedStudents((prev) => [...prev, student.id])
                       }
                     }}
-                  />
+                  /> */}
                   <p className="">{student.name}</p>
                   <p className="text-text-weak text-sm">#{student.id}</p>
                   <p className="text-sm">
