@@ -73,7 +73,6 @@ export default function AssignmentStatus({ assignment, students, userRole }) {
       )
     } catch (err) {
       console.error(err)
-      // setErrorMessage(err.message);
       setIsPendingSave(false)
     }
   }

@@ -14,12 +14,6 @@ import Icon from '@/components/Icon'
 import AssignmentItem from './AssignmentItem'
 
 export default function Page() {
-  // const [selectedView, setSelectedView] = useState('all')
-  // const viewOptions = [
-  //   { id: 'all', name: 'All' },
-  //   { id: 'high-priority', name: 'High Priority' },
-  // ]
-
   const [assignments, setAssignments] = useState([])
   const notSubmitted = assignments?.filter((a) => a.collected_date === null)
   const submitted = assignments?.filter(

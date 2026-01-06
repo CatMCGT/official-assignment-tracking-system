@@ -9,7 +9,6 @@ export async function getTaughtSubjects(subjectId = '') {
     if (!session) return null
 
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
-    // const subjects = await sql`SELECT id as subject_id, teacher_id, monitor_id FROM subjects WHERE teacher_id = ${session.userId}`
     if (subjectId === '') {
       const subjects = await sql`
       SELECT
@@ -23,7 +22,7 @@ export async function getTaughtSubjects(subjectId = '') {
           JSON_AGG(
             JSON_BUILD_OBJECT('id', st.id, 'name', st.name)
           ) FILTER (WHERE st.id IS NOT NULL),
-          '[]'
+          '[]'::json
         ) AS students
       FROM
         subjects s
@@ -50,7 +49,7 @@ export async function getTaughtSubjects(subjectId = '') {
           JSON_AGG(
             JSON_BUILD_OBJECT('id', st.id, 'name', st.name)
           ) FILTER (WHERE st.id IS NOT NULL),
-          '[]'
+          '[]'::json
         ) AS students
       FROM
         subjects s

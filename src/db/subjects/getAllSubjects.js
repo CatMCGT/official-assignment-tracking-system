@@ -17,7 +17,6 @@ export async function getAllSubjects() {
       throw new Error('User not authorised to get all subjects.')
 
     const sql = neon(`${process.env.STORE_DATABASE_URL}`)
-    // const response = await sql`SELECT s.id as id, t.id as teacher_id, t.name as teacher_name, st.id as monitor_id, st.name as monitor_name FROM subjects s, teachers t, students st WHERE s.teacher_id = t.id AND s.monitor_id = st.id;`;
 
     // https://neon.com/docs/functions/json_agg -> prevent N+1 query problem
     // https://neon.com/postgresql/postgresql-tutorial/postgresql-coalesce -> return [] instead of null

@@ -27,5 +27,3 @@ export async function getMonitoredSubjects() {
 
   return response
 }
-
-// const response = (await sql`SELECT su.id as subjectId, a.id as assignmentId, sa.studentId as studentId, st.name as studentName, sa.collected as collected FROM subjects su, assignments a, student_assignment sa, students st WHERE monitor_id = ${session.userId} AND a.subject_id = su.id AND sa.assignment_id = a.id AND st.id = sa.student_id;`)
