@@ -70,75 +70,73 @@ export default function NavLinks({
         <div className="flex flex-col gap-5">
           <UserDisplaySection user={user} />
 
-          <div>
-            {user?.role === 'student' && (
-              <>
-                <Link
-                  href="/assignments"
+          {user?.role === 'student' && (
+            <div>
+              <Link
+                href="/assignments"
+                className={clsx(
+                  'nav-tab',
+                  pathname === '/assignments' ? 'active' : ''
+                )}
+              >
+                <BookOpenIcon className="size-6 text-text-weaker" />
+                <p
                   className={clsx(
-                    'nav-tab',
-                    pathname === '/assignments' ? 'active' : ''
+                    'font-bold mr-1 ml-3',
+                    pathname === '/assignments'
+                      ? 'text-text-strong'
+                      : 'text-text-weaker'
                   )}
                 >
-                  <BookOpenIcon className="size-6 text-text-weaker" />
-                  <p
-                    className={clsx(
-                      'font-bold mr-1 ml-3',
-                      pathname === '/assignments'
-                        ? 'text-text-strong'
-                        : 'text-text-weaker'
-                    )}
-                  >
-                    Assignments
-                  </p>
-                </Link>
-              </>
-            )}
+                  Assignments
+                </p>
+              </Link>
+            </div>
+          )}
 
-            {user?.role === 'admin' && (
-              <div className="flex flex-col gap-4">
-                <Link
-                  href="/admin/user"
+          {user?.role === 'admin' && (
+            <div className="flex flex-col gap-4">
+              <Link
+                href="/admin/user"
+                className={clsx(
+                  'nav-tab',
+                  pathname === '/admin/user' ? 'active' : ''
+                )}
+              >
+                <UserIcon className="size-6 text-text-weaker" />
+                <p
                   className={clsx(
-                    'nav-tab',
-                    pathname === '/admin/user' ? 'active' : ''
+                    'font-bold mr-1 ml-3',
+                    pathname === '/admin/user'
+                      ? 'text-text-strong'
+                      : 'text-text-weaker'
                   )}
                 >
-                  <UserIcon className="size-6 text-text-weaker" />
-                  <p
-                    className={clsx(
-                      'font-bold mr-1 ml-3',
-                      pathname === '/admin/user'
-                        ? 'text-text-strong'
-                        : 'text-text-weaker'
-                    )}
-                  >
-                    User management
-                  </p>
-                </Link>
+                  User management
+                </p>
+              </Link>
 
-                <Link
-                  href="/admin/subject"
+              <Link
+                href="/admin/subject"
+                className={clsx(
+                  'nav-tab',
+                  pathname === '/admin/subject' ? 'active' : ''
+                )}
+              >
+                <BookOpenIcon className="size-6 text-text-weaker" />
+                <p
                   className={clsx(
-                    'nav-tab',
-                    pathname === '/admin/subject' ? 'active' : ''
+                    'font-bold mr-1 ml-3',
+                    pathname === '/admin/subject'
+                      ? 'text-text-strong'
+                      : 'text-text-weaker'
                   )}
                 >
-                  <BookOpenIcon className="size-6 text-text-weaker" />
-                  <p
-                    className={clsx(
-                      'font-bold mr-1 ml-3',
-                      pathname === '/admin/subject'
-                        ? 'text-text-strong'
-                        : 'text-text-weaker'
-                    )}
-                  >
-                    Subject management
-                  </p>
-                </Link>
-              </div>
-            )}
-          </div>
+                  Subject management
+                </p>
+              </Link>
+            </div>
+          )}
 
           {role === 'teacher' && activatedTaughtSubjects.length > 0 && (
             <div>
@@ -156,10 +154,10 @@ export default function NavLinks({
               </div>
 
               {deactivatedTaughtSubjects.length > 0 && (
-                <Link href="/deactivated" className="nav-tab mt-10 hover:mt-9">
+                <Link href="/archived" className="nav-tab mt-10 hover:mt-9">
                   <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
                   <p className="font-bold mr-1 ml-3 text-text-weak">
-                    Deactivated Subjects
+                    Archived Subjects
                   </p>
                 </Link>
               )}
@@ -180,10 +178,10 @@ export default function NavLinks({
               </div>
 
               {deactivatedMonitoredSubjects.length > 0 && (
-                <Link href="/deactivated" className="nav-tab mt-10 hover:mt-9">
+                <Link href="/archived" className="nav-tab mt-10 hover:mt-9">
                   <ArchiveBoxArrowDownIcon className="size-6 text-text-weaker" />
                   <p className="font-bold mr-1 ml-3 text-text-weak">
-                    Deactivated Subjects
+                    Archived Subjects
                   </p>
                 </Link>
               )}

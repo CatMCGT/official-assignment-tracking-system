@@ -14,7 +14,7 @@ export default async function Page() {
 
     return (
       <div>
-        <MainLayout.Header>Deactivated Subjects</MainLayout.Header>
+        <MainLayout.Header>Archived Subjects</MainLayout.Header>
 
         <DeactivatedSubjects
           deactivatedSubjects={deactivatedSubjects}
@@ -32,7 +32,7 @@ export default async function Page() {
 
     return (
       <div>
-        <MainLayout.Header>Deactivated Subjects</MainLayout.Header>
+        <MainLayout.Header>Archived Subjects</MainLayout.Header>
 
         <DeactivatedSubjects
           deactivatedSubjects={deactivatedSubjects}

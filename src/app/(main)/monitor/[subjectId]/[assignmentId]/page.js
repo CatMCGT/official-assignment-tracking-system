@@ -27,7 +27,7 @@ export default async function Page({ params }) {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="mt-3">
+      <div className="flex flex-col mt-3 h-full">
         <div className="flex flex-col gap-4 w-full max-w-6xl">
           <div className="flex flex-row gap-3 items-center">
             <div

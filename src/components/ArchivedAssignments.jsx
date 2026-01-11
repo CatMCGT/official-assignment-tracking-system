@@ -22,7 +22,7 @@ export default function ArchivedAssignments({
     <div className="flex flex-col gap-3 mt-2">
       <div className="flex flex-row gap-[6px] items-center">
         <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
-          Archived
+          Expired
         </p>
         <div className="w-4 h-4 text-xs text-text-weak bg-fill-weak rounded flex justify-center items-center">
           {archived.length}

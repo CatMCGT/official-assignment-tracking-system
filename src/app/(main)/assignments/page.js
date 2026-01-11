@@ -54,7 +54,7 @@ export default function Page() {
           />
         </div> */}
 
-        <div className="max-w-[400px] md:max-w-2xl flex flex-col gap-6 mt-4 bg-background-weak border-1 border-stroke-weak px-6 py-5">
+        <div className="flex flex-col gap-6 mt-4 bg-background-weak border-1 border-stroke-weak px-6 py-5">
           <div className="flex flex-row gap-[6px] items-center">
             <p className="uppercase text-text-weak text-sm font-semibold tracking-wide">
               Not submitted
@@ -67,7 +67,7 @@ export default function Page() {
           </div>
 
           {notSubmitted.length > 0 ? (
-            <div className="max-w-2xl flex flex-col gap-3">
+            <div className="max-w-2xl lg:w-2xl flex flex-col gap-3">
               {notSubmitted?.map((a) => (
                 <AssignmentItem
                   key={a.assignment_id}
@@ -94,7 +94,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="lg:w-2xl flex flex-col gap-3">
+            <div className="max-w-2xl lg:w-2xl flex flex-col gap-3">
               {submitted.map((a) => (
                 <AssignmentItem
                   key={a.assignment_id}

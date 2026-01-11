@@ -77,7 +77,9 @@ export default function AssignmentModel({ assignment, onClose }) {
       </div>
 
       <h3 className="font-semibold text-lg mb-2">Description</h3>
-      <p className="text-text-weak">{assignment?.assignment_description}</p>
+      <p className="text-text-weak">
+        {assignment?.assignment_description || '(No description)'}
+      </p>
 
       {(assignment.grade !== null || assignment.feedback !== null) && (
         <div className="border-1 border-stroke-weak px-5 py-4 mx-[-12px] mt-16 rounded">

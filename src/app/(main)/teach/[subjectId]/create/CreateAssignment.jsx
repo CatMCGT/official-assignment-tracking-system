@@ -46,10 +46,13 @@ export default function CreateAssignment({ subject, subjectInfo }) {
 
   const handleCreateAssignment = useCallback(async () => {
     setIsPending(true)
+    const assignedDate = new Date()
+
     const res = await createAssignment(
       subject.id,
       assignment,
-      assignedStudentIds
+      assignedStudentIds,
+      assignedDate
     )
     const assignmentId = res?.assignmentId
     router.push(`/monitor/${subject.id}/${assignmentId}`)
