@@ -1,62 +1,69 @@
-'use client'
+"use client";
 
-import Properties from '@/components/Properties'
+import Properties from "@/components/Properties";
 import {
   AcademicCapIcon,
   ArrowPathIcon,
   BookOpenIcon,
   CalendarDateRangeIcon,
   PencilSquareIcon,
-} from '@heroicons/react/24/outline'
-import DueDate from './DueDate'
-import clsx from 'clsx'
-import AssignedStudents from './AssignedStudents'
-import { createAssignment } from '@/db/assignments/createAssignment'
-import { useRouter } from 'next/navigation'
-import { useEffect, useCallback, useState, Suspense } from 'react'
-import Loading from './loading'
+} from "@heroicons/react/24/outline";
+import DueDate from "./DueDate";
+import clsx from "clsx";
+import AssignedStudents from "./AssignedStudents";
+import { createAssignment } from "@/db/assignments/createAssignment";
+import { useRouter } from "next/navigation";
+import { useEffect, useCallback, useState, Suspense } from "react";
+import Loading from "./loading";
 
 export default function CreateAssignment({ subject, subjectInfo }) {
-  const router = useRouter()
+  const router = useRouter();
 
   const [assignedStudentIds, setAssignedStudentIds] = useState(
     subject.students.map((s) => s.id)
-  )
+  );
   const [assignment, setAssignment] = useState({
-    title: '',
-    description: '',
-    dueDate: new Date().toLocaleDateString('en-CA') + 'T00:00',
-    grade: '',
-  })
-  const [isFilledIn, setIsFilledIn] = useState(false)
-  const [isPending, setIsPending] = useState(false)
+    title: "",
+    description: "",
+    dueDate: new Date().toLocaleDateString("en-CA") + "T00:00",
+    grade: "",
+  });
+  const [isFilledIn, setIsFilledIn] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (
-      assignment.title != '' &&
+      assignment.title != "" &&
       assignment.dueDate &&
       assignedStudentIds.length > 0 &&
-      (assignment.grade != '' || assignment.grade === null)
+      (assignment.grade != "" || assignment.grade === null)
     ) {
-      setIsFilledIn(true)
+      setIsFilledIn(true);
     } else {
-      setIsFilledIn(false)
+      setIsFilledIn(false);
     }
-  }, [assignment, assignedStudentIds])
+  }, [assignment, assignedStudentIds]);
 
   const handleCreateAssignment = useCallback(async () => {
-    setIsPending(true)
-    const assignedDate = new Date()
+    setIsPending(true);
+    const assignedDate = new Date();
 
     const res = await createAssignment(
       subject.id,
       assignment,
       assignedStudentIds,
       assignedDate
-    )
-    const assignmentId = res?.assignmentId
-    router.push(`/monitor/${subject.id}/${assignmentId}`)
-  }, [isFilledIn])
+    );
+    if (res.success) {
+      const assignmentId = res?.assignmentId;
+      router.push(`/monitor/${subject.id}/${assignmentId}`);
+    } else {
+      setErrorMessage(res.message);
+    }
+
+    setIsPending(false);
+  }, [isFilledIn]);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -79,7 +86,7 @@ export default function CreateAssignment({ subject, subjectInfo }) {
                 return {
                   ...prev,
                   title: e.target.value,
-                }
+                };
               })
             }
           ></input>
@@ -136,7 +143,7 @@ export default function CreateAssignment({ subject, subjectInfo }) {
                         return {
                           ...prev,
                           grade: e.target.value,
-                        }
+                        };
                       })
                     }
                   />
@@ -154,8 +161,8 @@ export default function CreateAssignment({ subject, subjectInfo }) {
                   setAssignment((prev) => {
                     return {
                       ...prev,
-                      grade: e.target.checked ? null : '',
-                    }
+                      grade: e.target.checked ? null : "",
+                    };
                   })
                 }
               />
@@ -178,28 +185,32 @@ export default function CreateAssignment({ subject, subjectInfo }) {
                 return {
                   ...prev,
                   description: e.target.value,
-                }
+                };
               })
             }
           ></textarea>
         </div>
 
-        <button
-          type="submit"
-          className={clsx(
-            'px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed',
-            isFilledIn ? 'bg-text-weak' : 'bg-text-weakest'
-          )}
-          disabled={isPending || !isFilledIn}
-          onClick={handleCreateAssignment}
-        >
-          {isPending ? (
-            <ArrowPathIcon className="size-5 text-white" />
-          ) : (
-            'Create assignment'
-          )}
-        </button>
+        <div>
+          {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
+
+          <button
+            type="submit"
+            className={clsx(
+              "px-4 py-[6px] text-white rounded-lg cursor-pointer transition-colors disabled:bg-text-weakest disabled:cursor-not-allowed",
+              isFilledIn ? "bg-text-weak" : "bg-text-weakest"
+            )}
+            disabled={isPending || !isFilledIn}
+            onClick={handleCreateAssignment}
+          >
+            {isPending ? (
+              <ArrowPathIcon className="size-5 text-white" />
+            ) : (
+              "Create assignment"
+            )}
+          </button>
+        </div>
       </div>
     </Suspense>
-  )
+  );
 }
