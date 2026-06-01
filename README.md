@@ -52,4 +52,6 @@ The **School-Based Assignment (SBA)** accounts for 20% of the total subject mark
 
 This SBA combines components from 2A: Databases and 2B: Web Application Development.
 
+View the report in full [here](https://drive.google.com/file/d/12TT2VUaajCHoATXk8B7rSq8wY7IGswxb/view?usp=sharing).
+
 ---
